@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'inconsolata';
+    src: url('./assets/fonts/JosefinSans-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'finger Paint';
+    src: url('./assets/fonts/FingerPaint-Regular.ttf');
+}
+
+body{
+    font-family: 'inconsolata';
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
