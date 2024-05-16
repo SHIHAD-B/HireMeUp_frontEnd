@@ -13,16 +13,26 @@ import IconButton from '@mui/material/IconButton';
 import { Footer } from '../../components/user/footer';
 import { signupValidation } from '../../utils/validations/signupValidation';
 import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
-import Axios, { AxiosResponse } from 'axios'
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setUsersData, clearUserData } from '../../redux/reducer/tempUserSlice';
-import { setCompanyDatas, clearCompanyDatas } from '../../redux/reducer/tempCompanySlice';
-import { config } from '../../config/configuration';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { userSignup } from '../../redux/actions/userAction';
+import { AppDispatch } from '../../redux/store';
 import { companyValidation } from '../../utils/validations/companySignupValidation';
+import { Loader } from '../../components/common/loader';
+import { GoogleLogin } from '@react-oauth/google'
+import { userSignupWtihGoogle } from '../../redux/actions/userAction';
+import {useToast} from '@/components/ui/use-toast';
+import { companySignup } from '@/redux/actions/companyAction';
+import { ICompanyData, IRequests } from '@/interfaces/IUser';
+import { uploadFile } from '@/utils/uploadfile/uploadDocument';
+
 
 export const SignUp = () => {
-    const dispatch = useDispatch()
+    const { toast } = useToast()
+    const { loading } = useSelector((state: RootState) => state.tempUser)
+    const comploading = useSelector((state: RootState) => state.tempCompany.loading)
+    const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setConfirmPassword] = useState(false)
@@ -41,17 +51,18 @@ export const SignUp = () => {
     const [userData, setUserData] = useState({
         username: "",
         email: "",
+        phone: "",
         password: "",
         confirmPassword: ""
     });
 
     const [document, setDocument] = useState<File | null>(null);
 
-    const [companyData, setCompanyData] = useState({
+    const [companyData, setCompanyData] = useState<IRequests>({
         companyname: "",
         email: "",
         password: "",
-        document: "dfgdfg",
+        document:"",
         confirmPassword: ""
     })
 
@@ -59,6 +70,7 @@ export const SignUp = () => {
     const [errorRes, setErrorRes] = useState({
         username: "",
         email: "",
+        phone: "",
         password: "",
         confirmPassword: ""
     })
@@ -72,6 +84,10 @@ export const SignUp = () => {
 
     const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
+        setErrorRes(prev=>({
+            ...prev,
+            [name]:""
+        }))
         setUserData(prevState => ({
             ...prevState,
             [name]: value
@@ -81,6 +97,10 @@ export const SignUp = () => {
 
     const handleCompanyChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
+        setErrorCompRes(prev=>({
+            ...prev,
+            [name]:""
+        }))
         setCompanyData(prevState => ({
             ...prevState,
             [name]: value
@@ -92,26 +112,39 @@ export const SignUp = () => {
             setErrorRes({
                 username: "",
                 email: "",
+                phone: "",
                 password: "",
                 confirmPassword: ""
             })
+         
             await signupValidation.validate(userData, { abortEarly: false });
             console.log("Validation successful");
-            // const IP=import.meta.env.IP
-            Axios.post('http://localhost:3000/auth/signup', userData, config).then((res: AxiosResponse<any, any>) => {
-                if (res.status == 200) {
-                    dispatch(setUsersData(userData))
-                    navigate('/otp');
+            await dispatch(userSignup(userData)).then((res: any) => {
+                if (res?.error?.message == "Rejected") {
+                    const data = {
+                        email: "",
+                        phone: ""
+                    }
+                    if (res.payload == "user already exists") {
+                        data.email = "user already exists"
+                    } else if (res.payload == "number already used") {
+                        data.phone = "number already used"
+                    } else {
+                        data.email = "user already exists"
+                        data.phone = "number already used"
+                    }
+                    setErrorRes(prev => ({
+                        ...prev,
+                        ...data
+                    }));
 
+                } else {
+                    navigate('/otp')
                 }
             }).catch((error: any) => {
-                console.log(error.response.data.message, "error fasdfsdfasfd")
-                setErrorRes(prev => ({
-                    ...prev,
-                    email: error.response.data.message
-                }));
-                dispatch(clearUserData())
+                console.log(error, "error from dispatch")
             })
+
 
         } catch (error: any) {
 
@@ -126,6 +159,7 @@ export const SignUp = () => {
             const errorss = {
                 username: errors.username,
                 email: errors.email,
+                phone: errors.phone,
                 password: errors.password,
                 confirmPassword: errors.confirmPassword
             }
@@ -145,78 +179,98 @@ export const SignUp = () => {
                 password: "",
                 document: "",
                 confirmPassword: ""
-            })
-
-            if (document) {
+            });
+            
+       
+            if (!document) {
                 setErrorCompRes(prev => ({
                     ...prev,
-                    document: "document is needed"
-                }))
+                    document: "Document is needed"
+                }));
+                
             }
+              const compdatas={
+                ...companyData
+              }
+          if(document){
 
-            if (companyData.document)
-                await companyValidation.validate(companyData, { abortEarly: false });
-            console.log("Validation successful");
-            if (errorCompRes.document == "") {
+              const result = await uploadFile(document);
+              console.log(result, "Uploaded document result");
+              compdatas.document=result
+          }
 
-                Axios.post('http://localhost:3000/auth/companysignup', companyData, config).then((res: AxiosResponse<any, any>) => {
-                    if (res.status == 200) {
-                        dispatch(setCompanyDatas(companyData))
-                        navigate('/companyotp');
+            await companyValidation.validate(compdatas, { abortEarly: false });
+            console.log(compdatas, "Validation successful");
 
-                    }
-                }).catch((error: any) => {
-                    console.log(error.response.data.message, "error fasdfsdfasfd")
-                    setErrorRes(prev => ({
-                        ...prev,
-                        email: error.response.data.message
-                    }));
-                    dispatch(clearCompanyDatas())
-                })
+            if (!errorCompRes.document) {
+                dispatch(companySignup(compdatas)).then((res: any) => {
+                    console.log(res, "Response from temp company");
+                    navigate('/company/companyotp');
+                });
             }
-
-
-
-
-
         } catch (error: any) {
-
             const errors: { [key: string]: string } = {};
-            error.inner.forEach((err: { path: string | number; message: string; }) => {
+            error.inner.forEach((err: { path: string | number; message: string }) => {
                 if (err.path) {
                     errors[err.path] = err.message;
                 }
             });
             console.error("Validation failed:", errors);
-
+    
             const errorsss = {
                 companyname: errors.companyname,
                 email: errors.email,
                 password: errors.password,
                 confirmPassword: errors.confirmPassword
-            }
+            };
             setErrorCompRes(prev => ({
                 ...prev,
                 ...errorsss
             }));
         }
-        console.log(errorRes, "error res")
-    }
+    };
+    
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files ? event.target.files[0] : null;
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file:any = event.target.files ? event.target.files[0] : null;
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        
         if (file) {
             setDocument(file);
+            setErrorCompRes((prev) => ({
+                ...prev,
+                document: "" 
+            }));
         }
+      
     };
 
 
-
+    const googleSignIn = async (response: string | any, status: boolean) => {
+        console.log(response, status, "res from google")
+        await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
+            console.log(res,"res from goodle")
+            if (res.meta.requestStatus == "fulfilled") {
+                navigate('/')
+            }else {
+                toast({
+                    description:res.payload,
+                    className:"bg-red-600 text-white"
+                    
+                })
+            }
+        })
+    }
 
     return (
         <>
-            <div className="w-screen h-screen bg-slate-100 flex items-center">
-                <div className="w-[50%] h-full flex-col pl-24 pt-4 hidden lg:block">
+        
+            {loading && <Loader />}
+            {comploading && <Loader />}
+            <div className="w-screen h-auto bg-slate-100 flex items-center">
+                <div className="w-[50%] h-full flex-col  pl-24 pt-4 hidden lg:block">
                     <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8" />
                     <div className="w-full h-28 mb-8">
                         <div className="h-full w-36 border border-black flex flex-col pl-2 pt-2">
@@ -230,7 +284,7 @@ export const SignUp = () => {
 
                 {seeker ? (
                     <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-6 items-center'>
+                        <div className='w-[80%] min-h-[95%] bg-gray-200 flex flex-col gap-1 items-center mb-4'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
                                 <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setSeeker(true)}>Job Seeker</span>
                                 <span className='  flex items-center justify-center cursor-pointer text-customviolet   ' onClick={() => setSeeker(false)}>company</span>
@@ -264,6 +318,22 @@ export const SignUp = () => {
                                     label="Email"
                                     multiline
                                     maxRows={4}
+                                />
+                            </div>
+                            <div className='w-full h-20   flex-col flex items-center justify-center'>
+                                <TextField
+                                    name='phone'
+                                    type='number'
+                                    value={userData.phone}
+                                    onChange={handleChanges}
+                                    className='w-[80%]'
+                                    id="outlined-multiline-flexible"
+                                    error={Boolean(errorRes.phone)}
+                                    helperText={errorRes.phone}
+                                    label="Phone"
+                                    multiline
+                                    maxRows={4}
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                 />
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
@@ -324,8 +394,22 @@ export const SignUp = () => {
                                 </FormControl>
                             </div>
                             <button onClick={handleSubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Continue</button>
+                            <span>or</span>
+                            <div className='w-[100%] flex justify-center'>
+                                <GoogleLogin
+                                    text='signup_with'
+                                    shape='rectangular'
+                                    onSuccess={credentialResponse => {
+                                        console.log(credentialResponse);
+                                        googleSignIn(credentialResponse, true);
+                                    }}
+                                    onError={() => {
+                                        console.log('Signup Failed ')
+                                    }}
+                                />
+                            </div>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
-                                <span onClick={()=>navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
+                                <span onClick={() => navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'Continue',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
                             </div>
 
@@ -349,7 +433,7 @@ export const SignUp = () => {
                                     error={Boolean(errorCompRes.companyname)}
                                     className='w-[80%]'
                                     id="outlined-multiline-flexible"
-                                    helperText=""
+                                    helperText={errorCompRes.companyname}
                                     label="Company Name"
                                     multiline
                                     maxRows={4}
@@ -363,7 +447,7 @@ export const SignUp = () => {
                                     value={companyData.email}
                                     className='w-[80%]'
                                     id="outlined-multiline-flexible"
-                                    helperText=""
+                                    helperText={errorCompRes.email}
                                     label="Email"
                                     multiline
                                     maxRows={4}
@@ -393,6 +477,7 @@ export const SignUp = () => {
                                         }
                                         label="Password"
                                     />
+                                     <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.password}</FormHelperText>
                                 </FormControl>
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
@@ -419,6 +504,7 @@ export const SignUp = () => {
                                         }
                                         label="ConfrmPassword"
                                     />
+                                      <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.confirmPassword}</FormHelperText>
                                 </FormControl>
                             </div>
 
@@ -429,6 +515,7 @@ export const SignUp = () => {
                                     <input
                                         id="fileInput"
                                         type="file"
+                                        name='document'
                                         className="hidden"
                                         onChange={handleFileChange}
                                     />
@@ -440,7 +527,7 @@ export const SignUp = () => {
 
                             <button onClick={handleCompanySubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Continue</button>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
-                                <span onClick={()=>navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
+                                <span onClick={() => navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'Continue',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
                             </div>
 
@@ -448,7 +535,8 @@ export const SignUp = () => {
                     </div>
                 )}
             </div>
-            <Footer />
+            {!loading && !comploading && <Footer />}
+
         </>
     )
 }

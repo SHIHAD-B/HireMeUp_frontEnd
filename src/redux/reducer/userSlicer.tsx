@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { IUserData } from '../../interfaces/IUser';
-import { fetchUser, userSignin,userSignup,logout } from '../actions/userAction';
+import { fetchUser, userSignin, logout,userSignupWtihGoogle } from '../actions/userAction';
 
 
 
@@ -18,6 +18,12 @@ const userSlice = createSlice({
         makeErrorDisable: (state) => {
             state.error = null;
         },
+        setUserData: (state, action) => {
+            state.user = action.payload as IUserData | null;
+            state.error = null;
+            state.loading = false;
+        }
+
     },
     extraReducers: (builder) => {
         builder
@@ -45,20 +51,6 @@ const userSlice = createSlice({
                 state.error = null
             })
             .addCase(userSignin.rejected, (state, action) => {
-                console.log(action,"action from backend")
-                state.loading = false;
-                state.error = action.payload as string
-            })
-            .addCase(userSignup.pending, (state) => {
-                state.loading = true;
-                state.error = null
-            })
-            .addCase(userSignup.fulfilled, (state, action) => {
-                state.loading = false;
-                state.user = action.payload as IUserData;
-                state.error = null
-            })
-            .addCase(userSignup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string
             })
@@ -75,11 +67,24 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
+            .addCase(userSignupWtihGoogle.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload as IUserData;
+                state.error = null
+            })
+            .addCase(userSignupWtihGoogle.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(userSignupWtihGoogle.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
 
 
     }
 },
 );
 
-export const { makeErrorDisable } = userSlice.actions;
+export const { makeErrorDisable, setUserData } = userSlice.actions;
 export default userSlice.reducer;

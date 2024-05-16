@@ -20,7 +20,7 @@ import { FormHelperText } from '@mui/material';
 
 export const ResetPassword = () => {
     const navigate = useNavigate()
-    let userData = useSelector((state: RootState) => state.tempUser)
+    let {user} = useSelector((state: RootState) => state.tempUser)
     const [showPassword, setShowPassword] = useState(false);
     const [reShowPassword, setReShowPassword] = useState(false);
     const [data, setData] = useState({
@@ -59,7 +59,7 @@ export const ResetPassword = () => {
             console.log("Validation successful");
 
             const passData = {
-                email: userData.email,
+                ...user,
                 password: data.password
             }
               

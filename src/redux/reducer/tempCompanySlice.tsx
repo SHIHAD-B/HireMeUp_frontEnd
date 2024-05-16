@@ -1,29 +1,56 @@
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { ICompanyData } from '../../interfaces/IUser';
+import { companySignup,companyforgot } from '../actions/companyAction';
 
-
-
-const initialState: ICompanyData = {
-    companyname: "",
-    email: "",
-    password: "",
-    document: "",
-    confirmPassword: ""
-};
 
 const tempCompanySlice = createSlice({
     name: 'tempCompany',
-    initialState,
+    initialState: {
+        companydata: null as ICompanyData | null,
+        error: null as string | null,
+        loading: false as boolean
+    },
     reducers: {
-        setCompanyDatas: (state, action: PayloadAction<ICompanyData>) => {
-            return action.payload;
+        makeErrorDisable: (state) => {
+            state.error = null;
         },
-        clearCompanyDatas: state => {
-            return initialState;
-        },
+    },
+    extraReducers: (builder) => {
+        builder
+
+            .addCase(companySignup.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(companySignup.fulfilled, (state, action) => {
+                console.log(action.payload,"data when sign in company")
+                state.loading = false;
+                state.companydata = action.payload as ICompanyData;
+                state.error = null
+            })
+            .addCase(companySignup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string
+            })
+            .addCase(companyforgot.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(companyforgot.fulfilled, (state, action) => {
+                state.loading = false;
+                state.companydata = action.payload as ICompanyData;
+                state.error = null
+            })
+            .addCase(companyforgot.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string
+            })
+
+
+
     },
 });
 
-export const { setCompanyDatas, clearCompanyDatas } = tempCompanySlice.actions;
+export const { makeErrorDisable} = tempCompanySlice.actions;
 export default tempCompanySlice.reducer;

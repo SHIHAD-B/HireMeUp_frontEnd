@@ -143,7 +143,7 @@ export const LandingPage = () => {
                     </div>
                 </div>
                 <span className="w-ful h-10 font-bold text-4xl flex justify-center"> Enhace Your Career Path</span>
-                <div className="w-full h-auto  flex pt-20">
+                <div className="w-full h-auto  flex pt-20 pb-4">
                     <div className="flex flex-wrap gap-10 lg:gap-24 justify-content-center pl-[10%]" >
                         <div className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
                             <div className="w-[95%] h-[70%]  rounded-xl flex justify-center items-center transition duration-300 ease-in-out bg-customviolet  group-hover:bg-black group-hover:text-black">

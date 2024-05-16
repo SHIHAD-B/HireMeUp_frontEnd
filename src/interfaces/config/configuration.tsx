@@ -8,6 +8,14 @@ export const config = {
     withCredentials: true,
     credential: "include"
 }
+export const configfile = {
+    headers: {
+        "Content-Type": "multipart/form-data"
+    },
+    withCredentials: true,
+    credentials: "include"
+}
+
 
 export interface ApiError {
     message: string,

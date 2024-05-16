@@ -1,6 +1,3 @@
-
-
-
 import otpimg from '../../assets/images/otp.webp'
 import logo from '../../assets/images/logo.png'
 import { useState } from 'react';
@@ -17,17 +14,16 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import Axios, { AxiosResponse } from 'axios'
 import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
-import { config } from '../../config/configuration';
-import { setCompanyDatas } from '../../redux/reducer/tempCompanySlice';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import { companySignup } from '@/redux/actions/companyAction';
+import { AppDispatch } from '../../redux/store';
+import { Loader } from '../../components/common/loader';
 
 export const CompanyOtp = () => {
     const [open, setOpen] = useState(false);
@@ -41,8 +37,8 @@ export const CompanyOtp = () => {
         navigate('/home')
     };
 
-    const dispatch = useDispatch()
-    let companyData = useSelector((state: RootState) => state.tempCompany)
+    const dispatch = useDispatch<AppDispatch>()
+    const { companydata, loading } = useSelector((state: RootState) => state.tempCompany)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [time, setTime] = useState(60);
@@ -63,15 +59,13 @@ export const CompanyOtp = () => {
     };
 
     useEffect(() => {
-
-        if (!companyData) {
-            navigate('/signin');
+        if (!companydata) {
+            navigate('/signup');
         }
     }, []);
 
     useEffect(() => {
 
-        console.log(companyData, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {
@@ -92,13 +86,9 @@ export const CompanyOtp = () => {
     }, []);
 
     const resendHandler = async () => {
-        await Axios.post('http://localhost:3000/auth/companysignup', companyData, config).then((res: AxiosResponse<any, any>) => {
-            if (res.status == 200) {
-                setTime(60)
-                setFormattedTime('01:00')
-
-
-            }
+        await dispatch(companySignup(companydata)).then((res: any) => {
+            setTime(60)
+            setFormattedTime('01:00')
         }).catch((error: any) => {
             console.log(error.response.data.message, "error fasdfsdfasfd")
         })
@@ -108,30 +98,23 @@ export const CompanyOtp = () => {
         if (!otp) {
             setOtpError('enter otp')
         } else {
-            companyData = {
-                ...companyData,
+            const data = {
+                ...companydata,
                 otp: otp
             }
-            await Axios.post('http://localhost:3000/auth/companysignup', companyData, config).then((res: any) => {
-                if (res.status == 200) {
-                    console.log(res)
-                    dispatch(setCompanyDatas(res.data.user))
-                    handleClickOpen()
-                }
-                console.log(res)
-            }).catch((error: any) => {
-                setOtpError(error.response.data.message)
-                console.log(error)
+            await dispatch(companySignup(data)).then(() => {
+                handleClickOpen()
             })
         }
     }
 
     return (
         <>
+            {loading && <Loader />}
             <div className="w-screen h-screen bg-slate-100 flex items-center">
                 <div className="w-full lg:w-[40%] h-full flex-col pl-24 pt-4 ">
 
-                   
+
                     <Dialog
                         open={open}
                         onClose={handleClose}
@@ -198,7 +181,8 @@ export const CompanyOtp = () => {
 
 
             </div>
-            <Footer />
+            {!loading && <Footer />}
+
         </>
     )
 }

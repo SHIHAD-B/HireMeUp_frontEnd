@@ -1,24 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IUserData } from "../../interfaces/IUser";
-import axios, { AxiosError } from "axios";
-import { BASE_URL } from "../../config/constant";
-import { ApiError, config, handleError } from "../../config/configuration";
-import { reduxRequest } from "../../config/api";
+import { config } from "../../interfaces/config/configuration";
+import { reduxRequest } from "../../interfaces/config/api";
 
 
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
-    try {
-        await axios.get(`${BASE_URL}user/fetchUser`, { withCredentials: true })
-            .then((response) => {
-                return response.data.user;
-            })
-            .catch((error: any) => {
-                throw new Error(error)
-            });
-    } catch (error: any) {
-        throw new Error(error)
-    }
+export const fetchUser = createAsyncThunk("user/fetchUser", async (_,{rejectWithValue}) => {
+    return reduxRequest(
+        "get",
+        "user/fetchUser",
+        config,
+        rejectWithValue,
+    )
 })
 
 
@@ -36,25 +29,59 @@ export const userSignin = createAsyncThunk("auth/signin", async (userdata: IUser
 })
 
 export const userSignup = createAsyncThunk("auth/signup", async (userdata: IUserData, { rejectWithValue }) => {
-    try {
-        const { data } = await axios.post(`${BASE_URL}auth/signup`, userdata, config)
-        return data.user
+    return reduxRequest(
+        "post",
+        "auth/signup",
+        config,
+        rejectWithValue,
+        userdata
+    )
 
-    } catch (error: any) {
-        const axiosError = error as AxiosError<ApiError>;
-        return handleError(axiosError, rejectWithValue);
-    }
+})
+export const userSignupWtihGoogle = createAsyncThunk("auth/signupwithgoogle", async (credentialId: string, { rejectWithValue }) => {
+    return reduxRequest(
+        "post",
+        "auth/signupwithgoogle",
+        config,
+        rejectWithValue,
+        { id: credentialId }
+    )
+
+})
+
+export const forgot = createAsyncThunk("auth/forgot", async (email: string, { rejectWithValue }) => {
+    return reduxRequest(
+        "post",
+        "auth/forgot",
+        config,
+        rejectWithValue,
+        { email }
+    )
+
 })
 
 
-export const logout = createAsyncThunk("auth/logout", async () => {
-    try {
-        const response = await axios.get(`${BASE_URL}auth/logout`, config)
-        console.log(response,"response from logout")
-        return response.data
 
-    } catch (error: any) {
-        throw new Error(error)
-    }
+
+
+
+export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "auth/logout",
+        config,
+        rejectWithValue
+
+    )
+
+})
+
+export const listUsers = createAsyncThunk("user/listusers", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "user/listusers",
+        config,
+        rejectWithValue
+    )
 })
 

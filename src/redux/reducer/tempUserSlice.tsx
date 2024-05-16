@@ -1,28 +1,59 @@
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { IUserData } from '../../interfaces/IUser';
+import { userSignup,forgot } from '../actions/userAction';
 
 
 
-const initialState: IUserData = {
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-};
+
 
 const tempUserSlice = createSlice({
     name: 'tempUser',
-    initialState,
+    initialState: {
+        user: null as IUserData | null,
+        error: null as string | null,
+        loading: false as boolean
+    },
     reducers: {
-        setUsersData: (state, action: PayloadAction<IUserData>) => {
-            return action.payload;
+        makeErrorDisable: (state) => {
+            state.error = null;
         },
-        clearUserData: state => {
-            return initialState;
-        },
+    },
+    extraReducers: (builder) => {
+        builder
+
+            .addCase(userSignup.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(userSignup.fulfilled, (state, action) => {
+                console.log(action.payload,"data in teh usersignup of the temp user")
+                state.loading = false;
+                state.user = action.payload as IUserData;
+                state.error = null
+            })
+            .addCase(userSignup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string
+            })
+            .addCase(forgot.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(forgot.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload as IUserData;
+                state.error = null
+            })
+            .addCase(forgot.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string
+            })
+
+
+
     },
 });
 
-export const { setUsersData, clearUserData } = tempUserSlice.actions;
+export const { makeErrorDisable } = tempUserSlice.actions;
 export default tempUserSlice.reducer;

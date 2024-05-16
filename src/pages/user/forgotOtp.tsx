@@ -23,7 +23,7 @@ import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
 
 
 export const ForgotOtp = () => {
-    let userData = useSelector((state: RootState) => state.tempUser)
+    let {user} = useSelector((state: RootState) => state.tempUser)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [time, setTime] = useState(60);
@@ -48,7 +48,8 @@ export const ForgotOtp = () => {
 
     useEffect(() => {
 
-        if (!userData) {
+        if (!user?.email) {
+            console.log("reached user")
             navigate('/signin');
         }
     }, []);
@@ -57,7 +58,7 @@ export const ForgotOtp = () => {
 
     useEffect(() => {
 
-        console.log(userData, "userdataaaaaaaa")
+        console.log(user, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {
@@ -81,7 +82,7 @@ export const ForgotOtp = () => {
 
 
     const resendHandler = async () => {
-        await Axios.post('http://localhost:3000/auth/forgot', userData).then((res: AxiosResponse<any, any>) => {
+        await Axios.post('http://localhost:3000/auth/forgot', user).then((res: AxiosResponse<any, any>) => {
             if (res.status == 200) {
                 setTime(60)
                 setFormattedTime('01:00')
@@ -101,7 +102,7 @@ export const ForgotOtp = () => {
             setOtpError('enter otp')
         } else {
             const data: any = {
-                email: userData.email,
+                email: user?.email,
                 otp: otp
             }
             await Axios.post('http://localhost:3000/auth/forgot', data).then((res: any) => {

@@ -19,12 +19,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
 import { userSignup } from '../../redux/actions/userAction';
+import { Loader } from '../../components/common/loader';
+import { setUserData } from '../../redux/reducer/userSlicer';
 
 
 
 export const Otp = () => {
     const dispatch = useDispatch<AppDispatch>()
-    let userData = useSelector((state: RootState) => state.tempUser)
+    let { loading, user } = useSelector((state: RootState) => state.tempUser)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [time, setTime] = useState(60);
@@ -46,14 +48,14 @@ export const Otp = () => {
 
     useEffect(() => {
 
-        if (!userData) {
+        if (!user?.email) {
             navigate('/signin');
         }
     }, []);
 
     useEffect(() => {
 
-        console.log(userData, "userdataaaaaaaa")
+        console.log(user, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {
@@ -74,38 +76,41 @@ export const Otp = () => {
     }, []);
 
     const resendHandler = async () => {
-        dispatch(userSignup(userData)).then((res: any) => {
-            console.log(res, "response from dispatch user signup")
-            setTime(60)
-            setFormattedTime('01:00')
+        if (user) {
+            dispatch(userSignup(user)).then((res: any) => {
+                console.log(res, "response from dispatch user signup")
+                setTime(60)
+                setFormattedTime('01:00')
 
-        }).then((error: any) => {
-            console.log(error, "error response from dispatch user signup")
+            }).then((error: any) => {
+                console.log(error, "error response from dispatch user signup")
 
-        })
+            })
+        }
     }
 
-        const verifyHandler = async () => {
-            if (!otp) {
-                setOtpError('enter otp')
-            } else {
-                userData = {
-                    ...userData,
-                    otp: otp
-                }
-                dispatch(userSignup(userData)).then((res) => {
-                    console.log(res, "response from dispatch user signup")
-                    navigate('/home')
-                }).then((error: any) => {
-                    console.log(error, "error response from dispatch user signup")
-
-                })
+    const verifyHandler = async () => {
+        if (!otp) {
+            setOtpError('enter otp')
+        } else {
+            user = {
+                ...user,
+                otp: otp
             }
-        
+            await dispatch(userSignup(user)).then((res) => {
+               dispatch(setUserData(res.payload))
+                navigate('/home')
+            }).catch((error: any) => {
+                console.log(error, "error response from dispatch user signup")
+
+            })
+        }
+
     }
 
     return (
         <>
+            {loading && <Loader />}
             <div className="w-screen h-screen bg-slate-100 flex items-center">
                 <div className="w-full lg:w-[40%] h-full flex-col pl-24 pt-4 ">
                     <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-20" />
@@ -152,7 +157,8 @@ export const Otp = () => {
 
 
             </div>
-            <Footer />
+            {!loading && <Footer />}
+
         </>
     )
 

@@ -18,13 +18,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userSignin } from '../../redux/actions/userAction';
 import { AppDispatch, RootState } from '../../redux/store';
 import { Loader } from '../../components/common/loader';
-
+import { GoogleLogin } from '@react-oauth/google'
+import { userSignupWtihGoogle } from '../../redux/actions/userAction';
+import { useToast } from '@/components/ui/use-toast';
+import { companySignin } from '@/redux/actions/companyAction';
 
 
 
 export const SignIn = () => {
+    const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>();
-    const { loading, user } = useSelector((state: RootState) => state.user)
+    const { loading } = useSelector((state: RootState) => state.user)
+    const coloading=useSelector((state:RootState)=>state.company.loading)
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [seeker, setSeeker] = useState(true);
@@ -35,6 +40,15 @@ export const SignIn = () => {
     });
 
     const [errors, setErrors] = useState({
+        email: "",
+        password: ""
+    });
+    const [compdata, setcompData] = useState({
+        email: "",
+        password: ""
+    });
+
+    const [comperrors, setcompErrors] = useState({
         email: "",
         password: ""
     });
@@ -52,6 +66,13 @@ export const SignIn = () => {
             [name]: value
         }));
     };
+    const handleCompChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setcompData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
     const handleSubmit = async () => {
         try {
@@ -62,16 +83,24 @@ export const SignIn = () => {
             await signinValidation.validate(data, { abortEarly: false });
             console.log("Validation successful");
             dispatch(userSignin(data)).then((res: any) => {
-               if(res?.error?.message=="Rejected"){
-                setErrors(prev => ({
-                    ...prev,
-                    password:res.payload
-                }));
-                
-               }else{
-                   console.log(user,"jahsdjkhfkjashdkjf")
-                   navigate('/home')
-               }
+                if (res?.error?.message == "Rejected") {
+                    if (res.payload == "user blocked or deleted by admin") {
+                        toast({
+                            description: res.payload,
+                            className: "bg-red-600 text-white"
+
+                        })
+                    } else {
+
+                        setErrors(prev => ({
+                            ...prev,
+                            password: res.payload
+                        }));
+                    }
+
+                } else {
+                    navigate('/home')
+                }
             }).catch((error: any) => {
                 console.log(error, "error from dispatch")
             })
@@ -89,10 +118,69 @@ export const SignIn = () => {
         }
     };
 
+    const handleCompSubmit = async () => {
+        try {
+            setcompErrors({
+                email: "",
+                password: ""
+            });
+            await signinValidation.validate(compdata, { abortEarly: false });
+            console.log("Validation successful");
+            dispatch(companySignin(compdata)).then((res: any) => {
+                if (res?.error?.message == "Rejected") {
+                    if (res.payload == "user blocked or deleted by admin") {
+                        toast({
+                            description: res.payload,
+                            className: "bg-red-600 text-white"
+
+                        })
+                    } else {
+
+                        setcompErrors(prev => ({
+                            ...prev,
+                            password: res.payload
+                        }));
+                    }
+
+                } else {
+                navigate('/company');
+                }
+            }).catch((error: any) => {
+                console.log(error, "error from dispatch")
+            })
+        } catch (error: any) {
+            console.error("Validation failed:", error);
+            const errors: { [key: string]: string } = {};
+            error.inner.forEach((err: { path: string; message: string; }) => {
+                errors[err.path] = err.message;
+            });
+            setcompErrors(prev => ({
+                ...prev,
+                ...errors
+            }));
+            console.log(error)
+        }
+    };
+
+    const googleSignIn = async (response: string | any, status: boolean) => {
+        console.log(response, status, "res from google")
+        await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
+            console.log(res, "res from goodle")
+            if (res.meta.requestStatus == "fulfilled") {
+                navigate('/')
+            } else {
+                toast({
+                    description: res.payload,
+                    className: "bg-red-600 text-white"
+
+                })
+            }
+        })
+    }
+
     return (
         <>
-            {loading && <Loader />}
-
+            {loading||coloading && <Loader />}
             <div className="w-screen h-screen bg-slate-100 flex items-center">
                 <div className="w-[50%] h-full flex-col pl-24 pt-4 hidden lg:block">
                     <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8" />
@@ -108,10 +196,10 @@ export const SignIn = () => {
 
                 {seeker ? (
                     <div className='  w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-12 items-center'>
+                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
-                                <span className='h-[70%] w-24 border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
-                                <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer  font-bold text-customviolet' onClick={() => setSeeker(false)}>company</span>
+                                <span className='p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl ' onClick={() => setSeeker(true)}>Job Seeker</span>
+                                <span className='flex items-center justify-center cursor-pointer  font-bold text-customviolet' onClick={() => setSeeker(false)}>company</span>
                             </div>
                             <span className='font-bold w-full flex justify-center text-2xl'>Welcome Back,Dude</span>
 
@@ -162,6 +250,19 @@ export const SignIn = () => {
 
                             <button onClick={handleSubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Signin</button>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
+                                <div className='w-[100%] flex justify-center'>
+                                    <GoogleLogin
+                                        text='signin_with'
+                                        shape='rectangular'
+                                        onSuccess={credentialResponse => {
+                                            console.log(credentialResponse);
+                                            googleSignIn(credentialResponse, true);
+                                        }}
+                                        onError={() => {
+                                            console.log('Signup Failed ')
+                                        }}
+                                    />
+                                </div>
                                 <span className='flex gap-1 text-sm'>Don't have an account?<span onClick={() => navigate('/signup')} className='text-customviolet font-bold cursor-pointer '>signup</span></span>
                                 <span className='flex gap-1 text-sm'>Forgot password? Don't worry <span onClick={() => navigate('/forgot')} className='text-customviolet font-bold cursor-pointer'>click here</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'signin',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
@@ -171,10 +272,10 @@ export const SignIn = () => {
                     </div>
                 ) : (
                     <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-12 items-center'>
+                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
-                                <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
-                                <span className='h-[70%] w-24 border border-gray-400  flex items-center justify-center cursor-pointer  font-bold text-customviolet' onClick={() => setSeeker(false)}>company</span>
+                                <span className=' flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
+                                <span className='p-2   border border-gray-400  flex items-center justify-center cursor-pointer  font-bold text-customviolet rounded-xl' onClick={() => setSeeker(false)}>company</span>
                             </div>
                             <span className='font-bold w-full flex justify-center text-2xl'>Welcome Back,Dude</span>
 
@@ -182,9 +283,13 @@ export const SignIn = () => {
 
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
                                 <TextField
+                                    name='email'
+                                    value={compdata.email}
+                                    onChange={handleCompChanges}
                                     className='w-[80%]'
                                     id="outlined-multiline-flexible"
-                                    helperText=""
+                                    error={Boolean(comperrors.email)}
+                                    helperText={comperrors.email}
                                     label="Email"
                                     multiline
                                     maxRows={4}
@@ -192,9 +297,13 @@ export const SignIn = () => {
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
                                 <FormControl sx={{ m: 1, width: '80%' }} variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-password" sx={{ color: comperrors.password ? '#e53e3e' : undefined }}>Password</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-password"
+                                        name='password'
+                                        value={compdata.password}
+                                        error={Boolean(comperrors.password)}
+                                        onChange={handleCompChanges}
                                         type={showPassword ? 'text' : 'password'}
                                         endAdornment={
                                             <InputAdornment position="end">
@@ -209,17 +318,32 @@ export const SignIn = () => {
                                             </InputAdornment>
                                         }
                                         label="Password"
+
                                     />
+                                    <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{comperrors.password}</FormHelperText>
+
                                 </FormControl>
                             </div>
 
 
 
-
-                            <button className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Signin</button>
+                            <button onClick={handleCompSubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Signin</button>
+                            <div className='w-[100%] flex justify-center'>
+                                <GoogleLogin
+                                    text='signin_with'
+                                    shape='rectangular'
+                                    onSuccess={credentialResponse => {
+                                        console.log(credentialResponse);
+                                        googleSignIn(credentialResponse, true);
+                                    }}
+                                    onError={() => {
+                                        console.log('Signup Failed ')
+                                    }}
+                                />
+                            </div>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
-                                <span className='flex gap-1 text-sm'>Don't have an account?<span className='text-customviolet font-bold cursor-pointer'>signup</span></span>
-                                <span className='flex gap-1 text-sm'>Forgot password? Don't worry <span className='text-customviolet font-bold cursor-pointer'>click here</span></span>
+                                <span className='flex gap-1 text-sm'>Don't have an account?<span onClick={() => navigate('/signup')} className='text-customviolet font-bold cursor-pointer'>signup</span></span>
+                                <span className='flex gap-1 text-sm'>Forgot password? Don't worry <span onClick={()=>navigate('/company/forgot')} className='text-customviolet font-bold cursor-pointer'>click here</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'signin',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
                             </div>
                         </div>
@@ -227,7 +351,7 @@ export const SignIn = () => {
                 )}
 
             </div>
-            {!loading && <Footer />}
+            {!loading&&!coloading && <Footer />}
 
         </>
     )

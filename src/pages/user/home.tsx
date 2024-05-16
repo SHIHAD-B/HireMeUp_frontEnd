@@ -22,7 +22,7 @@ export const Home = () => {
                         <span className="text-lg font-semibold">Welcome {data.user?.username} . Explore, discover, and enjoy! </span>
                         <span>Here is what's happened with your job search applications</span>
                     </div>
-                    <div className="flex gap-4 flex-1 pr-2">
+                    <div className="flex gap-4 flex-1 pr-2 ">
                         <div className="w-2/5 h-full  flex flex-col items-center gap-4 ">
                             <div className="w-full h-[60%] border border-gray-400">
                                 <span className="w-full ml-2 font-semibold">Job applied status</span>
