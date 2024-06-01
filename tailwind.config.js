@@ -4,6 +4,8 @@ module.exports = {
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
@@ -17,18 +19,20 @@ module.exports = {
       },
     },
     extend: {
-      fontFamily:{
-        finger:['finger','finger Paint']
+      fontFamily: {
+        finger: ['finger', 'finger Paint']
       },
       colors: {
-        customviolet:'#B026FF',
-        customsilver:'#F8F8FD',
-        activesilver:'#E9EBFD',
+        
+        customviolet: '#B026FF',
+        customsilver: '#F8F8FD',
+        activesilver: '#E9EBFD',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        textDark:"hsl(Var(--textPrimary))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

@@ -82,7 +82,7 @@ export const CompanyForgotOtp = () => {
 
 
     const resendHandler = async () => {
-        await Axios.post('http://localhost:3000/auth//companyforgot', companydata).then((res: AxiosResponse<any, any>) => {
+        await Axios.post('http://localhost:3000/auth//companyforgot', companydata,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
             if (res.status == 200) {
                 setTime(60)
                 setFormattedTime('01:00')
@@ -105,7 +105,7 @@ export const CompanyForgotOtp = () => {
                 email: companydata?.email,
                 otp: otp
             }
-            await Axios.post('http://localhost:3000/auth//companyforgot', data).then((res: any) => {
+            await Axios.post('http://localhost:3000/auth//companyforgot', data,{withCredentials:true}).then((res: any) => {
                 if (res.status == 200) {
                     navigate('/company/companyreset')
                 }

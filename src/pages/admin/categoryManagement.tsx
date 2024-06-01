@@ -47,7 +47,7 @@ import Modal from '@mui/material/Modal';
 import { Button as MButton } from '@mui/material';
 
 import { AddCategoryModal } from "@/components/admin/addCategory";
-import { EditPlans } from "@/components/admin/editPlans";
+import { EditCategoryModal } from "@/components/admin/editCategory";
 
 
 export const CategoryManagement = () => {
@@ -104,9 +104,10 @@ export const CategoryManagement = () => {
         handleditOpen();
     }
     const handledelete = async (id: string) => {
-        await axios.patch(`${BASE_URL}subscription/deleteplan`, { id: id });
+        await axios.patch(`${BASE_URL}job/admin/deletecategory`, { id: id },{withCredentials:true});
         dispatch(fetchCategory());
         handleClose();
+        
     }
 
 
@@ -269,7 +270,7 @@ export const CategoryManagement = () => {
                         >
                             <Box sx={style}>
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                                    Delete Subscription Plan
+                                    Delete Category
                                 </Typography>
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                     Sure to delete {deleteData.name}?
@@ -287,7 +288,7 @@ export const CategoryManagement = () => {
                
 
                 {addopen && <AddCategoryModal handleaddClose={handleaddClose} />}
-                {editOpen && <EditPlans handleClose={handleditClose} data={plans} />}
+                {editOpen && <EditCategoryModal handleClose={handleditClose} data={plans} />}
 
 
 
@@ -341,7 +342,7 @@ export const CategoryManagement = () => {
                                         </DropdownMenu>
                                     </div>
                                     <div className="w-full h-auto  flex justify-end pb-2">
-                                        <button onClick={handleaddOpen} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add plan</button>
+                                        <button onClick={handleaddOpen} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Category</button>
                                     </div>
                                     <div className="rounded-md border">
                                         <Table>

@@ -44,6 +44,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Button as MButton } from '@mui/material';
+import { AddCompany } from "@/components/admin/addCompany";
+import { FaPlus } from "react-icons/fa";
+import { EditCompany } from "@/components/admin/editCompany";
 
 
 
@@ -56,12 +59,31 @@ export const CompanyManagement = () => {
     const [unblockOpen, setunblockOpen] = useState(false);
     const [deleteOpen, setdeleteOpen] = useState(false);
     const [recoverOpen, setrecoverOpen] = useState(false);
+    const [editData, setEditData] = useState({
+        company_name: "",
+        email: "",
+        password: ""
+    })
 
 
     const [block, setBlock] = useState("")
     const [unblock, setUnblock] = useState("")
     const [recover, setRecover] = useState("")
     const [deletes, setDelete] = useState("")
+    const [addCompanyOpen, setAddCompanyOpen] = useState(false)
+    const [editCompanyOpen, setEditCompanyOpen] = useState(false)
+
+    const handleEditCompany = (data: any) => {
+        setEditData(data)
+        setEditCompanyOpen(true)
+    }
+
+    const handleaddClose = () => {
+        setAddCompanyOpen(false)
+    }
+    const handleEditClose = () => {
+        setEditCompanyOpen(false)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -107,7 +129,7 @@ export const CompanyManagement = () => {
 
 
     const handleBlock = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/blockcompany`, { email: email }).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/blockcompany`, { email: email },{withCredentials:true}).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -116,7 +138,7 @@ export const CompanyManagement = () => {
         })
     }
     const handleUnBlock = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/unblockcompany`, { email: email }).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/unblockcompany`, { email: email },{withCredentials:true}).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -125,7 +147,7 @@ export const CompanyManagement = () => {
         })
     }
     const handledelete = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/deletecompany`, { email: email }).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/deletecompany`, { email: email },{withCredentials:true}).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -134,7 +156,7 @@ export const CompanyManagement = () => {
         })
     }
     const handlerecover = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/recovercompany`, { email: email }).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/recovercompany`, { email: email },{withCredentials:true}).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -246,12 +268,14 @@ export const CompanyManagement = () => {
 
                             {row.getValue("status") == "blocked" && row.getValue("deleted") == false && (
                                 <>
+                                    <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
                                 </>
                             )}
                             {row.getValue("status") == "active" && row.getValue("deleted") == false && (
                                 <>
+                                    <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleModalblock(row.getValue("email"))}>block</DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
                                 </>
@@ -310,6 +334,14 @@ export const CompanyManagement = () => {
 
         return (
             <>
+                {addCompanyOpen && (
+                    <AddCompany handleaddClose={handleaddClose} />
+
+                )}
+                {editCompanyOpen && (
+                    <EditCompany handleEditClose={handleEditClose} data={editData} />
+
+                )}
                 {blockOpen && (
                     <div>
                         <Modal
@@ -412,7 +444,7 @@ export const CompanyManagement = () => {
                 )}
                 <div className="w-full flex-col">
                     <div className=" w-full flex">
-                 
+
                         <div className="flex flex-col w-full ">
                             <AdminHeader />
                             {data && (
@@ -453,6 +485,9 @@ export const CompanyManagement = () => {
                                                     })}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
+                                    </div>
+                                    <div className="w-full h-auto  flex justify-end pb-2">
+                                        <button onClick={() => setAddCompanyOpen(true)} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Company</button>
                                     </div>
                                     <div className="rounded-md border">
                                         <Table>

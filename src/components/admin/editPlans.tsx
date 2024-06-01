@@ -81,7 +81,7 @@ const { toast } = useToast()
             console.log("Validation successful");
 
 
-            await axios.patch(`${BASE_URL}subscription/editplan`, editData).then((res:any) => {
+            await axios.patch(`${BASE_URL}subscription/admin/editplan`, editData,{withCredentials:true}).then((res:any) => {
                 console.log(res,"res from the add plan")
                 handleClose()
                 toast({
@@ -91,6 +91,10 @@ const { toast } = useToast()
                 })
                 dispatch(fetchSubscription())
             }).catch((error:any)=>{
+                setPlansError((prev)=>({
+                    ...prev,
+                    name:error.response.data.message
+                }))
                 console.log(error,"error from the add plan")
             })
 

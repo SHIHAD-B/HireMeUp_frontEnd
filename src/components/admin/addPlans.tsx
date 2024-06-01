@@ -52,7 +52,7 @@ export const AddPlansModal = ({ handleaddClose }: { handleaddClose: () => void }
             console.log("Validation successful");
 
 
-            await axios.post(`${BASE_URL}subscription/addplans`, plans).then((res:any) => {
+            await axios.post(`${BASE_URL}subscription/admin/addplans`, plans,{withCredentials:true}).then((res:any) => {
                 console.log(res,"res from the add plan")
                 handleaddClose()
                 toast({
@@ -62,7 +62,10 @@ export const AddPlansModal = ({ handleaddClose }: { handleaddClose: () => void }
                 })
                 dispatch(fetchSubscription())
             }).catch((error:any)=>{
-                console.log(error,"error from the add plan")
+                setPlansError((prev)=>({
+                    ...prev,
+                    name:error?.response?.data?.message
+                }))
             })
 
         } catch (error: any) {

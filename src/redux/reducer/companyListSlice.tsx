@@ -1,7 +1,8 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import {  IUserData } from '@/interfaces/IUser';
+import {  ICompanyData } from '@/interfaces/IUser';
 import { companyList } from '../actions/companyAction';
+import { companyUserList } from '../actions/companyAction';
 
 
 
@@ -10,7 +11,7 @@ import { companyList } from '../actions/companyAction';
 const companyListSlice = createSlice({
     name: 'companyList',
     initialState: {
-        data: null as IUserData[] | null,
+        data: null as ICompanyData[] | null,
         error: null as string | null,
         loading: false as boolean
     },
@@ -34,6 +35,21 @@ const companyListSlice = createSlice({
                 state.error = null;
             })
             .addCase(companyList.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(companyUserList.fulfilled, (state, action) => {
+                console.log(action.payload,"action from list user")
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(companyUserList.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(companyUserList.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

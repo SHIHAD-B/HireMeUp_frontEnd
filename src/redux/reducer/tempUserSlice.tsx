@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { IUserData } from '../../interfaces/IUser';
-import { userSignup,forgot } from '../actions/userAction';
+import { IUsers } from '../../interfaces/IUser';
+import { userSignup, forgot } from '../actions/userAction';
 
 
 
@@ -10,7 +10,7 @@ import { userSignup,forgot } from '../actions/userAction';
 const tempUserSlice = createSlice({
     name: 'tempUser',
     initialState: {
-        user: null as IUserData | null,
+        user: null as IUsers | null,
         error: null as string | null,
         loading: false as boolean
     },
@@ -27,9 +27,9 @@ const tempUserSlice = createSlice({
                 state.error = null
             })
             .addCase(userSignup.fulfilled, (state, action) => {
-                console.log(action.payload,"data in teh usersignup of the temp user")
+                console.log(action.payload, "data in teh usersignup of the temp user")
                 state.loading = false;
-                state.user = action.payload as IUserData;
+                state.user = action.payload as IUsers;
                 state.error = null
             })
             .addCase(userSignup.rejected, (state, action) => {
@@ -42,7 +42,7 @@ const tempUserSlice = createSlice({
             })
             .addCase(forgot.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload as IUserData;
+                state.user = action.payload as IUsers;
                 state.error = null
             })
             .addCase(forgot.rejected, (state, action) => {

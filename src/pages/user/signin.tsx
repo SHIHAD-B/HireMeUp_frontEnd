@@ -23,13 +23,12 @@ import { userSignupWtihGoogle } from '../../redux/actions/userAction';
 import { useToast } from '@/components/ui/use-toast';
 import { companySignin } from '@/redux/actions/companyAction';
 
-
-
 export const SignIn = () => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
     const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>();
     const { loading } = useSelector((state: RootState) => state.user)
-    const coloading=useSelector((state:RootState)=>state.company.loading)
+    const coloading = useSelector((state: RootState) => state.company.loading)
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [seeker, setSeeker] = useState(true);
@@ -65,6 +64,10 @@ export const SignIn = () => {
             ...prevState,
             [name]: value
         }));
+        setErrors((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
     };
     const handleCompChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -82,28 +85,28 @@ export const SignIn = () => {
             });
             await signinValidation.validate(data, { abortEarly: false });
             console.log("Validation successful");
-            dispatch(userSignin(data)).then((res: any) => {
+            await dispatch(userSignin(data)).then((res: any) => {
+                console.log(res, "ressssss");
                 if (res?.error?.message == "Rejected") {
                     if (res.payload == "user blocked or deleted by admin") {
                         toast({
                             description: res.payload,
                             className: "bg-red-600 text-white"
-
-                        })
+                        });
                     } else {
+                        toast({
+                            description: res.payload,
+                            className: "bg-red-600 text-white"
+                        });
+                        setData(data)
 
-                        setErrors(prev => ({
-                            ...prev,
-                            password: res.payload
-                        }));
                     }
-
                 } else {
-                    navigate('/home')
+                    navigate('/home');
                 }
             }).catch((error: any) => {
-                console.log(error, "error from dispatch")
-            })
+                console.log(error, "error from dispatch");
+            });
         } catch (error: any) {
             console.error("Validation failed:", error);
             const errors: { [key: string]: string } = {};
@@ -114,9 +117,10 @@ export const SignIn = () => {
                 ...prev,
                 ...errors
             }));
-            console.log(error)
+            console.log(error);
         }
     };
+
 
     const handleCompSubmit = async () => {
         try {
@@ -135,7 +139,10 @@ export const SignIn = () => {
 
                         })
                     } else {
-
+                        toast({
+                            description: res.payload,
+                            className: "bg-red-600 text-white"
+                        });
                         setcompErrors(prev => ({
                             ...prev,
                             password: res.payload
@@ -143,7 +150,7 @@ export const SignIn = () => {
                     }
 
                 } else {
-                navigate('/company');
+                    navigate('/company');
                 }
             }).catch((error: any) => {
                 console.log(error, "error from dispatch")
@@ -180,12 +187,12 @@ export const SignIn = () => {
 
     return (
         <>
-            {loading||coloading && <Loader />}
-            <div className="w-screen h-screen bg-slate-100 flex items-center">
+            {loading || coloading && <Loader />}
+            <div className="w-screen h-screen bg-background flex items-center">
                 <div className="w-[50%] h-full flex-col pl-24 pt-4 hidden lg:block">
                     <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8" />
                     <div className="w-full h-28 mb-8">
-                        <div className="h-full w-36 border border-black flex flex-col pl-2 pt-2">
+                        <div className="h-full w-36 border border-black dark:border-gray-400 flex flex-col pl-2 pt-2">
                             <ImStatsBars className="text-customviolet text-5xl" />
                             <span className="font-bold text-xl">100K+</span>
                             <span>People got hired</span>
@@ -196,7 +203,7 @@ export const SignIn = () => {
 
                 {seeker ? (
                     <div className='  w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
+                        <div className='w-[80%] h-[95%]  rounded flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
                                 <span className='p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl ' onClick={() => setSeeker(true)}>Job Seeker</span>
                                 <span className='flex items-center justify-center cursor-pointer  font-bold text-customviolet' onClick={() => setSeeker(false)}>company</span>
@@ -216,14 +223,34 @@ export const SignIn = () => {
                                     label="Email"
                                     multiline
                                     maxRows={4}
+                                    sx={{
+                                        '& .MuiOutlinedInput-input': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiFormHelperText-root': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                    }}
                                 />
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
                                 <FormControl sx={{ m: 1, width: '80%' }} variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-password" sx={{ color: errors.password ? '#e53e3e' : undefined }}>Password</InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-password" sx={{
+                                        color: errors.password ? '#e53e3e' : (isDarkMode ? 'white' : undefined),
+                                        '&.Mui-focused': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                    }}>Password</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-password"
                                         name='password'
+
                                         value={data.password}
                                         error={Boolean(errors.password)}
                                         onChange={handleChanges}
@@ -235,13 +262,29 @@ export const SignIn = () => {
                                                     onClick={handleClickShowPassword}
                                                     onMouseDown={handleMouseDownPassword}
                                                     edge="end"
+                                                    sx={{
+                                                        color: isDarkMode ? 'white' : undefined,
+                                                    }}
                                                 >
                                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
                                         label="Password"
-
+                                        sx={{
+                                            '& .MuiOutlinedInput-input': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '&.Mui-focused': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                        }}
                                     />
                                     <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errors.password}</FormHelperText>
 
@@ -272,7 +315,7 @@ export const SignIn = () => {
                     </div>
                 ) : (
                     <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
+                        <div className='w-[80%] h-[95%] bg-background flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
                                 <span className=' flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
                                 <span className='p-2   border border-gray-400  flex items-center justify-center cursor-pointer  font-bold text-customviolet rounded-xl' onClick={() => setSeeker(false)}>company</span>
@@ -293,11 +336,30 @@ export const SignIn = () => {
                                     label="Email"
                                     multiline
                                     maxRows={4}
+                                    sx={{
+                                        '& .MuiOutlinedInput-input': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: isDarkMode ? 'white' : undefined,
+                                        },
+                                        '& .MuiFormHelperText-root': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                    }}
                                 />
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
                                 <FormControl sx={{ m: 1, width: '80%' }} variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-password" sx={{ color: comperrors.password ? '#e53e3e' : undefined }}>Password</InputLabel>
+                                    <InputLabel htmlFor="outlined-adornment-password" sx={{
+                                        color: errors.password ? '#e53e3e' : (isDarkMode ? 'white' : undefined),
+                                        '&.Mui-focused': {
+                                            color: isDarkMode ? 'white' : undefined,
+                                        },
+                                    }}>Password</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-password"
                                         name='password'
@@ -312,12 +374,29 @@ export const SignIn = () => {
                                                     onClick={handleClickShowPassword}
                                                     onMouseDown={handleMouseDownPassword}
                                                     edge="end"
+                                                    sx={{
+                                                        color: isDarkMode ? 'white' : undefined,
+                                                    }}
                                                 >
                                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
                                         label="Password"
+                                        sx={{
+                                            '& .MuiOutlinedInput-input': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: isDarkMode ? 'white' : undefined,
+                                            },
+                                            '&.Mui-focused': {
+                                                color: isDarkMode ? 'white' : undefined,
+                                            },
+                                        }}
 
                                     />
                                     <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{comperrors.password}</FormHelperText>
@@ -343,7 +422,7 @@ export const SignIn = () => {
                             </div>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
                                 <span className='flex gap-1 text-sm'>Don't have an account?<span onClick={() => navigate('/signup')} className='text-customviolet font-bold cursor-pointer'>signup</span></span>
-                                <span className='flex gap-1 text-sm'>Forgot password? Don't worry <span onClick={()=>navigate('/company/forgot')} className='text-customviolet font-bold cursor-pointer'>click here</span></span>
+                                <span className='flex gap-1 text-sm'>Forgot password? Don't worry <span onClick={() => navigate('/company/forgot')} className='text-customviolet font-bold cursor-pointer'>click here</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'signin',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
                             </div>
                         </div>
@@ -351,7 +430,7 @@ export const SignIn = () => {
                 )}
 
             </div>
-            {!loading&&!coloading && <Footer />}
+            {!loading && !coloading && <Footer />}
 
         </>
     )

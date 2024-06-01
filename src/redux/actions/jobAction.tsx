@@ -1,15 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { config} from "../../interfaces/config/configuration";
 import { reduxRequest } from "../../interfaces/config/api";
-import { IJobData } from "@/interfaces/IUser";
 
-export const addJob = createAsyncThunk("job/addjob", async (Data: IJobData, { rejectWithValue }) => {
+
+export const ListJob = createAsyncThunk("job/user/joblist", async (_, { rejectWithValue }) => {
     return reduxRequest(
-        "post",
-        "job/addjob",
+        "get",
+        "job/user/joblist",
         config,
         rejectWithValue,
-        Data
+    )
+
+})
+export const fecthJob = createAsyncThunk("job/company/fetchjob/:id", async (id:any, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        `job/company/fetchjob/${id}`,
+        config,
+        rejectWithValue,
     )
 
 })

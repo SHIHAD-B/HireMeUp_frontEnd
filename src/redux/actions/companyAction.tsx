@@ -14,20 +14,38 @@ export const fetchCompany = createAsyncThunk("company/fetchcompany", async (_,{r
 })
 
 
-export const allRequests = createAsyncThunk("company/fetchrequests", async (_, { rejectWithValue }) => {
+export const allRequests = createAsyncThunk("company/admin/fetchrequests", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
-        "company/fetchrequests",
+        "company/admin/fetchrequests",
         config,
         rejectWithValue,
     )
 
 })
 
-export const companyList = createAsyncThunk("company/companylist", async (_, { rejectWithValue }) => {
+export const companyList = createAsyncThunk("company/admin/companylist", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
-        "company/companylist",
+        "company/admin/companylist",
+        config,
+        rejectWithValue,
+    )
+
+})
+export const companyUserList = createAsyncThunk("company/user/companylist", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "company/user/companylist",
+        config,
+        rejectWithValue,
+    )
+
+})
+export const employeeList = createAsyncThunk("company/company/listemployee", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "company/company/listemployee",
         config,
         rejectWithValue,
     )
@@ -67,3 +85,14 @@ export const companyforgot = createAsyncThunk("auth/companyforgot", async (email
     )
 
 })
+
+export const editCompany = createAsyncThunk("company/company/editcompany", async (data:ICompanyData, { rejectWithValue }) => {
+    return reduxRequest(
+        "patch",
+        "company/company/editcompany",
+        config,
+        rejectWithValue,
+        data
+    )
+})
+

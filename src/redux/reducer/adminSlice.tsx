@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { adminSignin,fetchAdmin } from '../actions/adminAction';
+import { adminSignin, fetchAdmin } from '../actions/adminAction';
 import { IAdminData } from '@/interfaces/IUser';
 
 
@@ -21,21 +21,21 @@ const CompanySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        .addCase(fetchAdmin.fulfilled, (state, action) => {
-            console.log(action.payload,"action admin redux")
-            state.loading = false;
-            state.admin = action.payload  as IAdminData;
-            state.error = null
-        })
-        .addCase(fetchAdmin.pending, (state) => {
-            state.loading = true;
-            state.error = null;
-        })
-        .addCase(fetchAdmin.rejected, (state, action) => {
-            state.admin = null;
-            state.loading = false;
-            state.error = action.payload as string;
-        })
+            .addCase(fetchAdmin.fulfilled, (state, action) => {
+                console.log(action.payload, "action admin redux")
+                state.loading = false;
+                state.admin = action.payload as IAdminData;
+                state.error = null
+            })
+            .addCase(fetchAdmin.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAdmin.rejected, (state, action) => {
+                state.admin = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
             .addCase(adminSignin.pending, (state) => {
                 state.loading = true;
                 state.error = null
@@ -49,7 +49,7 @@ const CompanySlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string
             })
-          
+
     }
 },
 );

@@ -4,6 +4,7 @@ import { FaRegFileAlt } from "react-icons/fa";
 import { BsFillPatchQuestionFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { UserHeader } from "@/components/user/header";
 
 
 export const Home = () => {
@@ -15,9 +16,7 @@ export const Home = () => {
         <div className="w-full h-auto flex-col">
             <div className="w-full h-auto flex">
                 <div className="flex-1 h-auto bg-violete-50 flex flex-col pl-2">
-                    <div className="h-[70px]  border-b border-gray-200 flex items-center pl-2">
-                        <span className="text-xl font-bold">Dashboard</span>
-                    </div>
+                <UserHeader prop="Dashboard" />
                     <div className="h-[100px] flex flex-col pl-2 justify-center">
                         <span className="text-lg font-semibold">Welcome {data.user?.username} . Explore, discover, and enjoy! </span>
                         <span>Here is what's happened with your job search applications</span>

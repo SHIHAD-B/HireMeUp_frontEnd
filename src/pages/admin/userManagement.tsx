@@ -1,4 +1,3 @@
-import { AdminSideBar } from "../../components/admin/sidebar";
 import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store";
 import { AdminHeader } from "@/components/admin/header";
@@ -37,14 +36,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { listUsers } from "@/redux/actions/userAction";
+import { listUsers } from "@/redux/actions/adminAction";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
 import { BASE_URL } from "@/interfaces/config/constant";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Button as MButton } from '@mui/material';
+import { Button as MButton, TextField } from '@mui/material';
+import { FaPlus } from "react-icons/fa6";
+import { AddUser } from "@/components/admin/addUser";
+import { EditUser } from "@/components/admin/editUser";
 
 
 
@@ -53,11 +55,19 @@ export const UserManagement = () => {
   const { data, loading }: any = useSelector((state: RootState) => state.usersList)
   const dispatch = useDispatch<AppDispatch>()
 
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState(false);
   const [blockOpen, setblockOpen] = useState(false);
   const [unblockOpen, setunblockOpen] = useState(false);
   const [deleteOpen, setdeleteOpen] = useState(false);
   const [recoverOpen, setrecoverOpen] = useState(false);
-
+  const [editData, setEditData] = useState({
+    _id: "",
+    username: "",
+    phone: "",
+    email: "",
+    password: ""
+  })
 
   const [block, setBlock] = useState("")
   const [unblock, setUnblock] = useState("")
@@ -75,6 +85,18 @@ export const UserManagement = () => {
     fetchData();
 
   }, []);
+
+  const handleaddClose = () => {
+    setAddUserOpen(false)
+  }
+  const handlEditClose = () => {
+    setEditUserOpen(false)
+  }
+
+  const handleEditOpen=(data:any)=>{
+    setEditData(data)
+    setEditUserOpen(true)
+  }
 
   const handleModalblock = (email: string) => {
     setBlock(email)
@@ -108,7 +130,7 @@ export const UserManagement = () => {
 
 
   const handleBlock = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/blockUser`, { email: email }).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/blockUser`, { email: email },{withCredentials:true}).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -117,7 +139,7 @@ export const UserManagement = () => {
     })
   }
   const handleUnBlock = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/unblockUser`, { email: email }).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/unblockUser`, { email: email },{withCredentials:true}).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -126,7 +148,7 @@ export const UserManagement = () => {
     })
   }
   const handledelete = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/deleteUser`, { email: email }).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/deleteUser`, { email: email },{withCredentials:true}).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -135,7 +157,7 @@ export const UserManagement = () => {
     })
   }
   const handlerecover = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/recoverUser`, { email: email }).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/recoverUser`, { email: email },{withCredentials:true}).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -150,9 +172,11 @@ export const UserManagement = () => {
     _id: string;
     createdAt: Date;
     username: string;
+    phone:string;
     status: string;
     email: string;
   };
+
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -245,7 +269,8 @@ export const UserManagement = () => {
 
               <DropdownMenuSeparator />
 
-              {row.getValue("blocked") == true  &&row.getValue("deleted") == false && (
+              <DropdownMenuItem onClick={() => handleEditOpen(row.original)}>Edit</DropdownMenuItem>
+              {row.getValue("blocked") == true && row.getValue("deleted") == false && (
                 <>
                   <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
@@ -268,6 +293,7 @@ export const UserManagement = () => {
       },
     },
   ];
+
 
   function DataTableDemo() {
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -311,6 +337,16 @@ export const UserManagement = () => {
 
     return (
       <>
+        {addUserOpen && (
+          <AddUser handleaddClose={handleaddClose} />
+
+        )}
+        {editUserOpen && (
+             <EditUser handleEditClose={handlEditClose} data={editData} />
+
+        )}
+
+
         {blockOpen && (
           <div>
             <Modal
@@ -413,7 +449,7 @@ export const UserManagement = () => {
         )}
         <div className="w-full flex-col">
           <div className=" w-full flex">
-           
+
             <div className="flex flex-col w-full ">
               <AdminHeader />
               {data && (
@@ -454,6 +490,9 @@ export const UserManagement = () => {
                           })}
                       </DropdownMenuContent>
                     </DropdownMenu>
+                  </div>
+                  <div className="w-full h-auto  flex justify-end pb-2">
+                    <button onClick={() => setAddUserOpen(true)} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add User</button>
                   </div>
                   <div className="rounded-md border">
                     <Table>

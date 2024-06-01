@@ -18,6 +18,7 @@ import { RootState } from '../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { FormHelperText } from '@mui/material';
 import { Loader } from '@/components/common/loader';
+import { BASE_URL } from '@/interfaces/config/constant';
 
 
 
@@ -67,7 +68,7 @@ export const CompanyResetPassword = () => {
             }
 
             console.log(passData, "passdata")
-            Axios.patch('http://localhost:3000/company/resetpassword', passData).then((res: AxiosResponse<any, any>) => {
+            Axios.patch(`${BASE_URL}company/company/resetpassword`, passData,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
                 console.log(res)
                 if (res.status == 200) {
 

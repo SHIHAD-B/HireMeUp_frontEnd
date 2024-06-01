@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { config } from "../../interfaces/config/configuration";
 import { reduxRequest } from "../../interfaces/config/api";
-import { ICompanyData } from "@/interfaces/IUser";
+import { ICompanyData, IUsers } from "@/interfaces/IUser";
 
 
 export const adminSignin = createAsyncThunk("auth/adminsignin", async (Data: ICompanyData, { rejectWithValue }) => {
@@ -15,29 +15,48 @@ export const adminSignin = createAsyncThunk("auth/adminsignin", async (Data: ICo
 
 })
 
-export const fetchAdmin = createAsyncThunk("user/fetchadmin", async (_,{rejectWithValue}) => {
+export const fetchAdmin = createAsyncThunk("user/admin/fetchadmin", async (_,{rejectWithValue}) => {
     return reduxRequest(
         "get",
-        "user/fetchadmin",
+        "user/admin/fetchadmin",
         config,
         rejectWithValue,
     )
 })
 
-export const fetchSubscription = createAsyncThunk("subscription/fetchplans", async (_,{rejectWithValue}) => {
+export const fetchSubscription = createAsyncThunk("subscription/admin/fetchplans", async (_,{rejectWithValue}) => {
     return reduxRequest(
         "get",
-        "subscription/fetchplans",
+        "subscription/admin/fetchplans",
         config,
         rejectWithValue,
     )
 })
 
-export const fetchCategory=createAsyncThunk('job/categorylist',async (_,{rejectWithValue})=>{
+export const fetchCategory=createAsyncThunk('job/admin/categorylist',async (_,{rejectWithValue})=>{
     return reduxRequest(
         "get",
-        "job/categorylist",
+        "job/admin/categorylist",
         config,
         rejectWithValue,
+    )
+})
+
+export const editUsers = createAsyncThunk("user/admin/editUser", async (data:IUsers, { rejectWithValue }) => {
+    return reduxRequest(
+        "patch",
+        "user/admin/editUser",
+        config,
+        rejectWithValue,
+        data
+    )
+})
+
+export const listUsers = createAsyncThunk("user/admin/listusers", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "user/admin/listusers",
+        config,
+        rejectWithValue
     )
 })

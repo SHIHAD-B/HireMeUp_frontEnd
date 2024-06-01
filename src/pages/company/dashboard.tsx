@@ -1,4 +1,4 @@
-import { CompanySideBar } from "@/components/company/companySideBar";
+
 import { CompanyHeader } from "@/components/company/header";
 
 
@@ -6,9 +6,8 @@ export const CompanyDashboard = () => {
 
     return (
         <>
-            <div className="flex">
-                <CompanySideBar />
-                <div className="w-[85%]">
+            <div className="w-full">
+                <div className="w-full">
                     <CompanyHeader/>
                 <span>Home</span>
                 </div>

@@ -82,7 +82,7 @@ export const ForgotOtp = () => {
 
 
     const resendHandler = async () => {
-        await Axios.post('http://localhost:3000/auth/forgot', user).then((res: AxiosResponse<any, any>) => {
+        await Axios.post('http://localhost:3000/auth/forgot', user,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
             if (res.status == 200) {
                 setTime(60)
                 setFormattedTime('01:00')
@@ -105,7 +105,7 @@ export const ForgotOtp = () => {
                 email: user?.email,
                 otp: otp
             }
-            await Axios.post('http://localhost:3000/auth/forgot', data).then((res: any) => {
+            await Axios.post('http://localhost:3000/auth/forgot', data,{withCredentials:true}).then((res: any) => {
                 if (res.status == 200) {
                     navigate('/resetpassword')
                 }

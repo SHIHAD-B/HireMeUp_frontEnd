@@ -6,7 +6,7 @@ import { Bs2Circle } from "react-icons/bs";
 import { Bs3Circle } from "react-icons/bs";
 import Slider from '@mui/material/Slider';
 import { ChangeEvent, useEffect, useState } from "react";
-import { FiCrosshair, FiPlus } from "react-icons/fi";
+import {  FiPlus } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { Footer } from "@/components/user/footer";
 import { BiSolidImageAdd } from "react-icons/bi";
@@ -67,7 +67,7 @@ function valuetext(value: number) {
 
 
 export const PostJob = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const { toast } = useToast()
     const icons = [
         <BiSolidImageAdd />,
@@ -135,7 +135,8 @@ export const PostJob = () => {
         slot: 0,
         start_date: "",
         end_date: "",
-        level: ""
+        level: "",
+        createdAt: new Date()
     })
     const [skill, setSkill] = useState("")
 
@@ -306,7 +307,7 @@ export const PostJob = () => {
     const jobSubmit = async () => {
         try {
             await addJobValidation.validate(jobData, { abortEarly: false });
-            await axios.post(`${BASE_URL}job/addjob`, jobData).then((res) => {
+            await axios.post(`${BASE_URL}job/addjob`, jobData,{withCredentials:true}).then((res) => {
                 if (res.data.success) {
                     toast({
                         description: `
@@ -354,7 +355,7 @@ export const PostJob = () => {
                         end_date: "",
                         level: ""
                     }))
-                    navigate('/company')
+                    navigate('/company/joblist')
                 } else {
                     toast({
                         description: `
@@ -552,12 +553,13 @@ export const PostJob = () => {
                                     <div className="flex flex-col gap-1">
                                         <span className="lg:text-sm text-xs font-bold">Select Job Category</span>
                                         <select name="category" onChange={(e) => handleFieldChange(e)} className="w-64 h-9 lg:w-80 outline-none border border-gray-400">
-                                            <option value={jobData.category} disabled selected hidden>Select an option</option>
-                                            {data && data.map((key) => (
-                                                <option key={String(key?.category)} value={String(key?._id)}>
-                                                    {key.category}
-                                                </option>
-                                            ))}
+                                            {data && data
+                                                .filter(key => !key.deleted) 
+                                                .map(key => (
+                                                    <option key={String(key?._id)} value={String(key?._id)}>
+                                                        {key.category}
+                                                    </option>
+                                                ))}
                                         </select>
                                         <span className="text-red-500 text-xs">{error.category}</span>
                                     </div>
@@ -654,7 +656,7 @@ export const PostJob = () => {
                                             {jobData.required_skills.map((key, index) => (
                                                 <div key={index} className="p-1 bg-gray-100 flex">
                                                     {key}
-                                                    <RxCross2 onClick={()=>deleteSkill(index)} className="text-customviolet text-xl cursor-pointer" />
+                                                    <RxCross2 onClick={() => deleteSkill(index)} className="text-customviolet text-xl cursor-pointer" />
                                                 </div>
                                             ))}
 

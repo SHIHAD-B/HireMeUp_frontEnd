@@ -11,6 +11,8 @@ import adminReducer from './reducer/adminSlice';
 import subscriptionReducer from './reducer/subscriptionSlice';
 import categoryReducer from './reducer/categorySlice'
 import jobReducer from './reducer/jobSlice';
+import employeeReducer from './reducer/employeeListSlice'
+
 
 const rootReducer = combineReducers({
   tempUser: tempUserReducer,
@@ -22,8 +24,9 @@ const rootReducer = combineReducers({
   company: companyReducer,
   admin: adminReducer,
   subscription: subscriptionReducer,
-  category:categoryReducer,
-  job:jobReducer
+  category: categoryReducer,
+  job: jobReducer,
+  employee: employeeReducer
 });
 
 export type AppDispatch = typeof store.dispatch

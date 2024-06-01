@@ -45,16 +45,18 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Button as MButton } from '@mui/material';
+import { useToast } from '@/components/ui/use-toast';
 
 
 
 
 
 export const RequestManagement = () => {
+  const { toast } = useToast()
 
   const { data, loading }: any = useSelector((state: RootState) => state.request)
   const dispatch = useDispatch<AppDispatch>()
-  
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -63,8 +65,18 @@ export const RequestManagement = () => {
   const handleROpen = () => rsetOpen(true);
   const handleRClose = () => rsetOpen(false);
 
+  const [reqopen, setReqopen] = useState(false);
+  const handleReqOpen = () => setReqopen(true);
+  const handleReqClose = () => setReqopen(false);
+
   const [approval1, setapproval1] = useState("")
   const [reject1, setReject1] = useState("")
+
+  const [reqfile, setReqFile] = useState("")
+  const [reqfiledata, setReqfiledata] = useState({
+    id: "",
+    view: false
+  })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,23 +99,62 @@ export const RequestManagement = () => {
 
 
   const handleApprovereq = async (email: string) => {
-    await axios.post(`${BASE_URL}company/approverequest`, { email: email }).then(() => {
+    await axios.post(`${BASE_URL}company/admin/approverequest`, { email: email },{withCredentials:true}).then(() => {
       dispatch(allRequests());
       handleClose()
+      toast({
+        description: "Request approved successfully",
+        className: "bg-blue-600 text-white"
+
+      })
     })
   }
   const handleRejectreq = async (email: string) => {
-    await axios.post(`${BASE_URL}company/rejectrequest`, { email: email }).then(() => {
+    await axios.post(`${BASE_URL}company/admin/rejectrequest`, { email: email },{withCredentials:true}).then(() => {
       dispatch(allRequests());
       handleRClose()
+      toast({
+        description: "Request rejected successfully",
+        className: "bg-orange-600 text-white"
+
+      })
     })
+  }
+
+  const hanndleViewDoc = async () => {
+    if (reqfiledata.id) {
+      await axios.patch(`${BASE_URL}company/admin/viewdocument`, { id: reqfiledata.id },{withCredentials:true}).then(() => {
+        dispatch(allRequests());
+        handleReqClose()
+        toast({
+          description: "Document Marked as Read",
+          className: "bg-blue-600 text-white"
+
+        })
+      }).catch((error) => {
+        console.log(error, "errror in view doc")
+        toast({
+          description: "Failed to mark as read",
+          className: "bg-red-600 text-white"
+
+        })
+      })
+    } else {
+      handleReqClose()
+      toast({
+        description: "Failed to mark as read",
+        className: "bg-red-600 text-white"
+
+      })
+    }
   }
 
 
   type Payment = {
     _id: string;
     createdAt: Date;
-    document:string;
+    document: string;
+    viewdocument: boolean;
     companyname: string;
     email: string;
   };
@@ -196,15 +247,28 @@ export const RequestManagement = () => {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={()=>location.href= row.original.document} className="bg-white text-black cursor-pointer ">View Document</DropdownMenuItem>
-              {row.getValue("approval") !== "approved" && (
+              <DropdownMenuItem
+                onClick={() => {
+                  setReqFile(row.original.document);
+                  handleReqOpen();
+                  setReqfiledata({
+                    id: row.original._id,
+                    view: row.original.viewdocument
+                  })
+                }}
+                className="bg-white text-black cursor-pointer"
+              >
+                View Document
+              </DropdownMenuItem>
+
+              {row.getValue("approval") !== "approved" && row.original.viewdocument !== false && (
                 <>
                   <DropdownMenuItem onClick={() => handleModalApprove(row.getValue("email"))}>Approve</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleModalReject(row.getValue("email"))}>Reject</DropdownMenuItem>
                 </>
               )}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu >
         );
       },
     },
@@ -248,10 +312,52 @@ export const RequestManagement = () => {
       p: 4,
     };
 
+    const stylefile = {
+      position: 'absolute' as 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 1000,
+      height: 700,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+    };
+
 
 
     return (
       <>
+        {reqopen && (
+          <div>
+            <Modal
+              open={reqopen}
+              onClose={handleReqClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={stylefile}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Document
+                </Typography>
+
+                <div className="w-full h-[90%]">
+                  <iframe src={reqfile} className="w-full h-[90%]"></iframe>
+                </div>
+                {!reqfiledata.view && (
+
+                  <MButton onClick={hanndleViewDoc} variant="contained" color="primary" sx={{ mr: 2, mt: 2 }}>
+                    Mark as Read
+                  </MButton>
+                )}
+                <MButton onClick={handleReqClose} variant="outlined" color="secondary" sx={{ mt: 2 }}>
+                  Cancel
+                </MButton>
+              </Box>
+            </Modal>
+          </div>
+        )}
         {open && (
           <div>
             <Modal
@@ -308,7 +414,7 @@ export const RequestManagement = () => {
         )}
         <div className="w-full flex-col">
           <div className=" w-full flex">
-   
+
             <div className="flex flex-col w-full ">
               <AdminHeader />
               {data && (

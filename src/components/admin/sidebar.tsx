@@ -31,10 +31,10 @@ export const AdminSideBar = () => {
     }
     return (
         <>
-            <div className=" h-auto w-[200px] lg:w-[250px] bg-customsilver flex flex-col items-center gap-8 border border-gray-400">
+            <div className=" h-screen sticky left-0 top-0 w-[200px] lg:w-[250px] bg-customsilver flex flex-col items-center gap-8 border border-gray-400">
                 <img src={logo} alt="" className="w-[60%] mt-4" />
 
-                <div className="w-full h-[40%]  flex flex-col gap-4">
+                <div className="w-full h-[50%]  flex flex-col gap-4">
 
                     <NavLink to="" className="w-full h-10 flex justify-between cursor-pointer" onClick={() => setActive("dashboard")}>
                         <div className={`w-1 ${active === 'dashboard' && 'bg-customviolet'} h-full`}></div>
@@ -144,14 +144,14 @@ export const AdminSideBar = () => {
                    
 
                 </div>
-                <button onClick={logOut} className="w-full h-24 bg-red-300 text-red-600 rounded-sm flex justify-center items-center">logout</button>
+                <button onClick={logOut} className="w-full h-24 border border-gray-400 hover:text-white hover:bg-red-600 text-red-600 rounded-sm flex justify-center items-center">logout</button>
                 <div className="w-full h-40  flex pl-2 justify-between">
                     <div className="w-14 h-14 bg-red-400 rounded-full">
 
                     </div>
                     <div className="w-[70%] h-=full  flex-col flex pl-2 justify-center">
-                        <span className="font-bold">Jake gyil</span>
-                        <span className="text-xs">Jakkjhon@gmail.com</span>
+                        <span className="font-bold">SHIHAD</span>
+                        <span className="text-xs">admin@gmail.com</span>
                     </div>
 
                 </div>

@@ -4,4 +4,121 @@
 
 body{
     @apply h-full
+
 }
+::-webkit-scrollbar {
+    width: 12px; 
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888; 
+    border-radius: 10px;
+    border: 3px solid #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2b1f1f; 
+}
+@layer base {
+    :root {
+      /* --background: 0 0% 100%; */
+      --background: 208 100% 97%;
+      --backgroundAccent: 228 26% 100%;
+      --foreground: 72 11% 9%;
+      --foregroundAccent: 0 0% 65%;
+      --accenting:248 100% 98%;
+      --textPrimary:0 0% 53%;
+      --accentText:70 4% 71%;
+      --test: 360 89% 19%;
+      --card: 0 0% 100%;
+      --card-foreground: 0 0% 3.9%;
+      --companyHigliteText:0 0% 65%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 0 0% 3.9%;
+      
+      --primary: 219 95% 63%;
+      --primary-foreground: 0 0% 98%;
+  
+      --secondary: 0 0% 96.1%;
+      --secondary-foreground: 0 0% 9%;
+  
+      --muted: 0 0% 96.1%;
+      --muted-foreground: 0 0% 45.1%;
+  
+      --accent: 0 0% 96.1%;
+      --accent-foreground: 0 0% 9%;
+  
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 0 0% 98%;
+  
+      --border: 0 0% 89.8%;
+      --input: 0 0% 89.8%;
+      --ring: 0 0% 3.9%;
+  
+      --radius: 0.5rem;
+    }
+  
+    .dark {
+      --background: 210 10% 8%;
+      --backgroundAccent: 231 10% 13%;
+      --foreground: 220 11% 89%;
+      --foregroundAccent: 0 0% 65%;
+      --textPrimary:0° 10% 82%;
+      --accentText:0 0% 100%;
+      --test: 231 10% 13%;
+      --accenting:210 10% 8%;
+      --card: 0 0% 3.9%;
+      --card-foreground: 0 0% 98%;
+      --companyHigliteText:0 0% 100%;
+  
+      --popover: 0 0% 3.9%;
+      --popover-foreground: 0 0% 98%;
+  
+      --primary: 219 95% 63%;
+      --primary-foreground: 0 0% 98%;
+  
+      --secondary: 230 9% 16%;
+      --secondary-foreground: 0 0% 98%;
+  
+      --muted: 0 0% 14.9%;
+      --muted-foreground: 0 0% 63.9%;
+  
+      --accent: 0 0% 14.9%;
+      --accent-foreground: 0 0% 98%;
+  
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 0 0% 98%;
+  
+      --border: 0 0% 14.9%;
+      --input: 0 0% 14.9%;
+      --ring: 0 0% 83.1%;
+    }
+  }
+  
+  @layer base {
+    * {
+      @apply border-border;
+    }
+    body {
+      @apply bg-background text-foreground;
+    }
+  }
+  
+
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    width: 10px;
+  }
+  .scrollbar-hide::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5); 
+    border-radius: 10px;
+  }
+  .scrollbar-hide::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.8); 
+    border-radius: 10px;
+  }
+  

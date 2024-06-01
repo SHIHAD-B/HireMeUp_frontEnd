@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { IUserData } from '../../interfaces/IUser';
-import { fetchUser, userSignin, logout,userSignupWtihGoogle } from '../actions/userAction';
+import { IUsers } from '../../interfaces/IUser';
+import { fetchUser, userSignin, logout,userSignupWtihGoogle,editUsers } from '../actions/userAction';
 
 
 
@@ -10,7 +10,7 @@ import { fetchUser, userSignin, logout,userSignupWtihGoogle } from '../actions/u
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        user: null as IUserData | null,
+        user: null as IUsers | null,
         error: null as string | null,
         loading: false as boolean
     },
@@ -19,7 +19,7 @@ const userSlice = createSlice({
             state.error = null;
         },
         setUserData: (state, action) => {
-            state.user = action.payload as IUserData | null;
+            state.user = action.payload as IUsers ;
             state.error = null;
             state.loading = false;
         }
@@ -29,7 +29,7 @@ const userSlice = createSlice({
         builder
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload as unknown as IUserData;
+                state.user = action.payload as unknown as IUsers;
                 state.error = null
             })
             .addCase(fetchUser.pending, (state) => {
@@ -41,13 +41,27 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
+            .addCase(editUsers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload as unknown as IUsers;
+                state.error = null
+            })
+            .addCase(editUsers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(editUsers.rejected, (state, action) => {
+                state.user = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
             .addCase(userSignin.pending, (state) => {
                 state.loading = true;
                 state.error = null
             })
             .addCase(userSignin.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload as IUserData;
+                state.user = action.payload as IUsers;
                 state.error = null
             })
             .addCase(userSignin.rejected, (state, action) => {
@@ -69,7 +83,7 @@ const userSlice = createSlice({
             })
             .addCase(userSignupWtihGoogle.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload as IUserData;
+                state.user = action.payload as IUsers;
                 state.error = null
             })
             .addCase(userSignupWtihGoogle.pending, (state) => {

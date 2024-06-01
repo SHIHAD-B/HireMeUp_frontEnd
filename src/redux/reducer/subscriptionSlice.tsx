@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IPlans } from '@/interfaces/IUser';
 import { fetchSubscription } from '../actions/adminAction';
+import { fetchSubscription as UfetchSubscription } from '../actions/userAction';
 
 
 
@@ -32,6 +33,20 @@ const subscriptionListSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchSubscription.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(UfetchSubscription.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(UfetchSubscription.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(UfetchSubscription.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

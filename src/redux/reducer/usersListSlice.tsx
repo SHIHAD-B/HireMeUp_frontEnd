@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import {  IUserData } from '@/interfaces/IUser';
-import { listUsers } from '../actions/userAction';
+import { IUsers } from '@/interfaces/IUser';
+import { listUsers } from '../actions/adminAction';
 
 
 
@@ -10,7 +10,7 @@ import { listUsers } from '../actions/userAction';
 const usersListSlice = createSlice({
     name: 'usersList',
     initialState: {
-        data: null as IUserData[] | null,
+        data: null as IUsers[] | null,
         error: null as string | null,
         loading: false as boolean
     },

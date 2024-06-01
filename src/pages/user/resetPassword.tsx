@@ -64,7 +64,7 @@ export const ResetPassword = () => {
             }
               
              console.log(passData,"passdata")
-            Axios.patch('http://localhost:3000/user/resetPassword', passData).then((res: AxiosResponse<any, any>) => {
+            Axios.patch('http://localhost:3000/user/resetPassword', passData,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
                 console.log(res)
                 if (res.status == 200) {
 

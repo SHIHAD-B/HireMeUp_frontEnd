@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png'
 // import { ThemeButton } from '../buttons/themeButton'
 import { HiMenuAlt1 } from "react-icons/hi";
-
+import { ModeToggle } from '../common/mode-toggle';
 
 
 
@@ -27,6 +27,7 @@ export const Unauth_header = () => {
                     </div>
 
                     {/* <ThemeButton/> */}
+                    <ModeToggle/>
                     <HiMenuAlt1 className='text-5xl md:hidden' />
                 </div>
             </div>

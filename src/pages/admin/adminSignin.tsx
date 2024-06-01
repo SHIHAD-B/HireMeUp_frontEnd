@@ -74,6 +74,10 @@ export const AdminSignIn = () => {
 
                         })
                     } else {
+                        toast({
+                            description: res.payload,
+                            className: "bg-red-600 text-white"
+                        });
 
                         setErrors(prev => ({
                             ...prev,

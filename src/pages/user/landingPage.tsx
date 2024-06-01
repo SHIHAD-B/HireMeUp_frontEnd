@@ -20,7 +20,7 @@ import { HiOutlineLightBulb } from "react-icons/hi";
 export const LandingPage = () => {
     return (
         <>
-            <div className="h-auto w-full bg-slate-100">
+            <div className="h-auto w-full  ">
                 < Unauth_header />
                 <div className="w-full min-h-[300px] md:h-[550px] md:flex ">
                     <div className=" md:w-[50%] h-full flex  justify-center items-center">
@@ -39,15 +39,15 @@ export const LandingPage = () => {
                     <span className="text-xl">"Embark on Your Career Adventure: A Premier Platform for Job Seekers with a Passion for Startup Success!"</span>
                 </div>
                 <div className="w-full h-14  md:pl-14 pl-2 mt-3">
-                    <div className="w-full md:w-[60%]  h-full rounded-xl bg-slate-100 shadow-xl flex justify-between items-center">
+                    <div className="w-full md:w-[60%]  h-full rounded-xl bg-background shadow-xl flex justify-between items-center">
                         <div className="w-[33%] h-full flex justify-center items-center gap-2">
                             <RiSearchLine />
-                            <input value={"search here..."} className="flex  bg-gray-200 w-[250px] h-10 rounded-l shadow-xl border border-gray-100 " />
+                            <input value={"search here..."} className="flex  bg-background w-[250px] h-10 rounded-l shadow-xl border border-gray-100 " />
                         </div>
                         <div className="w-[33%] h-full flex justify-center items-center gap-1">
                             <IoLocationOutline />
-                            <div className="flex bg-gray-200 w-[250px] h-10 rounded-l shadow-xl border border-gray-100">
-                                <select className="h-full rounded-l w-full">
+                            <div className="flex bg-background w-[250px] h-10 rounded-l shadow-xl border border-gray-100">
+                                <select className="h-full rounded-l w-full bg-background">
                                     <option value="option1">Option 1</option>
                                     <option value="option2">Option 2</option>
                                     <option value="option3">Option 3</option>
@@ -85,43 +85,43 @@ export const LandingPage = () => {
                     <div className="flex flex-wrap md:gap-32 gap-6 ">
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <MdOutlineDesignServices className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Design</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Design</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <TbChartInfographic className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Sales</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Sales</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiOutlineSpeakerphone className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Marketing</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Marketing</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <TbCash className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Finance</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Finance</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiOutlineDesktopComputer className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Technology</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Technology</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <FaCode className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Engineering</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Engineering</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <MdOutlineBusinessCenter className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Business</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Business</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
                         <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiMiniUserGroup className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white">Human Resource</span>
-                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white">234 jobs available <FaArrowRight /></span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Human Resource</span>
+                            <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
 
 
@@ -131,8 +131,8 @@ export const LandingPage = () => {
 
                 <div className="w-full h-[500px]  flex justify-center items-center">
                     <div className="w-[80%] h-[60%] bg-customviolet relative">
-                        <div className="absolute bg-slate-100  w-20 h-14 -top-5 -left-8 -rotate-45"></div>
-                        <div className="absolute bg-slate-100  w-20 h-14 -bottom-5 -right-8 -rotate-45"></div>
+                        <div className="absolute bg-background w-20 h-14 -top-5 -left-8 -rotate-45"></div>
+                        <div className="absolute bg-background w-20 h-14 -bottom-5 -right-8 -rotate-45"></div>
                         <div className="absolute  left-[5%]  h-full w-[50%] flex flex-col justify-center">
                             <span className="font-bold text-4xl text-white">Start Posting jobs</span>
                             <span className="font-bold text-4xl text-white">today</span>

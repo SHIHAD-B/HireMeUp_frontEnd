@@ -93,11 +93,11 @@ export const Otp = () => {
         if (!otp) {
             setOtpError('enter otp')
         } else {
-            user = {
+          const  updateUser:any = {
                 ...user,
                 otp: otp
             }
-            await dispatch(userSignup(user)).then((res) => {
+            await dispatch(userSignup(updateUser)).then((res) => {
                dispatch(setUserData(res.payload))
                 navigate('/home')
             }).catch((error: any) => {

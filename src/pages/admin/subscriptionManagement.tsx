@@ -49,6 +49,7 @@ import { AddPlansModal } from "@/components/admin/addPlans";
 import { EditPlans } from "@/components/admin/editPlans";
 
 
+
 export const SubscriptionManagement = () => {
     const { data, loading }: any = useSelector((state: RootState) => state.subscription)
     const dispatch = useDispatch<AppDispatch>()
@@ -87,6 +88,8 @@ export const SubscriptionManagement = () => {
 
         fetchData();
 
+        dispatch(fetchSubscription())
+
     }, []);
 
     const handleModalDelete = (datas: any) => {
@@ -103,7 +106,7 @@ export const SubscriptionManagement = () => {
         handleditOpen();
     }
     const handledelete = async (id: string) => {
-        await axios.patch(`${BASE_URL}subscription/deleteplan`, { id: id });
+        await axios.patch(`${BASE_URL}subscription/admin/deleteplan`, { id: id },{withCredentials:true});
         dispatch(fetchSubscription());
         handleClose();
     }
@@ -159,12 +162,12 @@ export const SubscriptionManagement = () => {
         },
         {
             accessorKey: "duration",
-            header: "duration(%)",
+            header: "duration(days)",
             cell: ({ row }) => <div className={`capitalize ${row.original.deleted ? "text-red-500" : ""}`}>{row.getValue("duration")}</div>,
         },
         {
             accessorKey: "discount",
-            header: "discount(days)",
+            header: "discount(%)",
             cell: ({ row }) => <div className={`capitalize ${row.original.deleted ? "text-red-500" : ""}`}>{row.getValue("discount")}</div>,
         },
 
