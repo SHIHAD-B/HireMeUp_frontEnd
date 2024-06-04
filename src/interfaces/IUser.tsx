@@ -1,29 +1,4 @@
-// import { ReactNode } from "react";
 
-// export interface InputWithIconProps {
-//   title: string;
-//   name: string;
-//   icon: ReactNode;
-//   placeholder: string;
-//   as: any;
-//   theme: string;
-// }
-
-// export interface IUserLogin {
-//   email: string | null;
-//   google?: boolean;
-// }
-
-// //  export interface CustomJwtPayload {
-// //     name: string;
-// //     email: string;
-// //   }
-
-// //  export interface UserValues {
-// //     email: string;
-// //     password?:string;
-// //     google?:boolean;
-// //   }
 
 export interface IUserState {
   loading: boolean;
@@ -44,12 +19,7 @@ export interface IErrorType {
   details?: any;
 }
 
-// export interface OTPEntersectionProps {
-//   email?: string;
-//   setOTPExpired?: (expired: boolean) => void;
-//   setOTPSec?: (open: boolean) => void;
-//   dispatchSignUp: (otp: string[]) => void;
-// }
+
 
 export interface IUsers {
   _id?: string;
@@ -88,7 +58,24 @@ export interface IUsers {
   onlineStatus?: string;
   blocked?: boolean;
   deleted?: boolean;
-  subscription?: any[];
+  subscription: {
+    _id?: string,
+    subscriptionId: string
+    planId: string,
+    userId: string,
+    name: string,
+    start_date: Date,
+    end_date: Date
+ },
+ expiredSubscriptions: [{
+    _id?: string,
+    subscriptionId: string
+    planId: string,
+    userId: string,
+    name: string,
+    start_date: Date,
+    end_date: Date
+ }]
 }
 
 export interface IAdminData {
@@ -219,5 +206,16 @@ export interface IEmployee {
   isActive: boolean;
   profile: string;
 
+}
+
+export interface ISubscriptions {
+  _id?: string;
+  userId?: string ;
+  planId?: string ;
+  end_date?: Date ;
+  start_date?: Date ;
+  paymentId?:string;
+  createdAt?: Date ;
+  status?: String ;
 }
 

@@ -1,18 +1,21 @@
 
+import { UserHeader } from "@/components/user/header";
+import { Subscribed } from "@/components/user/subscribed";
 import { SubscriptionPlan } from "@/components/user/subscriptionPlan";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 // import { TbHandClick } from "react-icons/tb";
 export const Subscription = () => {
 
-
+    const { user } = useSelector((state: RootState) => state.user)
 
     return (
         <>
             <div className="w-full flex flex-col bg-backgournd">
-                <div className="h-[70px]  border-b border-gray-200 flex items-center pl-2">
-                    <span className="text-xl font-bold">Subscriptions</span>
-                </div>
-                <SubscriptionPlan/>
+                <UserHeader prop="Subcription" />
+                {user?.subscription ? <><Subscribed /></> : <><SubscriptionPlan /></>}
+
             </div>
         </>
     )

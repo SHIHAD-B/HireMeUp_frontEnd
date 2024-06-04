@@ -69,7 +69,7 @@ export const ProfileOne = () => {
             reader.onload = (event) => {
                 if (event.target && event.target.result) {
                     setImage(event.target.result as string);
-                    handleOpen(); // Open modal after image selection
+                    handleOpen(); 
                 }
             };
             reader.readAsDataURL(file);
@@ -151,6 +151,7 @@ export const ProfileOne = () => {
                     delete userData.password
                 }
                 dispatch(editUsers(userData as IUsers)).then((res: any) => {
+                    console.log(res,"response from edit user")
                     toast({
                         description: "Profile updated successfully....",
                         className: "bg-green-600 text-white rounded"
