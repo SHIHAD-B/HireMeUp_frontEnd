@@ -7,7 +7,7 @@ import { userSignup, forgot } from '../actions/userAction';
 
 
 
-const tempUserSlice = createSlice({
+const tempUserSlice:any = createSlice({
     name: 'tempUser',
     initialState: {
         user: null as IUsers | null,

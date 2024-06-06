@@ -80,19 +80,19 @@ export const Subscribed: React.FC = () => {
             <span className='text-foreground text-2xl font-bold'>Your Subscription Validity</span>
             <div className="flex space-x-4 text-white text-5xl font-bold">
                 <div className="flex flex-col items-center">
-                    <div className="bg-gray-800 p-4 rounded-lg">{formatTime(timeLeft.days)}</div>
+                    <div className="bg-gray-800 w-20 h-20 rounded-lg flex justify-center items-center">{formatTime(timeLeft.days)}</div>
                     <div className="text-sm mt-2  text-foreground">Days</div>
                 </div>
                 <div className="flex flex-col items-center">
-                    <div className="bg-gray-800 p-4 rounded-lg">{formatTime(timeLeft.hours)}</div>
+                    <div className="bg-gray-800 w-20 h-20 rounded-lg flex justify-center items-center">{formatTime(timeLeft.hours)}</div>
                     <div className="text-sm mt-2  text-foreground">Hours</div>
                 </div>
                 <div className="flex flex-col items-center">
-                    <div className="bg-gray-800 p-4 rounded-lg">{formatTime(timeLeft.minutes)}</div>
+                    <div className="bg-gray-800 w-20 h-20 rounded-lg flex justify-center items-center">{formatTime(timeLeft.minutes)}</div>
                     <div className="text-sm mt-2  text-foreground">Minutes</div>
                 </div>
                 <div className="flex flex-col items-center">
-                    <div className="bg-gray-800 p-4 rounded-lg">{formatTime(timeLeft.seconds)}</div>
+                    <div className="bg-gray-800 w-20 h-20 rounded-lg flex justify-center items-center">{formatTime(timeLeft.seconds)}</div>
                     <div className="text-sm mt-2  text-foreground">Seconds</div>
                 </div>
             </div>

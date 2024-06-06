@@ -207,6 +207,32 @@ export interface IEmployee {
   profile: string;
 
 }
+export interface IMessage  {
+  _id: string;
+  sender: string;
+  receiver: string;
+  content: string;
+  type: string;
+  createdAt: string;
+  status: string;
+}
+
+export interface IChat  {
+  _id: string;
+  createdAt: Date;
+  message:[];
+  participants: string[];
+  lastMessage: Date;
+}
+
+export interface IPopulatedChat{
+  _id: string;
+  createdAt: Date;
+  message: IMessage[];
+  participants: string[];
+  lastMessage: Date;
+}
+
 
 export interface ISubscriptions {
   _id?: string;

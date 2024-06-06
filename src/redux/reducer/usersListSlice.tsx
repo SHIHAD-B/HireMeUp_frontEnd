@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IUsers } from '@/interfaces/IUser';
 import { listUsers } from '../actions/adminAction';
+import { UlistUsers } from '../actions/userAction';
 
 
 
@@ -24,7 +25,7 @@ const usersListSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(listUsers.fulfilled, (state, action) => {
-                console.log(action.payload,"action from list user")
+          
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null
@@ -34,6 +35,21 @@ const usersListSlice = createSlice({
                 state.error = null;
             })
             .addCase(listUsers.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(UlistUsers.fulfilled, (state, action) => {
+              
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(UlistUsers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(UlistUsers.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

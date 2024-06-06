@@ -102,3 +102,33 @@ export const editUsers = createAsyncThunk("user/editUser", async (data:IUsers, {
     )
 })
 
+export const ChatList = createAsyncThunk("chat/getroom",async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `chat/company/getroom?id=${id}`,
+        config,
+        rejectWithValue,
+        
+    )
+})
+
+export const allMessageList = createAsyncThunk("chat/listmessages",async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `chat/company/listmessages?id=${id}`,
+        config,
+        rejectWithValue,
+        
+    )
+})
+
+export const UlistUsers = createAsyncThunk("user/listusers", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "user/listusers",
+        config,
+        rejectWithValue
+    )
+})
+
+

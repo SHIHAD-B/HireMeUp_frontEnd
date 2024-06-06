@@ -16,7 +16,7 @@ import { AppDispatch, RootState } from './redux/store';
 import { useEffect, useState } from 'react';
 import { fetchUser } from './redux/actions/userAction';
 import { fetchCompany } from './redux/actions/companyAction';
-import { fetchAdmin, fetchSubscription } from './redux/actions/adminAction';
+import { fetchAdmin } from './redux/actions/adminAction';
 import { UserManagement } from './pages/admin/userManagement';
 import { RequestManagement } from './pages/admin/requestManagement';
 import { CompanyManagement } from './pages/admin/companyManagement';
@@ -39,7 +39,8 @@ import { Loader } from './components/common/loader';
 import { ResourceManagement } from './pages/company/resourceManagement';
 import { EditJob } from './pages/company/editJob';
 import { CompanyList } from './pages/user/companyList';
-import { fetchSubscription as UfetchSubscription } from './redux/actions/userAction';
+import { Chat } from './pages/user/chat';
+import { CompanyChat } from './pages/company/companyChat';
 
 
 function App() {
@@ -70,7 +71,8 @@ function App() {
     '/company/editjob',
     '/company/joblist',
     '/company/resources',
-    '/company/settings'
+    '/company/settings',
+  '/company/chat'
   ];
 
   const displaySideBar = !userSidebarHiddenPaths.includes(location.pathname);
@@ -87,7 +89,8 @@ function App() {
     '/company/joblist',
     '/company/resources',
     '/company',
-    '/company/settings'
+    '/company/settings',
+    '/company/chat'
   ];
 
   const adminDisplaySideBar = adminSidebarHiddenPaths.includes(location.pathname);
@@ -137,6 +140,7 @@ function App() {
           <Route path='/subscription' element={user?.email ? <Subscription /> : <Navigate to="/" />} />
           <Route path='/joblist' element={user?.email ? <Joblist /> : <Navigate to="/" />} />
           <Route path='/companylist' element={user?.email ? <CompanyList /> : <Navigate to="/" />} />
+          <Route path='/chat' element={user?.email ? <Chat /> : <Navigate to="/" />} />
 
           {/* Admin Routes */}
           <Route path='/admin' element={admin?.email ? <Navigate to="/admin/request" /> : <AdminSignIn />} />
@@ -157,6 +161,7 @@ function App() {
           <Route path='/company/joblist' element={company?.email ? <JobListing /> : <Navigate to="/" />} />
           <Route path='/company/resources' element={company?.email ? <ResourceManagement /> : <Navigate to="/" />} />
           <Route path='/company/settings' element={company?.email ? <AdminSetting /> : <Navigate to="/" />} />
+          <Route path='/company/chat' element={company?.email ? <CompanyChat /> : <Navigate to="/" />} />
 
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>

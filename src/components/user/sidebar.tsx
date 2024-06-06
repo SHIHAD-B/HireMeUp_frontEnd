@@ -47,7 +47,7 @@ export const UserSideBar = () => {
                         </div>
                     </NavLink>
 
-                    <NavLink to="/message" className="w-full h-10 flex justify-between cursor-pointer" onClick={() => setActive("message")}>
+                    <NavLink to="/chat" className="w-full h-10 flex justify-between cursor-pointer" onClick={() => setActive("message")}>
                         <div className={`w-1 ${active === 'message' && 'bg-customviolet'} h-full`}></div>
                         <div className={`w-[90%] h-full ${active === 'message' && "dark:bg-gray-900 bg-activesilver"}`}>
                             <span className={`w-full h-full flex gap-4 items-center ${active === "message" ? "text-customviolet" : "text-gray-600 dark:text-textDark "}`}>
