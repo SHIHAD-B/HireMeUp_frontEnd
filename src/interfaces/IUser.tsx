@@ -32,21 +32,24 @@ export interface IUsers {
   dob?: Date | null;
   profile?: string;
   skills?: string[];
-  education?: {
+  education?: [{
+    university:string;
+    course:string;
     description?: string | null;
     from?: Date | null;
     grade?: string | null;
     to?: Date | null;
-  };
+  }];
   cv?: string | null;
   about?: string | null;
-  experiences?: {
+  experiences?: [{
     description?: string;
     designation?: string;
-    from?: Date | null;
+    company?: string;
+    from?: Date ;
     location?: string;
-    to?: Date | null;
-  };
+    to?: Date ;
+  }];
   contacts?: {
     email?: string;
     instagram?: string;
@@ -66,8 +69,8 @@ export interface IUsers {
     name: string,
     start_date: Date,
     end_date: Date
- },
- expiredSubscriptions: [{
+  },
+  expiredSubscriptions: [{
     _id?: string,
     subscriptionId: string
     planId: string,
@@ -75,7 +78,7 @@ export interface IUsers {
     name: string,
     start_date: Date,
     end_date: Date
- }]
+  }]
 }
 
 export interface IAdminData {
@@ -97,13 +100,14 @@ export interface IRequests {
 }
 
 export interface IJobData {
-  _id?:string,
+  _id?: string,
   companyId: string;
   job_title: string;
   type: string;
   salary_from: number;
   salary_to: number;
   category: string;
+  questions:string[];
   required_skills: string[];
   description: string;
   responsibilities: string;
@@ -132,6 +136,30 @@ export interface ICategory {
 }
 
 
+export interface IApplicants {
+    _id: string;
+    jobId: string ;
+    schedule: {
+       date: Date ;
+       feedback: string ;
+       status: string ;
+       time: string ;
+       title: string ;
+    }[];
+    userId: string ;
+    createdAt: Date ;
+    hiring_status: string ;
+    resume: string ;
+    answers: object[],
+    hiring_info: {
+       date: Date ;
+       interviewer: string ;
+       notes: string ;
+       status: string ;
+    }[];
+  }
+
+
 
 export interface ICompanyData {
   _id?: string;
@@ -140,7 +168,7 @@ export interface ICompanyData {
   documents?: string;
   password?: string;
   website?: string;
-  deleted?:boolean;
+  deleted?: boolean;
   description?: string;
   status?: string;
   tech_stack?: string[];
@@ -207,7 +235,7 @@ export interface IEmployee {
   profile: string;
 
 }
-export interface IMessage  {
+export interface IMessage {
   _id: string;
   sender: string;
   receiver: string;
@@ -217,15 +245,15 @@ export interface IMessage  {
   status: string;
 }
 
-export interface IChat  {
+export interface IChat {
   _id: string;
   createdAt: Date;
-  message:[];
+  message: [];
   participants: string[];
   lastMessage: Date;
 }
 
-export interface IPopulatedChat{
+export interface IPopulatedChat {
   _id: string;
   createdAt: Date;
   message: IMessage[];
@@ -236,12 +264,12 @@ export interface IPopulatedChat{
 
 export interface ISubscriptions {
   _id?: string;
-  userId?: string ;
-  planId?: string ;
-  end_date?: Date ;
-  start_date?: Date ;
-  paymentId?:string;
-  createdAt?: Date ;
-  status?: String ;
+  userId?: string;
+  planId?: string;
+  end_date?: Date;
+  start_date?: Date;
+  paymentId?: string;
+  createdAt?: Date;
+  status?: String;
 }
 

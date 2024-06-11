@@ -4,8 +4,8 @@ import { Stack } from '@mui/material';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { IJobData } from '@/interfaces/IUser';
 import { Fragment, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 import { Loader } from '../common/loader';
 import { BiBarcodeReader, BiCctv, BiSolidImageAdd } from 'react-icons/bi';
 import { AiFillBulb, AiFillAlert, AiFillDingtalkCircle, AiFillGift, AiOutlineEdit, AiOutlineSlack } from 'react-icons/ai';
@@ -22,10 +22,11 @@ import { SiGoogleassistant } from 'react-icons/si';
 import { TbBrandMiniprogram } from 'react-icons/tb';
 import { ModeToggle } from '../common/mode-toggle';
 import { FaArrowLeft } from "react-icons/fa6";
-
+import { Apply } from './apply';
+import { applicantList } from '@/redux/actions/userAction';
 interface JobDescriptionProps {
     id: string;
-    back: () => void; 
+    back: () => void;
 }
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -73,25 +74,49 @@ const icons = [
     <DiCssdeck />
 ]
 
-export const JobDescription: React.FC<JobDescriptionProps> = ({ id ,back}) => {
+export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
+    const dispatch = useDispatch<AppDispatch>()
     const [jobData, setJobData] = useState<IJobData | null>(null);
     const { data, loading } = useSelector((state: RootState) => state.job);
+    const { user } = useSelector((state: RootState) => state.user);
     const { data: catdata } = useSelector((state: RootState) => state.category)
     const { data: companyData } = useSelector((state: RootState) => state.companyList)
+    const { data: applicantLists } = useSelector((state: RootState) => state.applicantList)
+    const [applyModal, setApplyModal] = useState(false)
+    const [applied, setApplied] = useState(false)
 
     useEffect(() => {
+        dispatch(applicantList())
+        const companyId = data?.find((item) => item._id == id)?.companyId
+        const alreadyApplied = applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == companyId)
+        if (alreadyApplied) {
+            setApplied(true)
+        }
+    }, [])
+
+    useEffect(() => {
+
         if (data) {
             const spec = data.filter((item: IJobData) => item._id === id);
             setJobData(spec.length > 0 ? spec[0] : null);
         }
     }, [data, id]);
+
+    const closeJobModal = () => {
+        setApplyModal(false)
+    }
     return (
         <>
+            {applyModal && (
+                <>
+                    <Apply jobId={String(jobData?._id)} handleaddClose={closeJobModal} setApp={setApplied}/>
+                </>
+            )}
             <div className="w-full felx felx-col ">
                 {loading && <Loader />}
 
                 <div className="h-[70px] border-b border-gray-200 flex items-center pl-2 pr-4 justify-between">
-                    <span className="text-xl font-bold flex gap-4 justify-center items-center"><FaArrowLeft onClick={back} className='cursor-pointer'/>Job Description</span>
+                    <span className="text-xl font-bold flex gap-4 justify-center items-center"><FaArrowLeft onClick={back} className='cursor-pointer' />Job Description</span>
                     <ModeToggle />
                 </div>
                 <div className="w-full  flex justify-center p-6">
@@ -107,7 +132,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id ,back}) => {
                                     .<span>
                                         {companyData
                                             ?.filter(item => item._id === jobData?.companyId)
-                                            .flatMap(item => item.location) 
+                                            .flatMap(item => item.location)
                                             .map((location, index) => (
                                                 <Fragment key={index}>
                                                     {index > 0 && ", "}
@@ -122,9 +147,23 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id ,back}) => {
                             </div>
                         </div>
                         <div className='w-[30%] h-full  flex justify-center items-center gap-4'>
+                            {applied && (
+                                <>
+                                    <span className='p-1 rounded border border-green-400 text-green-400'>Applied</span>
+                                </>
+                            )}
                             <div><GoShareAndroid className='text-4xl' /></div>
                             <div className='w-0.5 h-[40%] bg-gray-500'></div>
-                            <div><button className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>Apply</button></div>
+                            {applied ? (
+                                <>
+                                    <div><button onClick={() => setApplyModal(true)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
+                                </>
+                            ) : (
+                                <>
+                                    <div><button onClick={() => setApplyModal(true)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>Easy Apply</button></div>
+                                </>
+                            )}
+
                         </div>
                     </div>
                 </div>

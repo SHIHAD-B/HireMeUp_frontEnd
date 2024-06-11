@@ -76,6 +76,14 @@ export const UfetchCategory=createAsyncThunk('job/user/categorylist',async (_,{r
         rejectWithValue,
     )
 })
+export const applicantList=createAsyncThunk('job/user/applicantlist',async (_,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        "job/user/applicantlist",
+        config,
+        rejectWithValue,
+    )
+})
 
 
 

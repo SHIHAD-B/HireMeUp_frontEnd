@@ -150,7 +150,7 @@ export const CompanyChat = () => {
                                         userid: participant?._id
                                     })}>
                                         <div className="w-12 h-12 rounded-full">
-                                            <img src={participant?.profile} alt="" className="w-full h-full rounded-full" />
+                                            <img src={participant?.profile} alt="" className="w-full h-full rounded-full object-cover" />
                                         </div>
                                         <div className="w-[85%] h-full flex flex-col">
                                             <div className="w-full h-[50%] flex justify-between pl-2 pr-2 items-center">
@@ -177,19 +177,19 @@ export const CompanyChat = () => {
                     <div className="w-[70%] h-full bg-white flex flex-col">
                         {isnew ? (
                             <div className="w-full h-full flex justify-center items-center">
-                                <img src={newImg} alt="New Content" className="max-w-full max-h-full" />
+                                <img src={newImg} alt="New Content" className="max-w-full max-h-full object-cover" />
                             </div>
                         ) : (
                             <>
                                 <div className="w-full h-[20%] flex border-b border-r border-t border-gray-300">
                                     <div className="w-[20%] h-full flex justify-center items-center">
                                         <div className="w-24 h-24 rounded-full bg-black">
-                                            <img src={innerChat.profile} alt="" className="w-full h-full rounded-full" />
+                                            <img src={innerChat.profile} alt="" className="w-full h-full rounded-full object-cover" />
                                         </div>
                                     </div>
                                     <div className="w-[40%] h-full flex flex-col justify-center">
                                         <span className="font-bold">{innerChat.name}</span>
-                                        <span>Recruiter at {innerChat.name}</span>
+                                        <span>Job seeker</span>
                                     </div>
                                     <div className="w-[40%] h-full flex justify-end p-4 gap-2 items-center">
                                         <BsCameraVideo className="text-xl" />
@@ -207,6 +207,7 @@ export const CompanyChat = () => {
                                                     <img
                                                         alt="User avatar"
                                                         src={message.sender === companyData?._id ? companyData.icon : innerChat.profile}
+                                                        className="object-cover"
                                                     />
                                                 </div>
                                             </div>

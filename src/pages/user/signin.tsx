@@ -22,6 +22,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { userSignupWtihGoogle } from '../../redux/actions/userAction';
 import { useToast } from '@/components/ui/use-toast';
 import { companySignin } from '@/redux/actions/companyAction';
+import { IUsers } from '@/interfaces/IUser';
 
 export const SignIn = () => {
     const isDarkMode = document.documentElement.classList.contains('dark');
@@ -85,7 +86,7 @@ export const SignIn = () => {
             });
             await signinValidation.validate(data, { abortEarly: false });
             console.log("Validation successful");
-            await dispatch(userSignin(data)).then((res: any) => {
+            await dispatch(userSignin(data as IUsers)).then((res: any) => {
                 console.log(res, "ressssss");
                 if (res?.error?.message == "Rejected") {
                     if (res.payload == "user blocked or deleted by admin") {
@@ -102,7 +103,7 @@ export const SignIn = () => {
 
                     }
                 } else {
-                    navigate('/home');
+                    navigate('/joblist');
                 }
             }).catch((error: any) => {
                 console.log(error, "error from dispatch");
@@ -174,7 +175,7 @@ export const SignIn = () => {
         await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
             console.log(res, "res from goodle")
             if (res.meta.requestStatus == "fulfilled") {
-                navigate('/')
+                navigate('/joblist')
             } else {
                 toast({
                     description: res.payload,

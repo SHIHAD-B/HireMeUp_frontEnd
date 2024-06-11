@@ -99,7 +99,7 @@ export const Otp = () => {
             }
             await dispatch(userSignup(updateUser)).then((res) => {
                dispatch(setUserData(res.payload))
-                navigate('/home')
+                navigate('/joblist')
             }).catch((error: any) => {
                 console.log(error, "error response from dispatch user signup")
 

@@ -14,6 +14,7 @@ import jobReducer from './reducer/jobSlice';
 import employeeReducer from './reducer/employeeListSlice'
 import chatReducer from './reducer/chatSlice'
 import allMessageReducer from './reducer/allMessageList'
+import applicantReducer from './reducer/applicantSlice'
 
 
 const rootReducer = combineReducers({
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   job: jobReducer,
   employee: employeeReducer,
   chat: chatReducer,
-  allMessage:allMessageReducer
+  allMessage: allMessageReducer,
+  applicantList: applicantReducer
 });
 
 export type AppDispatch = typeof store.dispatch

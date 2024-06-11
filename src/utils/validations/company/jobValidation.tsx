@@ -5,6 +5,7 @@ export const addJobValidation = yup.object().shape({
     description: yup.string().min(5).required("Description is required"),
     salary_from: yup.number().min(0).max(yup.ref('salary_to')).required("Salary from is required"),
     responsibilities: yup.string().min(5).required("Responsibilities are required"),
+    questions: yup.array().of(yup.string()).min(0).optional(),
     required_skills: yup.array().of(yup.string()).min(1).required("At least one skill is required"),
     requirements: yup.string().min(5).required("Requirements are required"),
     category: yup.string().required("Select one category"),

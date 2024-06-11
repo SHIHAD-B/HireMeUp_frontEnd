@@ -41,6 +41,8 @@ export const ProfileOne = () => {
     const [image, setImage] = useState<string>("");
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [userData, setUserData] = useState<IUsers | null>(user)
+    const [fileName, setFileName] = useState<string>("");
+
     const [error, setError] = useState({
         profile: "",
         username: "",
@@ -69,6 +71,7 @@ export const ProfileOne = () => {
             reader.onload = (event) => {
                 if (event.target && event.target.result) {
                     setImage(event.target.result as string);
+                    setFileName(file.name);
                     handleOpen(); 
                 }
             };
@@ -91,7 +94,8 @@ export const ProfileOne = () => {
             }))
             handleClose();
             setLoad(true)
-            const imglink = await uploadFile(croppedImg)
+            alert(fileName)
+            const imglink = await uploadFile(croppedImg,String(fileName))
             setUserData((prev: any) => ({
                 ...prev,
                 profile: imglink

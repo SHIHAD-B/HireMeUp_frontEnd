@@ -7,16 +7,16 @@ export const editCompanyValidation = Yup.object({
         .optional()
         .nullable()
         .max(255)
-        .trim(),
+        .trim().optional(),
     company_name: Yup.string()
         .min(1, 'Company name must be at least 1 character long')
         .max(50, 'Company name cannot be longer than 50 characters')
         .optional()
         .nullable()
-        .trim(),
+        .trim().optional(),
     password: Yup.string()
         .matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must contain at least 8 characters, one uppercase letter, one digit, and one special character')
         .optional()
         .nullable()
-        .trim(),
+        .trim().optional(),
 });

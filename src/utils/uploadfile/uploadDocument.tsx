@@ -1,8 +1,13 @@
-export const uploadFile = async (file: File): Promise<string | null> => {
+export const uploadFile = async (file: File,filename:string): Promise<string | null> => {
     try {
+       
         const formData = new FormData();
+
         formData.append('file', file);
         formData.append('upload_preset', 'i3rroh9w');
+        formData.append('public_id', filename);
+      
+      
 
         const res = await fetch('https://api.cloudinary.com/v1_1/dteb7tkf8/image/upload', {
             method: 'POST',

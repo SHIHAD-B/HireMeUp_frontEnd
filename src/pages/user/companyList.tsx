@@ -3,41 +3,35 @@ import Pagination from '@mui/material/Pagination';
 import { IoLocationOutline } from "react-icons/io5";
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import { IJobData, IState } from "@/interfaces/IUser";
+import { ICompanyData, IJobData, IState } from "@/interfaces/IUser";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ListJob } from '@/redux/actions/jobAction';
 import { companyList, companyUserList } from '@/redux/actions/companyAction';
 import { fetchCategory } from '@/redux/actions/adminAction';
-import { IFilterData } from '@/interfaces/IUser';
 import { UserHeader } from "@/components/user/header";
-import { JobDescription } from "@/components/user/jobDescription";
-import pro from '../../assets/images/pro.jpg'
+import { CompanyDescription } from "@/components/user/companyDescription";
+
 
 export const CompanyList = () => {
     const isDarkMode = document.documentElement.classList.contains('dark');
     const dispatch = useDispatch<AppDispatch>()
-
+    const ITEMS_PER_PAGE = 9;
     const { data } = useSelector((state: RootState) => state.companyList)
     const { data: job } = useSelector((state: RootState) => state.job)
     const [states, setStates] = useState<IState[]>()
     const category = useSelector((state: RootState) => state.category.data)
     const [list, setList] = useState(data)
     const [searchData, setSearchData] = useState("")
-    const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-    // const [filterData, setFilterData] = useState({
-    //     type: [""],
-    //     category: [""],
-    //     level: [""],
-    //     salary_from: [""],
-    //     salary_to: [""]
+    const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+    const [page, setPage] = useState(1)
 
-    // })
     useEffect(() => {
         dispatch(ListJob())
         dispatch(companyList())
         dispatch(fetchCategory())
         setList(data)
+        pageLogic()
     }, [])
 
     const [loading, setLoading] = useState(true);
@@ -57,73 +51,17 @@ export const CompanyList = () => {
         if (!loading) {
             setList(data);
         }
+        pageLogic()
     }, [data, loading]);
 
-    // useEffect(() => {
-    //     const filteredSet = new Set(data?.filter(item => {
-    //         const conditions = [];
 
-    //         if (filterData.category.length !== 1) {
-    //             conditions.push(filterData.category.includes(item.category));
-    //         }
-
-    //         if (filterData.level.length !== 1) {
-    //             conditions.push(filterData.level.includes(item.level));
-    //         }
-
-    //         if (filterData.salary_from.length !== 1) {
-    //             conditions.push(filterData.salary_from.includes(String(item.salary_from)));
-    //         }
-
-    //         if (filterData.salary_to.length !== 1) {
-    //             conditions.push(filterData.salary_to.includes(String(item.salary_to)));
-    //         }
-
-    //         if (filterData.type.length !== 1) {
-    //             conditions.push(filterData.type.includes(item.type));
-    //         }
-
-    //         return conditions.every(condition => condition);
-    //     }));
-
-    //     const filteredList = Array.from(filteredSet);
-
-    //     setList(filteredList);
-    // }, [filterData, data]);
-
-
-    // const salaryFilterChange = (e: any) => {
-    //     const { value, checked } = e.target;
-    //     const [start, end] = value.split('-');
-    //     setFilterData((prev) => ({
-    //         ...prev,
-    //         salary_from: checked ? [...prev.salary_from, start] : prev.salary_from.filter((item: any) => item !== start),
-    //         salary_to: checked ? [...prev.salary_to, end] : prev.salary_to.filter((item: any) => item !== end)
-    //     }));
-
-    // };
-
-    // const categoryFilterChange = (e: any) => {
-    //     const { value, checked } = e.target;
-    //     const valueId = category?.find((values) => values.category === value)?._id || '';
-    //     setFilterData((prev) => ({
-    //         ...prev,
-    //         category: checked ? [...prev.category, valueId] : prev.category.filter((item: string) => item !== valueId),
-    //     }));
-
-    // };
-
-    // const FilterChange = (e: any) => {
-    //     const { name, value, checked } = e.target;
-    //     setFilterData((prev) => ({
-    //         ...prev,
-    //         [name]: checked ? [...prev[name as keyof IFilterData], value] : prev[name as keyof IFilterData].filter((item: string) => item !== value),
-    //     }));
-
-    // };
-
-
-
+    const searchByLocation = (e: any) => {
+        if (e.target.value == '') {
+            setList(data)
+        }
+        const filteredData = data?.filter((item) => item.location?.includes(e.target.value))
+        setList(filteredData as ICompanyData[])
+    }
 
 
 
@@ -142,34 +80,46 @@ export const CompanyList = () => {
         };
 
         fetchStates();
+        pageLogic()
     }, []);
 
     const search = (e: any) => {
         setSearchData(e.target.value);
         if (e.target.value.trim() !== "") {
             const regex = new RegExp(e.target.value, 'i');
-            const filteredData = data?.filter((dvalue: any) => regex.test(dvalue.job_title));
-            console.log(filteredData, "filtered data")
+            const filteredData = data?.filter((dvalue: any) => regex.test(dvalue.company_name));
             setList(filteredData as IJobData[])
         } else {
             setList(data)
         }
-
+       setPage(1)
     }
 
-    // const handleJobClick = (id: string) => {
-    //     setSelectedJobId(id);
-    //     console.log('Job clicked:', id);
-    // };
+    const handleCompanyClick = (id: string) => {
+        setSelectedCompanyId(id);
+
+    };
 
     const back = () => {
-        setSelectedJobId(null)
+        setSelectedCompanyId(null)
     }
+ 
+    const pageLogic=()=>{
+        let start = (page - 1) * ITEMS_PER_PAGE;
+        let end = start + ITEMS_PER_PAGE;
+        const slicedData = data?.slice(start, end);
+        setList(slicedData as ICompanyData[]);
+    }
+    
+
+    useEffect(() => {
+        pageLogic()
+    }, [page]);
 
     return (
         <>
-            {selectedJobId ? (
-                <JobDescription id={String(selectedJobId)} back={back} />
+            {selectedCompanyId ? (
+                <CompanyDescription id={String(selectedCompanyId)} back={back} />
             ) : (
                 <div className="w-full felx felx-col ">
                     <UserHeader prop="Find Jobs" />
@@ -181,8 +131,9 @@ export const CompanyList = () => {
                             </div>
                             <div className="w-full lg:w-[50%] h-full flex justify-center items-center ">
                                 <IoLocationOutline className="text-2xl" />
-                                <select name='employees' className='appearance-none lg:w-80 outline-none bg-background   border-b border-foreground h-10 px-4' defaultValue="">
+                                <select onChange={(e) => searchByLocation(e)} name='employees' className='appearance-none lg:w-80 outline-none bg-background   border-b border-foreground h-10 px-4' defaultValue="">
                                     <option value='' disabled hidden >Location</option>
+                                    <option value=''>Any Where</option>
                                     {states?.map((value: IState, index) => (
                                         <option key={index} value={value?.name}>{value?.name}</option>
 
@@ -238,7 +189,7 @@ export const CompanyList = () => {
 
                                 {list?.length ? (
                                     list.filter((item) => !item?.deleted).map((value, index) => (
-                                        <div key={index} className="w-80 h-80 border bg-background dark:border-gray-600 border-gray-300 rounded  flex flex-col">
+                                        <div key={index} onClick={() => handleCompanyClick(String(value._id))} className="w-80 h-80 border bg-background dark:border-gray-600 border-gray-300 rounded  flex flex-col">
                                             <div className="w-full h-[35%] flex">
                                                 <div className="h-full w-[50%] flex justify-center items-center">
                                                     {value && value.icon && <img src={value.icon} alt="" className="w-20" />}
@@ -271,7 +222,9 @@ export const CompanyList = () => {
 
                             </div>
                             <Pagination
-                                count={1}
+                                count={Math.ceil((data?.length || 0) / ITEMS_PER_PAGE)}
+                                page={page}
+                                onChange={(e, page) => setPage(page)}
                                 size="small"
                                 sx={{
                                     '& .MuiPaginationItem-page, & .MuiSvgIcon-root': {

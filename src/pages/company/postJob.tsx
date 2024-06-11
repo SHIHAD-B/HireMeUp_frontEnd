@@ -6,7 +6,7 @@ import { Bs2Circle } from "react-icons/bs";
 import { Bs3Circle } from "react-icons/bs";
 import Slider from '@mui/material/Slider';
 import { ChangeEvent, useEffect, useState } from "react";
-import {  FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { Footer } from "@/components/user/footer";
 import { BiSolidImageAdd } from "react-icons/bi";
@@ -15,7 +15,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchCategory } from "@/redux/actions/adminAction";
 import { IJobData } from "@/interfaces/IUser";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { FaHourglassEnd } from "react-icons/fa";
@@ -57,6 +56,7 @@ import { Loader } from '../../components/common/loader';
 import axios from "axios";
 import { BASE_URL } from "@/interfaces/config/constant";
 import { useNavigate } from "react-router-dom";
+import { CfetchCategory } from "@/redux/actions/companyAction";
 
 
 
@@ -110,7 +110,7 @@ export const PostJob = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(fetchCategory());
+            await dispatch(CfetchCategory());
         };
 
         fetchData();
@@ -129,6 +129,7 @@ export const PostJob = () => {
         required_skills: [],
         description: "",
         responsibilities: "",
+        questions: [],
         qualification: "",
         requirements: "",
         benefits: [],
@@ -139,12 +140,32 @@ export const PostJob = () => {
         createdAt: new Date()
     })
     const [skill, setSkill] = useState("")
+    const [questions, setQuestions] = useState("")
 
     const [benefits, setBenefits] = useState({
         description: "",
         icon: 0,
         name: ""
     })
+
+    const addQuestions = (qeust: string) => {
+        if (!jobData.questions.includes(qeust) && qeust.trim() !== "") {
+            setJobData(prev => ({
+                ...prev,
+                questions: [...prev.questions, qeust]
+            }));
+            setQuestions("")
+            return
+        }
+        toast({
+            description: `
+         please add questions....
+            `,
+            className: "bg-red-600 text-white rounded"
+
+        })
+    };
+
 
     const handleBenefitsSubmit = () => {
         let error = false;
@@ -194,6 +215,12 @@ export const PostJob = () => {
         setJobData(prev => ({
             ...prev,
             required_skills: prev.required_skills.filter((value, index) => index !== num)
+        }))
+    }
+    const deleteQuestions = (num: number) => {
+        setJobData(prev => ({
+            ...prev,
+            questions: prev.questions.filter((value, index) => index !== num)
         }))
     }
 
@@ -275,7 +302,15 @@ export const PostJob = () => {
                 required_skills: [...prev.required_skills, skill]
             }));
             setSkill("")
+            return
         }
+        toast({
+            description: `
+         please add skill....
+            `,
+            className: "bg-red-600 text-white rounded"
+
+        })
     };
 
 
@@ -307,7 +342,7 @@ export const PostJob = () => {
     const jobSubmit = async () => {
         try {
             await addJobValidation.validate(jobData, { abortEarly: false });
-            await axios.post(`${BASE_URL}job/addjob`, jobData,{withCredentials:true}).then((res) => {
+            await axios.post(`${BASE_URL}job/company/addjob`, jobData, { withCredentials: true }).then((res) => {
                 if (res.data.success) {
                     toast({
                         description: `
@@ -478,7 +513,7 @@ export const PostJob = () => {
                                         <span className=" text-gray-400 text-xs lg:text-sm">Job titles must be describe one position</span>
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <input onChange={(e) => handleFieldChange(e)} name="job_title" value={jobData.job_title} className="w-64 h-9 lg:w-80 outline-none border border-gray-400" placeholder="e.g Software Engineer" type="text" />
+                                        <input onChange={(e) => handleFieldChange(e)} name="job_title" value={jobData.job_title} className="w-64 h-9 lg:w-80 outline-none border border-gray-400 pl-1" placeholder="e.g Software Engineer" type="text" />
                                         <span className="text-red-500 text-xs">{error.job_title}</span>
                                         <span className="lg:text-sm text-xs text-gray-400">At least 5 character</span>
                                     </div>
@@ -554,7 +589,7 @@ export const PostJob = () => {
                                         <span className="lg:text-sm text-xs font-bold">Select Job Category</span>
                                         <select name="category" onChange={(e) => handleFieldChange(e)} className="w-64 h-9 lg:w-80 outline-none border border-gray-400">
                                             {data && data
-                                                .filter(key => !key.deleted) 
+                                                .filter(key => !key.deleted)
                                                 .map(key => (
                                                     <option key={String(key?._id)} value={String(key?._id)}>
                                                         {key.category}
@@ -595,7 +630,7 @@ export const PostJob = () => {
                                         <span className=" text-gray-400 text-xs lg:text-sm">You can enter number of slots available</span>
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <input type="number" onChange={(e) => handleFieldChange(e)} name="slot" value={jobData.slot} className="w-64 h-9 lg:w-80 outline-none border border-gray-400" placeholder="enter number of slots" />
+                                        <input type="number" onChange={(e) => handleFieldChange(e)} name="slot" value={jobData.slot} className="w-64 h-9 lg:w-80 outline-none border border-gray-400 pl-1" placeholder="enter number of slots" />
                                         <span className="text-red-500 text-xs">{error.slot}</span>
                                         <span className="lg:text-sm text-xs text-gray-400">At least 1 slot</span>
                                     </div>
@@ -648,7 +683,7 @@ export const PostJob = () => {
                                     </div>
                                     <div className="md:flex lg:flex-col gap-4 ">
                                         <div className="flex-col  gap-2 flex">
-                                            <input id="skills" onChange={(e) => setSkill(e.target.value)} value={skill} className="w-64 h-9 lg:w-80 outline-none border border-gray-400" placeholder="e.g comminication" type="text" />
+                                            <input id="skills" onChange={(e) => setSkill(e.target.value)} value={skill} className="w-64 h-9 lg:w-80 outline-none border border-gray-400 pl-1" placeholder="e.g comminication" type="text" />
                                             <span className="text-red-500 text-xs">{error.required_skills}</span>
                                             <button onClick={() => skillSubmit(skill)} className="flex w-64 h-9 lg:w-80 justify-center items-center border border-customviolet p-2 rounded text-customviolet font-bold hover:bg-customviolet hover:text-white"><FiPlus />Add skills</button>
                                         </div>
@@ -657,6 +692,32 @@ export const PostJob = () => {
                                                 <div key={index} className="p-1 bg-gray-100 flex">
                                                     {key}
                                                     <RxCross2 onClick={() => deleteSkill(index)} className="text-customviolet text-xl cursor-pointer" />
+                                                </div>
+                                            ))}
+
+
+
+                                        </div>
+                                        <hr className="text-gray-500 w-[98%]" />
+                                    </div>
+                                </div>
+
+                                <div className="w-full flex p-1 gap-10 lg:gap-48">
+                                    <div className=" w-[20%] flex flex-col">
+                                        <span className="font-bold">Custom Questions</span>
+                                        <span className=" text-gray-400 text-xs lg:text-sm">Add custom questions for the job application</span>
+                                    </div>
+                                    <div className="md:flex lg:flex-col gap-4 ">
+                                        <div className="flex-col  gap-2 flex">
+                                            <input id="skills" onChange={(e) => setQuestions(e.target.value)} value={questions} className="w-64 h-9 lg:w-80 outline-none border border-gray-400 pl-1" placeholder="e.g why should we hire you?" type="text" />
+                                            <span className="text-red-500 text-xs">{error.required_skills}</span>
+                                            <button onClick={() => addQuestions(questions)} className="flex w-64 h-9 lg:w-80 justify-center items-center border border-customviolet p-2 rounded text-customviolet font-bold hover:bg-customviolet hover:text-white"><FiPlus />Add Questions</button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-4">
+                                            {jobData.questions.map((key, index) => (
+                                                <div key={index} className="p-1 bg-gray-100 flex">
+                                                    {key}
+                                                    <RxCross2 onClick={() => deleteQuestions(index)} className="text-customviolet text-xl cursor-pointer" />
                                                 </div>
                                             ))}
 

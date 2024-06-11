@@ -16,8 +16,58 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { BiLogoMicrosoftTeams } from "react-icons/bi";
 import { LiaIndustrySolid } from "react-icons/lia";
 import { HiOutlineLightBulb } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { IState } from "@/interfaces/IUser";
+import axios from "axios";
 
 export const LandingPage = () => {
+    const navigate = useNavigate()
+    const [states, setStates] = useState<IState[]>()
+    const [searchData, setSearchData] = useState("")
+    const [location, setLocation] = useState("")
+  
+
+    useEffect(() => {
+        const fetchStates = async () => {
+            try {
+                const response = await axios.get('https://api.countrystatecity.in/v1/countries', {
+                    headers: {
+                        'X-CSCAPI-KEY': 'c2J0MHBQSlhRQjFJOWVCd3NlWVRLcTJjeTZMcFJ1cmFVcDd2SndlWg=='
+                    }
+                });
+                setStates(response.data);
+            } catch (error) {
+                console.error("Error fetching states:", error);
+            }
+        };
+
+        fetchStates();
+    }, []);
+
+    const handleCategorySearch = async (categories: string) => {
+        const data = {
+            searchData: searchData,
+            states: location,
+            category: categories
+        };
+   
+        navigate('/joblist', { state: data });
+    };
+
+    const searchJob = () => {
+        const data = {
+            searchData: searchData,
+            states: location,
+            category: ""
+        };
+   
+        navigate('/joblist', { state: data });
+    };
+
+
+
+
     return (
         <>
             <div className="h-auto w-full  ">
@@ -42,19 +92,17 @@ export const LandingPage = () => {
                     <div className="w-full md:w-[60%]  h-full rounded-xl bg-background shadow-xl flex justify-between items-center">
                         <div className="w-[33%] h-full flex justify-center items-center gap-2">
                             <RiSearchLine />
-                            <input value={"search here..."} className="flex  bg-background w-[250px] h-10 rounded-l shadow-xl border border-gray-100 " />
+                            <input onChange={(e) => setSearchData(e.target.value)} value={searchData} placeholder="search here.." className="flex  bg-background w-[250px] h-10 rounded-l shadow-xl border border-gray-100 " />
                         </div>
                         <div className="w-[33%] h-full flex justify-center items-center gap-1">
                             <IoLocationOutline />
                             <div className="flex bg-background w-[250px] h-10 rounded-l shadow-xl border border-gray-100">
-                                <select className="h-full rounded-l w-full bg-background">
-                                    <option value="option1">Option 1</option>
-                                    <option value="option2">Option 2</option>
-                                    <option value="option3">Option 3</option>
-                                    <option value="option3">Option 3</option>
-                                    <option value="option3">Option 3</option>
-                                    <option value="option3">Option 3</option>
-                                    <option value="option3">Option 3</option>
+                                <select onChange={(e) => setLocation(e.target.value)} className="h-full rounded-l w-full bg-background">
+                                    <option value=''>Any where</option>
+                                    {states?.map((value: IState, index) => (
+                                        <option key={index} value={value?.name}>{value?.name}</option>
+
+                                    ))}
                                 </select>
 
                             </div>
@@ -63,7 +111,7 @@ export const LandingPage = () => {
 
 
                         <div className="w-[33%] h-full flex justify-center items-center gap-1">
-                            <button className="md:block hidden text-bold text-white bg-customviolet h-10 w-36 rounded-lg hover:rounded-2xl transition-all duration-100">Search my job</button>
+                            <button onClick={searchJob} className="md:block hidden text-bold text-white bg-customviolet h-10 w-36 rounded-lg hover:rounded-2xl transition-all duration-100">Search my job</button>
                             <button className="md:hidden block text-bold text-white bg-customviolet h-10 w-28 rounded-lg hover:rounded-2xl transition-all duration-100">Search</button>
                         </div>
 
@@ -77,48 +125,48 @@ export const LandingPage = () => {
 
                     </div>
                     <div className="md:w-[40%] w-[15%] h-full flex justify-end items-center md:pr-14 pr-2 ">
-                        <span className="flex items-center gap-1 font-bold text-customviolet cursor-pointer">Show all jobs <FaArrowRight /></span>
+                        <span onClick={() => navigate('/joblist')} className="flex items-center gap-1 font-bold text-customviolet cursor-pointer">Show all jobs <FaArrowRight /></span>
                     </div>
                 </div>
 
                 <div className=" h-auto  w-full  flex flex-col gap-5  items-center justify-center pr-14 pl-14 ">
                     <div className="flex flex-wrap md:gap-32 gap-6 ">
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("art and design")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <MdOutlineDesignServices className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Design</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("sales")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <TbChartInfographic className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Sales</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("marketing")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiOutlineSpeakerphone className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Marketing</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("finance")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <TbCash className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Finance</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("Information Technology")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiOutlineDesktopComputer className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Technology</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("engineering")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <FaCode className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Engineering</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("education")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <MdOutlineBusinessCenter className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
-                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Business</span>
+                            <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Education</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
                         </div>
-                        <div className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
+                        <div onClick={() => handleCategorySearch("human resources")} className="md:h-64 md:w-64 h-[170px] w-[170px] rounded-xl border border-gray-400 bg-white flex flex-col justify-center items-start md:gap-6 md:pl-10 pl-4 hover:bg-customviolet group">
                             <HiMiniUserGroup className="text-customviolet text-4xl md:text-6xl group-hover:text-white" />
                             <span className="md:text-4xl text-2xl font-bold group-hover:text-white dark:text-black">Human Resource</span>
                             <span className="flex justify-center items-center md:gap-2 font-bold group-hover:text-white dark:text-black">234 jobs available <FaArrowRight /></span>
@@ -145,7 +193,7 @@ export const LandingPage = () => {
                 <span className="w-ful h-10 font-bold text-4xl flex justify-center"> Enhace Your Career Path</span>
                 <div className="w-full h-auto  flex pt-20 pb-4">
                     <div className="flex flex-wrap gap-10 lg:gap-24 justify-content-center pl-[10%]" >
-                        <div className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
+                        <div onClick={() => navigate('/underconstrution')} className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
                             <div className="w-[95%] h-[70%]  rounded-xl flex justify-center items-center transition duration-300 ease-in-out bg-customviolet  group-hover:bg-black group-hover:text-black">
                                 <HiOutlineRectangleGroup className="text-6xl text-white" />
                             </div>
@@ -153,7 +201,7 @@ export const LandingPage = () => {
                                 <span className="text-white">Popular Job Effective CV For Growth</span>
                             </div>
                         </div>
-                        <div className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
+                        <div onClick={() => navigate('/underconstrution')} className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
                             <div className="w-[95%] h-[70%]  rounded-xl flex justify-center items-center transition duration-300 ease-in-out bg-customviolet  group-hover:bg-black group-hover:text-black">
                                 <BiLogoMicrosoftTeams className="text-6xl text-white" />
                             </div>
@@ -161,7 +209,7 @@ export const LandingPage = () => {
                                 <span className="text-white">Boost Team Productivity Tips</span>
                             </div>
                         </div>
-                        <div className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
+                        <div onClick={() => navigate('/underconstrution')} className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
                             <div className="w-[95%] h-[70%]  rounded-xl flex justify-center items-center transition duration-300 ease-in-out bg-customviolet  group-hover:bg-black group-hover:text-black">
                                 <LiaIndustrySolid className="text-6xl text-white" />
                             </div>
@@ -169,7 +217,7 @@ export const LandingPage = () => {
                                 <span className="text-white">Tech Industry Job Hunt Tips</span>
                             </div>
                         </div>
-                        <div className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
+                        <div onClick={() => navigate('/underconstrution')} className="md:h-60 md:w-64 h-[160px] w-[170px] rounded-xl border border-gray-400 bg-black flex flex-col pt-2 md:gap-6 items-center  transition duration-300 ease-in-out hover:bg-customviolet group">
                             <div className="w-[95%] h-[70%]  rounded-xl flex justify-center items-center transition duration-300 ease-in-out bg-customviolet  group-hover:bg-black group-hover:text-black">
                                 <HiOutlineLightBulb className="text-6xl text-white" />
                             </div>
@@ -181,7 +229,7 @@ export const LandingPage = () => {
 
                     </div>
                 </div>
-                <Footer/>
+                <Footer />
             </div>
         </>
     )

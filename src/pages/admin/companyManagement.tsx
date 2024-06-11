@@ -60,6 +60,7 @@ export const CompanyManagement = () => {
     const [deleteOpen, setdeleteOpen] = useState(false);
     const [recoverOpen, setrecoverOpen] = useState(false);
     const [editData, setEditData] = useState({
+        _id: "",
         company_name: "",
         email: "",
         password: ""
@@ -74,7 +75,12 @@ export const CompanyManagement = () => {
     const [editCompanyOpen, setEditCompanyOpen] = useState(false)
 
     const handleEditCompany = (data: any) => {
-        setEditData(data)
+        setEditData({
+            _id: data._id,
+            company_name: data.company_name,
+            email: data.email,
+            password: data.password
+        })
         setEditCompanyOpen(true)
     }
 
@@ -129,7 +135,7 @@ export const CompanyManagement = () => {
 
 
     const handleBlock = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/admin/blockcompany`, { email: email },{withCredentials:true}).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/blockcompany`, { email: email }, { withCredentials: true }).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -138,7 +144,7 @@ export const CompanyManagement = () => {
         })
     }
     const handleUnBlock = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/admin/unblockcompany`, { email: email },{withCredentials:true}).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/unblockcompany`, { email: email }, { withCredentials: true }).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -147,7 +153,7 @@ export const CompanyManagement = () => {
         })
     }
     const handledelete = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/admin/deletecompany`, { email: email },{withCredentials:true}).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/deletecompany`, { email: email }, { withCredentials: true }).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)
@@ -156,7 +162,7 @@ export const CompanyManagement = () => {
         })
     }
     const handlerecover = async (email: string) => {
-        await axios.patch(`${BASE_URL}company/admin/recovercompany`, { email: email },{withCredentials:true}).then(() => {
+        await axios.patch(`${BASE_URL}company/admin/recovercompany`, { email: email }, { withCredentials: true }).then(() => {
             dispatch(companyList());
             setblockOpen(false)
             setunblockOpen(false)

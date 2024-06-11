@@ -16,6 +16,8 @@ import { IFilterData } from '@/interfaces/IUser';
 import { UserHeader } from "@/components/user/header";
 import { JobDescription } from "@/components/user/jobDescription";
 import { UfetchCategory } from "@/redux/actions/userAction";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -31,14 +33,21 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 
 export const Joblist = () => {
+    const location=useLocation()
+    const ITEMS_PER_PAGE = 6;
+    const queryData=location.state
+    const { toast } = useToast()
+    const navigate = useNavigate()
     const isDarkMode = document.documentElement.classList.contains('dark');
     const dispatch = useDispatch<AppDispatch>()
     const { data } = useSelector((state: RootState) => state.job)
     const companyLists = useSelector((state: RootState) => state.companyList.data)
     const [states, setStates] = useState<IState[]>()
     const category = useSelector((state: RootState) => state.category.data)
+    const { user } = useSelector((state: RootState) => state.user)
     const [list, setList] = useState(data)
     const [searchData, setSearchData] = useState("")
+    const [page,setPage]=useState(1)
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [filterData, setFilterData] = useState({
         type: [""],
@@ -48,9 +57,68 @@ export const Joblist = () => {
         salary_to: [""]
 
     })
-   
-
+    const pageLogic=()=>{
+        let start = (page - 1) * ITEMS_PER_PAGE;
+        let end = start + ITEMS_PER_PAGE;
+        const slicedData = data?.slice(start, end);
+        setList(slicedData as IJobData[]);
+    }
+    
+ 
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (queryData) {
+            const { searchData: querySearchData, states: queryLocationData, category: queryCategoryData } = queryData;
+            
+            let filteredData = data;
+    
+            if (queryCategoryData !== "") {
+               const valueId=category?.find((item)=>item.category==queryCategoryData)?._id
+                filteredData = data?.filter(item => item.category === valueId) as IJobData[];
+            } else if (querySearchData !== "") {
+                const regex = new RegExp(querySearchData, 'i');
+                filteredData = data?.filter(item => regex.test(item.job_title)) as IJobData[];
+            } else if (queryLocationData !== "") {
+                const companyLocationIds = companyLists
+                    ?.filter(item => item.location?.includes(queryLocationData))
+                    .map(item => item._id);
+                filteredData = data?.filter(item => companyLocationIds?.includes(item.companyId)) as IJobData[];
+            }
+    
+            setList(filteredData as IJobData[]);
+        } else {
+            if (!loading) {
+                setList(data);
+            }
+        }
+    }, [data, loading, queryData, companyLists]);
+    
+    
+
+    const handleSubmit = (id: string) => {
+        if (!user?.email) {
+            navigate('/signin')
+            toast({
+                description: ' Please login to continue..',
+                className: "bg-blue-600 text-white"
+            });
+        }
+
+    }
+
+    const handleLocationChange = (e: any) => {
+        if(e.target.value==""){
+            setList(data)
+            return
+        }
+       
+        const companylocation=companyLists?.filter((item)=>item.location?.includes(e.target.value)).map((item:any)=>item._id)
+        const filteredData=data?.filter((item)=>companylocation?.includes(item.companyId))
+        setList(filteredData as IJobData[])
+    }
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,13 +129,14 @@ export const Joblist = () => {
             setLoading(false);
         };
         fetchData();
+        pageLogic()
     }, [dispatch]);
 
-    useEffect(() => {
-        if (!loading) {
-            setList(data);
-        }
-    }, [data, loading]);
+    // useEffect(() => {
+    //     if (!loading ) {
+    //         setList(data);
+    //     }
+    // }, [data, loading]);
 
     useEffect(() => {
         const filteredSet = new Set(data?.filter(item => {
@@ -133,7 +202,9 @@ export const Joblist = () => {
     };
 
 
-
+    useEffect(() => {
+        pageLogic()
+    }, [page]);
 
 
 
@@ -169,171 +240,174 @@ export const Joblist = () => {
 
     const handleJobClick = (id: string) => {
         setSelectedJobId(id);
-        console.log('Job clicked:', id);
     };
 
-    const back=()=>{
+    const back = () => {
         setSelectedJobId(null)
     }
 
     return (
         <>
-         {selectedJobId ? (
+            {selectedJobId ? (
                 <JobDescription id={String(selectedJobId)} back={back} />
             ) : (
-            <div className="w-full felx felx-col ">
-                <UserHeader prop="Find Jobs" />
-                <div className="w-full h-36 flex justify-center  p-6">
-                    <div className="w-full lg:w-[70%] h-[90%] border border-gray-300 rounded  flex flex-col lg:flex-row">
-                        <div className="w-full lg:w-[50%] h-full  flex justify-center items-center">
-                            <RiSearchLine className="text-2xl" />
-                            <input type="text" name="search" onChange={(e) => search(e)} value={searchData} id="" className="h-10  lg:w-80 p-2 bg-background  border-b border-foreground outline-none" placeholder="Job title or keywords" />
-                        </div>
-                        <div className="w-full lg:w-[50%] h-full flex justify-center items-center ">
-                            <IoLocationOutline className="text-2xl" />
-                            <select name='employees' className='appearance-none lg:w-80 outline-none bg-background   border-b border-foreground h-10 px-4' defaultValue="">
-                                <option value='' disabled hidden >Location</option>
-                                {states?.map((value: IState, index) => (
-                                    <option key={index} value={value?.name}>{value?.name}</option>
+                <div className="w-full felx felx-col ">
+                    <UserHeader prop="Find Jobs" />
+                    <div className="w-full h-36 flex justify-center  p-6">
+                        <div className="w-full lg:w-[70%] h-[90%] border border-gray-300 rounded  flex flex-col lg:flex-row">
+                            <div className="w-full lg:w-[50%] h-full  flex justify-center items-center">
+                                <RiSearchLine className="text-2xl" />
+                                <input type="text" name="search" onChange={(e) => search(e)} value={searchData} id="" className="h-10  lg:w-80 p-2 bg-background  border-b border-foreground outline-none" placeholder="Job title or keywords" />
+                            </div>
+                            <div className="w-full lg:w-[50%] h-full flex justify-center items-center ">
+                                <IoLocationOutline className="text-2xl" />
+                                <select onChange={(e) => handleLocationChange(e)} name='employees' className='appearance-none lg:w-80 outline-none bg-background   border-b border-foreground h-10 px-4' defaultValue="">
+                                    <option value='' disabled hidden >Location</option>
 
-                                ))}
-                            </select>
+                                    <option value=''>Any where</option>
+                                    {states?.map((value: IState, index) => (
+                                        <option key={index} value={value?.name}>{value?.name}</option>
+
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="w-full h-auto  flex border-t border-gray-100">
-                    <div className="hidden lg:block w-[20%] h-full  gap-4 flex-col">
-                        <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
-                            <span className="font-bold text-lg">Type of Employment</span>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Full-Time" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Full-Time</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Part-Time" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Part-Time</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Remote" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Remote</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Internship" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Internship</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Contract" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Contract</span>
-                            </label>
-                        </div>
-                        <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
-                            <span className="font-bold text-lg">Category</span>
-                            {category?.map((value, index) => (
-
-                                <label className="flex items-center gap-2" key={index}>
-                                    <input type="checkbox" name="employment" value={String(value.category)} className="form-checkbox h-5 w-5 text-blue-600" onChange={categoryFilterChange} />
-                                    <span className="text-base">{value.category}</span>
+                    <div className="w-full h-auto  flex border-t border-gray-100">
+                        <div className="hidden lg:block w-[20%] h-full  gap-4 flex-col">
+                            <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
+                                <span className="font-bold text-lg">Type of Employment</span>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Full-Time" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Full-Time</span>
                                 </label>
-                            ))}
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Part-Time" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Part-Time</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Remote" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Remote</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Internship" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Internship</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="type" onChange={(e) => FilterChange(e)} value="Contract" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Contract</span>
+                                </label>
+                            </div>
+                            <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
+                                <span className="font-bold text-lg">Category</span>
+                                {category?.map((value, index) => (
+
+                                    <label className="flex items-center gap-2" key={index}>
+                                        <input type="checkbox" name="employment" value={String(value.category)} className="form-checkbox h-5 w-5 text-blue-600" onChange={categoryFilterChange} />
+                                        <span className="text-base">{value.category}</span>
+                                    </label>
+                                ))}
+
+                            </div>
+                            <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
+                                <span className="font-bold text-lg">Job Level</span>
+
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="entry" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Entry Level</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="mid" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Mid Level</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="senior" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Senior Level</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="director" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">Director</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="vp or above" className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">VP or Above</span>
+                                </label>
+                            </div>
+                            <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
+                                <span className="font-bold text-lg">Salary Range(LPA)</span>
+
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="salary" value="10000-50000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">10k-50k</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="salary" value="50000-100000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">50k-1L</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="salary" value="100000-1000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">1L-10L</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="salary" value="1000000-2000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">10L-20L</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" name="salary" value="2000000-100000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span className="text-base">20L-Above</span>
+
+                                </label>
+                            </div>
 
                         </div>
-                        <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
-                            <span className="font-bold text-lg">Job Level</span>
-
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="entry" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Entry Level</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="mid" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Mid Level</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="senior" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Senior Level</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="director" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">Director</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="level" onChange={(e) => FilterChange(e)} value="vp or above" className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">VP or Above</span>
-                            </label>
-                        </div>
-                        <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
-                            <span className="font-bold text-lg">Salary Range(LPA)</span>
-
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="salary" value="10000-50000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">10k-50k</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="salary" value="50000-100000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">50k-1L</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="salary" value="100000-1000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">1L-10L</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="salary" value="1000000-2000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">10L-20L</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" name="salary" value="2000000-100000000" onChange={salaryFilterChange} className="form-checkbox h-5 w-5 text-blue-600" />
-                                <span className="text-base">20L-Above</span>
-
-                            </label>
-                        </div>
-
-                    </div>
-                    <div className="w-full lg:w-[80%]  flex flex-col pt-4 gap-4 items-center ">
-                        {list?.length ? (
-                            list.map((value, index) => (
-                                <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[85%] h-28 border border-gray-200 rounded flex">
-                                    <div className="w-[20%] h-full flex justify-center items-center">
-                                        <div className='w-20 h-20 rounded-full'>
-                                            <img src={companyLists?.find((values) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
+                        <div className="w-full lg:w-[80%]  flex flex-col pt-4 gap-4 items-center ">
+                            {list?.length ? (
+                                list.map((value, index) => (
+                                    <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[85%] h-28 border border-gray-200 rounded flex">
+                                        <div className="w-[20%] h-full flex justify-center items-center">
+                                            <div className='w-20 h-20 rounded-full'>
+                                                <img src={companyLists?.find((values) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
+                                            </div>
+                                        </div>
+                                        <div className="w-[60%] h-full flex pt-2 flex-col">
+                                            <span className="text-xl font-bold">{value.job_title}</span>
+                                            <span>{companyLists?.find((values) => values?._id === value?.companyId)?.company_name}</span>
+                                            <div className="w-full flex h-auto gap-4">
+                                                <span className="p-1 rounded border border-customviolet text-customviolet">{value?.type}</span>
+                                                <span className="p-1 rounded border border-blue-900 text-blue-900">{category?.find((values) => values?._id === value?.category)?.category}</span>
+                                                <span className="p-1 rounded border border-yellow-500 text-yellow-500">{value?.level}</span>
+                                                <span className="p-1 rounded border border-green-500 text-green-500">salary up to: {value?.salary_to}</span>
+                                            </div>
+                                        </div>
+                                        <div className="w-[20%] h-full flex flex-col gap-1 p-2 justify-center">
+                                            <button onClick={() => handleSubmit(String(value?._id))} className="p-1 bg-customviolet border border-gray-200 text-white font-bold">Apply</button>
+                                            <Stack spacing={2} sx={{ flexGrow: 1 }}>
+                                                <BorderLinearProgress variant="determinate" value={50} />
+                                            </Stack>
+                                            <span className="text-sm font-bold w-full">5 applied <span className="text-sm text-gray-400">of {value?.slot} capacity</span></span>
+                                            <span className='text-xs'>posted on: {new Date(value?.createdAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
-                                    <div className="w-[60%] h-full flex pt-2 flex-col">
-                                        <span className="text-xl font-bold">{value.job_title}</span>
-                                        <span>{companyLists?.find((values) => values?._id === value?.companyId)?.company_name}</span>
-                                        <div className="w-full flex h-auto gap-4">
-                                            <span className="p-1 rounded border border-customviolet text-customviolet">{value?.type}</span>
-                                            <span className="p-1 rounded border border-blue-900 text-blue-900">{category?.find((values) => values?._id === value?.category)?.category}</span>
-                                            <span className="p-1 rounded border border-yellow-500 text-yellow-500">{value?.level}</span>
-                                            <span className="p-1 rounded border border-green-500 text-green-500">salary up to: {value?.salary_to}</span>
-                                        </div>
-                                    </div>
-                                    <div className="w-[20%] h-full flex flex-col gap-1 p-2 justify-center">
-                                        <button className="p-1 bg-customviolet border border-gray-200 text-white font-bold">Apply</button>
-                                        <Stack spacing={2} sx={{ flexGrow: 1 }}>
-                                            <BorderLinearProgress variant="determinate" value={50} />
-                                        </Stack>
-                                        <span className="text-sm font-bold w-full">5 applied <span className="text-sm text-gray-400">of {value?.slot} capacity</span></span>
-                                        <span className='text-xs'>posted on: {new Date(value?.createdAt).toLocaleDateString()}</span>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div><span className='text-4xl font-bold'>No such data</span></div>
-                        )}
-                        <Pagination
-                            count={1}
-                            size="small"
-                            sx={{
-                                '& .MuiPaginationItem-page, & .MuiSvgIcon-root': {
-                                    color: isDarkMode ? 'white' : 'black',
-                                },
-                            }}
-                        />
+                                ))
+                            ) : (
+                                <div><span className='text-4xl font-bold'>No such data</span></div>
+                            )}
+                             <Pagination
+                                count={Math.ceil((data?.length || 0) / ITEMS_PER_PAGE)}
+                                page={page}
+                                onChange={(e, page) => setPage(page)}
+                                size="small"
+                                sx={{
+                                    '& .MuiPaginationItem-page, & .MuiSvgIcon-root': {
+                                        color: isDarkMode ? 'white' : 'black',
+                                    },
+                                }}
+                            />
 
 
+                        </div>
                     </div>
                 </div>
-            </div>
             )}
         </>
     )

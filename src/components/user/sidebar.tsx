@@ -18,7 +18,7 @@ import { RootState } from "../../redux/store";
 
 export const UserSideBar = () => {
     const { user } = useSelector((state: RootState) => state.user)
-    const [active, setActive] = useState("dashboard")
+    const [active, setActive] = useState("jobs")
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
 
@@ -32,6 +32,9 @@ export const UserSideBar = () => {
     }
     return (
         <>
+        {user?.email&&(
+
+     
             <div className="hidden lg:flex h-screen w-[200px] lg:w-[230px] top-0 left-0 dark:bg-gray-800 sticky  flex-col items-center gap-8 border border-gray-200 dark:border-gray-700">
                 <img src={logo} alt="" className="w-[60%] mt-4" />
 
@@ -146,6 +149,7 @@ export const UserSideBar = () => {
 
                 </div>
             </div>
+               )}
         </>
     )
 }

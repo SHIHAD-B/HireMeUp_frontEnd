@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {  ICategory } from '@/interfaces/IUser';
 import { fetchCategory } from '../actions/adminAction';
 import { UfetchCategory } from '../actions/userAction';
+import { CfetchCategory } from '../actions/companyAction';
 
 
 
@@ -48,6 +49,20 @@ const companyListSlice = createSlice({
                 state.error = null;
             })
             .addCase(UfetchCategory.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(CfetchCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(CfetchCategory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(CfetchCategory.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

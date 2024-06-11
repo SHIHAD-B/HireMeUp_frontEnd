@@ -24,7 +24,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { userSignupWtihGoogle } from '../../redux/actions/userAction';
 import {useToast} from '@/components/ui/use-toast';
 import { companySignup } from '@/redux/actions/companyAction';
-import { IRequests } from '@/interfaces/IUser';
+import { IRequests, IUsers } from '@/interfaces/IUser';
 import { uploadFile } from '@/utils/uploadfile/uploadDocument';
 
 const isDarkMode = document.documentElement.classList.contains('dark');
@@ -151,7 +151,7 @@ export const SignUp = () => {
             
             await signupValidation.validate(userData, { abortEarly: false });
             console.log("Validation successful");
-            await dispatch(userSignup(userData)).then((res: any) => {
+            await dispatch(userSignup(userData as IUsers)).then((res: any) => {
                 if (res?.error?.message == "Rejected") {
                     const data = {
                         email: "",

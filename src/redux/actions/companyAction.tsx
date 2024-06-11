@@ -96,3 +96,11 @@ export const editCompany = createAsyncThunk("company/company/editcompany", async
     )
 })
 
+export const CfetchCategory=createAsyncThunk('job/company/categorylist',async (_,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        "job/company/categorylist",
+        config,
+        rejectWithValue,
+    )
+})

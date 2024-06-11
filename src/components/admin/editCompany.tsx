@@ -64,7 +64,8 @@ export const EditCompany = ({ handleEditClose, data }: EditCompanyProp) => {
             if (addData.password == "") {
                 delete addData.password
             }
-
+            
+              
 
             await editCompanyValidation.validate(addData, { abortEarly: false });
             console.log("Validation successful");
@@ -74,7 +75,7 @@ export const EditCompany = ({ handleEditClose, data }: EditCompanyProp) => {
                 console.log(res, "res from the add company")
                 handleEditClose()
                 toast({
-                    description: "company added successfully",
+                    description: "company edited successfully",
                     className: "bg-customviolet text-white"
 
                 })
@@ -86,7 +87,7 @@ export const EditCompany = ({ handleEditClose, data }: EditCompanyProp) => {
                         company_name: error.response.data.message
                     }))
                 }
-                console.log(error, "error from the add company")
+                console.log(error, "error from the edited company")
             })
 
         } catch (error: any) {
@@ -132,7 +133,7 @@ export const EditCompany = ({ handleEditClose, data }: EditCompanyProp) => {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Add Company
+                        Edit Company
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         Enter Company details:

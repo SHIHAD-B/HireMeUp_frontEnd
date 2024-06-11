@@ -41,6 +41,8 @@ import { EditJob } from './pages/company/editJob';
 import { CompanyList } from './pages/user/companyList';
 import { Chat } from './pages/user/chat';
 import { CompanyChat } from './pages/company/companyChat';
+import { UnderConstruction } from './pages/user/underConstruction';
+import { MyProfilePage } from './pages/user/myProfilePage';
 
 
 function App() {
@@ -72,7 +74,8 @@ function App() {
     '/company/joblist',
     '/company/resources',
     '/company/settings',
-  '/company/chat'
+    '/company/chat',
+   '/underconstrution'
   ];
 
   const displaySideBar = !userSidebarHiddenPaths.includes(location.pathname);
@@ -137,10 +140,12 @@ function App() {
           <Route path='/Forgototp' element={user?.email ? <Navigate to="/home" /> : company?.email ? <CompanyDashboard /> : <ForgotOtp />} />
           <Route path='/resetpassword' element={user?.email ? <Navigate to="/home" /> : company?.email ? <CompanyDashboard /> : <ResetPassword />} />
           <Route path='/setting' element={user?.email ? <Setting /> : <Navigate to="/" />} />
-          <Route path='/subscription' element={user?.email ? <Subscription /> : <Navigate to="/" />} />
-          <Route path='/joblist' element={user?.email ? <Joblist /> : <Navigate to="/" />} />
-          <Route path='/companylist' element={user?.email ? <CompanyList /> : <Navigate to="/" />} />
+          <Route path='/joblist' element={<Joblist /> } />
+          <Route path='/companylist' element={<CompanyList /> } />
           <Route path='/chat' element={user?.email ? <Chat /> : <Navigate to="/" />} />
+          <Route path='/subscription' element={user?.email ? <Subscription /> : <Navigate to="/" />} />
+          <Route path='/profile' element={user?.email ? <MyProfilePage /> : <Navigate to="/" />} />
+        
 
           {/* Admin Routes */}
           <Route path='/admin' element={admin?.email ? <Navigate to="/admin/request" /> : <AdminSignIn />} />
@@ -162,6 +167,11 @@ function App() {
           <Route path='/company/resources' element={company?.email ? <ResourceManagement /> : <Navigate to="/" />} />
           <Route path='/company/settings' element={company?.email ? <AdminSetting /> : <Navigate to="/" />} />
           <Route path='/company/chat' element={company?.email ? <CompanyChat /> : <Navigate to="/" />} />
+
+
+
+          <Route path='/underconstrution' element={<UnderConstruction />} />
+
 
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>

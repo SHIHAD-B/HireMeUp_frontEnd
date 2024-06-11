@@ -5,7 +5,7 @@ import { SubscriptionPlan } from "@/components/user/subscriptionPlan";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 
-// import { TbHandClick } from "react-icons/tb";
+
 export const Subscription = () => {
 
     const { user } = useSelector((state: RootState) => state.user)
