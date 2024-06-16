@@ -25,7 +25,6 @@ const companyListSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(companyList.fulfilled, (state, action) => {
-                console.log(action.payload,"action from list user")
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null
@@ -40,7 +39,6 @@ const companyListSlice = createSlice({
                 state.error = action.payload as string;
             })
             .addCase(companyUserList.fulfilled, (state, action) => {
-                console.log(action.payload,"action from list user")
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null

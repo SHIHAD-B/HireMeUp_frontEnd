@@ -24,7 +24,6 @@ const requestSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(allRequests.fulfilled, (state, action) => {
-                console.log(action.payload,"payload from ireq")
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null

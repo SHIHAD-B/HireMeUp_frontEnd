@@ -85,6 +85,15 @@ export const applicantList=createAsyncThunk('job/user/applicantlist',async (_,{r
     )
 })
 
+export const userApplicantList=createAsyncThunk('job/user/fetchapplicants',async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `job/user/fetchapplicants/${id}`,
+        config,
+        rejectWithValue,
+    )
+})
+
 
 
 

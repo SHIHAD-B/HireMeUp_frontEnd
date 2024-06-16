@@ -24,6 +24,8 @@ import { ModeToggle } from '../common/mode-toggle';
 import { FaArrowLeft } from "react-icons/fa6";
 import { Apply } from './apply';
 import { applicantList } from '@/redux/actions/userAction';
+import { useToast } from '../ui/use-toast';
+import axios from 'axios';
 interface JobDescriptionProps {
     id: string;
     back: () => void;
@@ -75,6 +77,7 @@ const icons = [
 ]
 
 export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
+    const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>()
     const [jobData, setJobData] = useState<IJobData | null>(null);
     const { data, loading } = useSelector((state: RootState) => state.job);
@@ -84,6 +87,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
     const { data: applicantLists } = useSelector((state: RootState) => state.applicantList)
     const [applyModal, setApplyModal] = useState(false)
     const [applied, setApplied] = useState(false)
+
 
     useEffect(() => {
         dispatch(applicantList())
@@ -105,17 +109,29 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
     const closeJobModal = () => {
         setApplyModal(false)
     }
+    const applyJob = () => {
+        if (!user?.profile || !user.phone) {
+            toast({
+                description: "Please Update your Profile to Apply!",
+                className: "bg-red-500 text-white"
+            });
+        } else {
+            setApplyModal(true)
+        }
+    }
+
+ 
     return (
         <>
             {applyModal && (
                 <>
-                    <Apply jobId={String(jobData?._id)} handleaddClose={closeJobModal} setApp={setApplied}/>
+                    <Apply jobId={String(jobData?._id)} handleaddClose={closeJobModal} setApp={setApplied} />
                 </>
             )}
             <div className="w-full felx felx-col ">
                 {loading && <Loader />}
 
-                <div className="h-[70px] border-b border-gray-200 flex items-center pl-2 pr-4 justify-between">
+                <div className="h-[70px]  border-b border-gray-200 flex items-center pl-2 pr-4 justify-between">
                     <span className="text-xl font-bold flex gap-4 justify-center items-center"><FaArrowLeft onClick={back} className='cursor-pointer' />Job Description</span>
                     <ModeToggle />
                 </div>
@@ -156,11 +172,11 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                             <div className='w-0.5 h-[40%] bg-gray-500'></div>
                             {applied ? (
                                 <>
-                                    <div><button onClick={() => setApplyModal(true)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
+                                    <div><button className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
                                 </>
                             ) : (
                                 <>
-                                    <div><button onClick={() => setApplyModal(true)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>Easy Apply</button></div>
+                                    <div><button onClick={applyJob} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>Easy Apply</button></div>
                                 </>
                             )}
 

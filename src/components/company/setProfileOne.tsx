@@ -103,7 +103,7 @@ export const SetProfileOne = () => {
             }))
             handleClose();
             setLoad(true)
-            const imglink = await uploadFile(croppedImg)
+            const imglink = await uploadFile(croppedImg,"profile")
             setCompanyData((prev: any) => ({
                 ...prev,
                 icon: imglink

@@ -27,7 +27,6 @@ const tempUserSlice:any = createSlice({
                 state.error = null
             })
             .addCase(userSignup.fulfilled, (state, action) => {
-                console.log(action.payload, "data in teh usersignup of the temp user")
                 state.loading = false;
                 state.user = action.payload as IUsers;
                 state.error = null

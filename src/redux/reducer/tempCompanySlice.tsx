@@ -24,7 +24,6 @@ const tempCompanySlice = createSlice({
                 state.error = null
             })
             .addCase(companySignup.fulfilled, (state, action) => {
-                console.log(action.payload,"data when sign in company")
                 state.loading = false;
                 state.companydata = action.payload as ICompanyData;
                 state.error = null

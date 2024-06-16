@@ -27,12 +27,14 @@ export interface IUsers {
   email?: string;
   phone?: string;
   password?: string;
+  language?:string[];
   confirmPassword?: string;
   gender?: string;
   dob?: Date | null;
   profile?: string;
   skills?: string[];
   education?: [{
+    _id?:string;
     university:string;
     course:string;
     description?: string | null;
@@ -40,9 +42,18 @@ export interface IUsers {
     grade?: string | null;
     to?: Date | null;
   }];
+  address: {
+    houseNumber:string,
+    locality:string,
+    city:string,
+    state:string,
+    pin: number,
+    country:string
+ },
   cv?: string | null;
   about?: string | null;
   experiences?: [{
+    _id?:string;
     description?: string;
     designation?: string;
     company?: string;
@@ -54,7 +65,6 @@ export interface IUsers {
     email?: string;
     instagram?: string;
     linkedin?: string;
-    phone?: string;
     portfolio?: string;
     twitter?: string;
   };
@@ -81,6 +91,15 @@ export interface IUsers {
   }]
 }
 
+export interface IAddress{
+  houseNumber:string,
+  locality: string,
+  city: string,
+  state: string,
+  pin: number ,
+  country: string
+}
+
 export interface IAdminData {
   _id?: string,
   password?: string,
@@ -97,6 +116,13 @@ export interface IRequests {
   password?: string;
   confirmPassword?: string;
   otp?: string
+}
+
+export interface ISocialLink{
+  instagram:string,
+  linkedin: string,
+  portfolio:string,
+  twitter: string,
 }
 
 export interface IJobData {
@@ -137,25 +163,26 @@ export interface ICategory {
 
 
 export interface IApplicants {
-    _id: string;
-    jobId: string ;
-    schedule: {
-       date: Date ;
-       feedback: string ;
-       status: string ;
-       time: string ;
-       title: string ;
+    _id?: string;
+    jobId?: string ;
+    companyId:string;
+    schedule?: {
+       date?: Date ;
+       feedback?: string ;
+       status?: string ;
+       time?: string ;
+       title?: string ;
     }[];
-    userId: string ;
-    createdAt: Date ;
-    hiring_status: string ;
-    resume: string ;
-    answers: object[],
-    hiring_info: {
-       date: Date ;
-       interviewer: string ;
-       notes: string ;
-       status: string ;
+    userId?: string ;
+    createdAt?: Date ;
+    hiring_status?: string ;
+    resume?: string ;
+    answers?: object[],
+    hiring_info?: {
+       date?: Date ;
+       interviewer?: string ;
+       notes?: string ;
+       status?: string ;
     }[];
   }
 

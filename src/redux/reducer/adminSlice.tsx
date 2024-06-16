@@ -22,7 +22,6 @@ const CompanySlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchAdmin.fulfilled, (state, action) => {
-                console.log(action.payload, "action admin redux")
                 state.loading = false;
                 state.admin = action.payload as IAdminData;
                 state.error = null

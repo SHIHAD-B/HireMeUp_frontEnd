@@ -15,7 +15,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AppDispatch, RootState } from './redux/store';
 import { useEffect, useState } from 'react';
 import { fetchUser } from './redux/actions/userAction';
-import { fetchCompany } from './redux/actions/companyAction';
+import { companyApplicantList, fetchCompany } from './redux/actions/companyAction';
 import { fetchAdmin } from './redux/actions/adminAction';
 import { UserManagement } from './pages/admin/userManagement';
 import { RequestManagement } from './pages/admin/requestManagement';
@@ -43,6 +43,10 @@ import { Chat } from './pages/user/chat';
 import { CompanyChat } from './pages/company/companyChat';
 import { UnderConstruction } from './pages/user/underConstruction';
 import { MyProfilePage } from './pages/user/myProfilePage';
+import { Application } from './pages/user/application';
+import { allMessageList } from './redux/actions/userAction';
+import { Applicants } from './pages/company/applicants';
+import { ApplicantDetails } from './pages/company/applicantDetails';
 
 
 function App() {
@@ -93,7 +97,9 @@ function App() {
     '/company/resources',
     '/company',
     '/company/settings',
-    '/company/chat'
+    '/company/chat',
+    '/company/applicants',
+    '/company/applicantsdetails'
   ];
 
   const adminDisplaySideBar = adminSidebarHiddenPaths.includes(location.pathname);
@@ -110,6 +116,8 @@ function App() {
       await dispatch(fetchUser());
       await dispatch(fetchCompany());
       await dispatch(fetchAdmin());
+      await dispatch(companyApplicantList(String(company?._id)))
+      dispatch(allMessageList(String(user?._id)))
       setLoading(false);
     };
 
@@ -145,6 +153,7 @@ function App() {
           <Route path='/chat' element={user?.email ? <Chat /> : <Navigate to="/" />} />
           <Route path='/subscription' element={user?.email ? <Subscription /> : <Navigate to="/" />} />
           <Route path='/profile' element={user?.email ? <MyProfilePage /> : <Navigate to="/" />} />
+          <Route path='/myapplication' element={user?.email ? <Application /> : <Navigate to="/" />} />
         
 
           {/* Admin Routes */}
@@ -167,6 +176,8 @@ function App() {
           <Route path='/company/resources' element={company?.email ? <ResourceManagement /> : <Navigate to="/" />} />
           <Route path='/company/settings' element={company?.email ? <AdminSetting /> : <Navigate to="/" />} />
           <Route path='/company/chat' element={company?.email ? <CompanyChat /> : <Navigate to="/" />} />
+          <Route path='/company/applicants' element={company?.email ? <Applicants /> : <Navigate to="/" />} />
+          <Route path='/company/applicantsdetails' element={company?.email ? <ApplicantDetails /> : <Navigate to="/" />} />
 
 
 

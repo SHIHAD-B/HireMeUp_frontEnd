@@ -23,9 +23,9 @@ import axios from "axios";
 
 export const LandingPage = () => {
     const navigate = useNavigate()
-    const [states, setStates] = useState<IState[]>()
     const [searchData, setSearchData] = useState("")
     const [location, setLocation] = useState("")
+    const [states, setStates] = useState<IState[]>()
   
 
     useEffect(() => {

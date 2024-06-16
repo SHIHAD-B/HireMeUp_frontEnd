@@ -4,10 +4,10 @@ import { reduxRequest } from "../../interfaces/config/api";
 import { ICompanyData } from "@/interfaces/IUser";
 
 
-export const fetchCompany = createAsyncThunk("company/fetchcompany", async (_,{rejectWithValue}) => {
+export const fetchCompany = createAsyncThunk("company/company/fetchcompany", async (_,{rejectWithValue}) => {
     return reduxRequest(
         "get",
-        "company/fetchcompany",
+        "company/company/fetchcompany",
         config,
         rejectWithValue,
     )
@@ -63,6 +63,16 @@ export const companySignin = createAsyncThunk("auth/companysignin", async (Data:
 
 })
 
+export const companyApplicantList=createAsyncThunk('job/company/fetchapplicants',async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `job/company/fetchapplicants/${id}`,
+        config,
+        rejectWithValue,
+    )
+})
+
+
 
 export const companySignup = createAsyncThunk("auth/companysignup", async (data: ICompanyData | null, { rejectWithValue }) => {
     return reduxRequest(
@@ -104,3 +114,13 @@ export const CfetchCategory=createAsyncThunk('job/company/categorylist',async (_
         rejectWithValue,
     )
 })
+
+export const listcompanyUsers = createAsyncThunk("user/company/listusers", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "user/company/listusers",
+        config,
+        rejectWithValue
+    )
+})
+

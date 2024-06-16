@@ -1,7 +1,8 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import {  IApplicants } from '@/interfaces/IUser';
-import { applicantList } from '../actions/userAction';
+import { userApplicantList } from '../actions/userAction';
+import { companyApplicantList } from '../actions/companyAction';
 
 
 
@@ -23,16 +24,31 @@ const applicantListSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(applicantList.fulfilled, (state, action) => {
+            .addCase(userApplicantList.fulfilled, (state, action) => {
+                console.log(action.payload,"payload of the applicants")
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null
             })
-            .addCase(applicantList.pending, (state) => {
+            .addCase(userApplicantList.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(applicantList.rejected, (state, action) => {
+            .addCase(userApplicantList.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(companyApplicantList.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(companyApplicantList.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(companyApplicantList.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

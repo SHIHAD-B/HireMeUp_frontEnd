@@ -115,7 +115,7 @@ export const Chat = () => {
     return (
         <>
             <div className="w-full flex flex-col h-screen">
-                <UserHeader prop="Messages" />
+            <UserHeader prop="Messages" />
                 <div className="w-full flex h-[90%] bg-red-300">
                     <div className="w-[30%] h-full bg-white flex flex-col border">
                         <div className="w-full h-[10%] flex justify-center items-center p-2">

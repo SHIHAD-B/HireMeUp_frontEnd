@@ -7,10 +7,11 @@ import { ICompanyData, IJobData, IState } from "@/interfaces/IUser";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ListJob } from '@/redux/actions/jobAction';
-import { companyList, companyUserList } from '@/redux/actions/companyAction';
+import { companyUserList } from '@/redux/actions/companyAction';
 import { fetchCategory } from '@/redux/actions/adminAction';
 import { UserHeader } from "@/components/user/header";
 import { CompanyDescription } from "@/components/user/companyDescription";
+import { UfetchCategory } from "@/redux/actions/userAction";
 
 
 export const CompanyList = () => {
@@ -28,8 +29,7 @@ export const CompanyList = () => {
 
     useEffect(() => {
         dispatch(ListJob())
-        dispatch(companyList())
-        dispatch(fetchCategory())
+        dispatch(UfetchCategory())
         setList(data)
         pageLogic()
     }, [])
@@ -41,7 +41,6 @@ export const CompanyList = () => {
             setLoading(true);
             await dispatch(ListJob());
             await dispatch(companyUserList());
-            await dispatch(fetchCategory());
             setLoading(false);
         };
         fetchData();

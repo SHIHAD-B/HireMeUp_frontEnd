@@ -60,7 +60,7 @@ export const UserSideBar = () => {
                         </div>
                     </NavLink>
 
-                    <NavLink to="/applications" className="w-full h-10 flex justify-between cursor-pointer" onClick={() => setActive("applications")}>
+                    <NavLink to="/myapplication" className="w-full h-10 flex justify-between cursor-pointer" onClick={() => setActive("applications")}>
                         <div className={`w-1 ${active === 'applications' && 'bg-customviolet'} h-full`}></div>
                         <div className={`w-[90%] h-full ${active === 'applications' && "dark:bg-gray-900 bg-activesilver"}`}>
                             <span className={`w-full h-full flex gap-4 items-center ${active === "applications" ? "text-customviolet" : "text-gray-600 dark:text-textDark "}`}>
