@@ -53,6 +53,7 @@ import { EditUser } from "@/components/admin/editUser";
 
 export const UserManagement = () => {
   const { data, loading }: any = useSelector((state: RootState) => state.usersList)
+  const { admin } = useSelector((state: RootState) => state.admin)
   const dispatch = useDispatch<AppDispatch>()
 
   const [addUserOpen, setAddUserOpen] = useState(false);
@@ -93,7 +94,7 @@ export const UserManagement = () => {
     setEditUserOpen(false)
   }
 
-  const handleEditOpen=(data:any)=>{
+  const handleEditOpen = (data: any) => {
     setEditData(data)
     setEditUserOpen(true)
   }
@@ -130,7 +131,7 @@ export const UserManagement = () => {
 
 
   const handleBlock = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/admin/blockUser`, { email: email },{withCredentials:true}).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/blockUser`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -139,7 +140,7 @@ export const UserManagement = () => {
     })
   }
   const handleUnBlock = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/admin/unblockUser`, { email: email },{withCredentials:true}).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/unblockUser`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -148,7 +149,7 @@ export const UserManagement = () => {
     })
   }
   const handledelete = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/admin/deleteUser`, { email: email },{withCredentials:true}).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/deleteUser`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -157,7 +158,7 @@ export const UserManagement = () => {
     })
   }
   const handlerecover = async (email: string) => {
-    await axios.patch(`${BASE_URL}user/admin/recoverUser`, { email: email },{withCredentials:true}).then(() => {
+    await axios.patch(`${BASE_URL}user/admin/recoverUser`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(listUsers());
       setblockOpen(false)
       setunblockOpen(false)
@@ -172,7 +173,7 @@ export const UserManagement = () => {
     _id: string;
     createdAt: Date;
     username: string;
-    phone:string;
+    phone: string;
     status: string;
     email: string;
   };
@@ -258,36 +259,40 @@ export const UserManagement = () => {
       cell: ({ row }) => {
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 ">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4 " />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white text-black">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {admin?.access == "can-edit" && (
+              <>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0 ">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4 " />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-white text-black">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-              <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
 
-              <DropdownMenuItem onClick={() => handleEditOpen(row.original)}>Edit</DropdownMenuItem>
-              {row.getValue("blocked") == true && row.getValue("deleted") == false && (
-                <>
-                  <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
-                </>
-              )}
-              {row.getValue("blocked") == false && row.getValue("deleted") == false && (
-                <>
-                  <DropdownMenuItem onClick={() => handleModalblock(row.getValue("email"))}>block</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
-                </>
-              )}
-              {row.getValue("deleted") == true && (
-                <>
-                  <DropdownMenuItem onClick={() => handleModalrecover(row.getValue("email"))}>recover</DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => handleEditOpen(row.original)}>Edit</DropdownMenuItem>
+                  {row.getValue("blocked") == true && row.getValue("deleted") == false && (
+                    <>
+                      <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
+                    </>
+                  )}
+                  {row.getValue("blocked") == false && row.getValue("deleted") == false && (
+                    <>
+                      <DropdownMenuItem onClick={() => handleModalblock(row.getValue("email"))}>block</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
+                    </>
+                  )}
+                  {row.getValue("deleted") == true && (
+                    <>
+                      <DropdownMenuItem onClick={() => handleModalrecover(row.getValue("email"))}>recover</DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </>
+            )}
           </DropdownMenu>
         );
       },
@@ -342,7 +347,7 @@ export const UserManagement = () => {
 
         )}
         {editUserOpen && (
-             <EditUser handleEditClose={handlEditClose} data={editData} />
+          <EditUser handleEditClose={handlEditClose} data={editData} />
 
         )}
 
@@ -491,9 +496,12 @@ export const UserManagement = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
+                  {admin?.access=="can-edit"&&(
+
                   <div className="w-full h-auto  flex justify-end pb-2">
                     <button onClick={() => setAddUserOpen(true)} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add User</button>
                   </div>
+                  )}
                   <div className="rounded-md border">
                     <Table>
                       <TableHeader>

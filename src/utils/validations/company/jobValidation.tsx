@@ -12,6 +12,7 @@ export const addJobValidation = yup.object().shape({
     salary_to: yup.number().min(yup.ref('salary_from')).required("Salary to is required"),
     job_title: yup.string().required("Job title is required"),
     type: yup.string().required("Select one type"),
+    location:yup.string().nullable().optional(),
     benefits: yup.array().of(yup.object().shape({
         description: yup.string().nullable().optional(),
         icon: yup.string().nullable().optional(),

@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store";
 import { AdminHeader } from "@/components/admin/header";
 import { FaPlus } from "react-icons/fa6";
@@ -51,7 +51,8 @@ import { EditCategoryModal } from "@/components/admin/editCategory";
 
 
 export const CategoryManagement = () => {
-    const {loading,data}: any = useSelector((state: RootState) => state.category)
+    const { loading, data }: any = useSelector((state: RootState) => state.category)
+    const { admin } = useSelector((state: RootState) => state.admin)
     const dispatch = useDispatch<AppDispatch>()
 
 
@@ -79,7 +80,7 @@ export const CategoryManagement = () => {
 
     const handleditOpen = () => seteditOpen(true);
     const handleditClose = () => seteditOpen(false);
-  
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -104,10 +105,10 @@ export const CategoryManagement = () => {
         handleditOpen();
     }
     const handledelete = async (id: string) => {
-        await axios.patch(`${BASE_URL}job/admin/deletecategory`, { id: id },{withCredentials:true});
+        await axios.patch(`${BASE_URL}job/admin/deletecategory`, { id: id }, { withCredentials: true })
         dispatch(fetchCategory());
         handleClose();
-        
+
     }
 
 
@@ -194,24 +195,40 @@ export const CategoryManagement = () => {
             cell: ({ row }) => {
                 return (
                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 ">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4 " />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white text-black">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {admin?.access == "can-edit" && (
+                            <>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-8 p-0 ">
+                                        <span className="sr-only">Open menu</span>
+                                        <MoreHorizontal className="h-4 w-4 " />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white text-black">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-                            <DropdownMenuSeparator />
+                                    <DropdownMenuSeparator />
 
-                            {row.getValue("name") !== "a" && (
-                                <>
-                                    <DropdownMenuItem onClick={()=>handleModalEdit(row.original)} >Edit</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.category })} >Delete</DropdownMenuItem>
-                                </>
-                            )}
-                        </DropdownMenuContent>
+                                    {row.getValue("name") !== "a" && (
+                                        <>
+                                            {row.original.deleted == false && (
+
+                                                <>
+                                                    <DropdownMenuItem onClick={() => handleModalEdit(row.original)} >Edit</DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.category })} >Delete</DropdownMenuItem>
+                                                </>
+                                            )}
+                                            {row.original.deleted  == true && (
+
+                                                <>
+                                                    
+                                                    <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.category })} >Recover</DropdownMenuItem>
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </DropdownMenuContent>
+                            </>
+                        )}
                     </DropdownMenu>
                 );
             },
@@ -285,7 +302,7 @@ export const CategoryManagement = () => {
                         </Modal>
                     </div>
                 )}
-               
+
 
                 {addopen && <AddCategoryModal handleaddClose={handleaddClose} />}
                 {editOpen && <EditCategoryModal handleClose={handleditClose} data={plans} />}
@@ -308,9 +325,9 @@ export const CategoryManagement = () => {
                                     <div className="flex items-center py-4">
                                         <Input
                                             placeholder="Filter name..."
-                                            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                                            value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
                                             onChange={(event) =>
-                                                table.getColumn("name")?.setFilterValue(event.target.value)
+                                                table.getColumn("category")?.setFilterValue(event.target.value)
                                             }
                                             className="max-w-sm"
                                         />
@@ -341,9 +358,11 @@ export const CategoryManagement = () => {
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
-                                    <div className="w-full h-auto  flex justify-end pb-2">
-                                        <button onClick={handleaddOpen} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Category</button>
-                                    </div>
+                                    {admin?.access == "can-edit" && (
+                                        <div className="w-full h-auto  flex justify-end pb-2">
+                                            <button onClick={handleaddOpen} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Category</button>
+                                        </div>
+                                    )}
                                     <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>

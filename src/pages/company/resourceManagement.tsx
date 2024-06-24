@@ -70,7 +70,7 @@ export const ResourceManagement = () => {
         discount: 0
     });
 
-    console.log(compData, "emp data");
+
     const handleOpen = () => setdelOpen(true);
     const handleClose = () => setdelOpen(false);
 
@@ -86,7 +86,7 @@ export const ResourceManagement = () => {
         };
 
         fetchData();
-    }, [dispatch]);
+    }, []);
 
     const filterData = () => {
         return compData?.filter((data: any) => data.companyId == company_Id);

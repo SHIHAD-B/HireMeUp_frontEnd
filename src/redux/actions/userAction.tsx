@@ -76,6 +76,15 @@ export const UfetchCategory=createAsyncThunk('job/user/categorylist',async (_,{r
         rejectWithValue,
     )
 })
+export const fetchSchedule=createAsyncThunk('job/user/fetchschedule',async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `job/user/fetchschedule/${id}`,
+        config,
+        rejectWithValue,
+    )
+})
+
 export const applicantList=createAsyncThunk('job/user/applicantlist',async (_,{rejectWithValue})=>{
     return reduxRequest(
         "get",
@@ -89,6 +98,14 @@ export const userApplicantList=createAsyncThunk('job/user/fetchapplicants',async
     return reduxRequest(
         "get",
         `job/user/fetchapplicants/${id}`,
+        config,
+        rejectWithValue,
+    )
+})
+export const userNotificatinoList=createAsyncThunk('notification/user/fetchnotification',async (id:string,{rejectWithValue})=>{
+    return reduxRequest(
+        "get",
+        `notification/user/fetchnotification/${id}`,
         config,
         rejectWithValue,
     )

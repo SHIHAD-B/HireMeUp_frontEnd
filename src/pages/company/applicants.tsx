@@ -45,20 +45,12 @@ import { companyApplicantList, listcompanyUsers } from "@/redux/actions/companyA
 import { useToast } from "@/components/ui/use-toast";
 import { BASE_URL } from "@/interfaces/config/constant";
 import { useNavigate } from "react-router-dom";
+import { updateApplicantStatus } from "@/utils/notificationManager/updateApplicantStatus";
 
 
 export const Applicants = () => {
     const { toast } = useToast()
-    const [value, setValue] = useState({
-        startDate: new Date('2023-01-01'),
-        endDate: new Date()
-    });
-
-
-    const handleValueChange = (newValue: any) => {
-        console.log("newValue:", newValue);
-        setValue(newValue);
-    }
+ 
     const navigate=useNavigate()
 
     const { loading, data: Datas }: any = useSelector((state: RootState) => state.applicantList)
@@ -82,7 +74,7 @@ export const Applicants = () => {
         }
     };
 
-    const updateStatus = async (id: string, status: string) => {
+    const updateStatus = async (id: string, status: string,userId:string,jobId:string) => {
         const data = {
             id: id,
             status: status
@@ -104,6 +96,14 @@ export const Applicants = () => {
                 const filJobs = applist?.filter((item: any) => item.hiring_status == prevStatus);
                 setData(filJobs);
                 setActive(prevStatus);
+                const jobname=jobs.find((item:any)=>item._id==jobId).job_title
+                const data={
+                    sender:company_Id,
+                    recipient:userId,
+                    update:status,
+                    jobname:jobname
+                }
+                updateApplicantStatus(data)
             }).catch((error: any) => {
                 console.log(error,"error in fetching")
                 toast({
@@ -119,7 +119,10 @@ export const Applicants = () => {
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(fecthJob(company_Id));
-            await dispatch(companyApplicantList(String(company_Id)))
+            await dispatch(companyApplicantList(String(company_Id))).then((res)=>{
+                console.log(res,"resss")
+                setData(res.payload)
+            })
             await dispatch(listcompanyUsers())
         };
 
@@ -233,7 +236,7 @@ export const Applicants = () => {
             header: "",
             cell: ({ row }) => {
                 return (
-                    <button onClick={()=>navigate('/company/applicantsdetails')} className="p-2 rounded border border-customviolet bg-customviolet text-white hover:bg-white hover:text-customviolet">See Application</button>
+                    <button onClick={()=>navigate('/company/applicantsdetails',{ state: { id:row.original._id  } })} className="p-2 rounded border border-customviolet bg-customviolet text-white hover:bg-white hover:text-customviolet">See Application</button>
                 );
             },
         },
@@ -257,20 +260,20 @@ export const Applicants = () => {
 
                             {row.getValue("hiring_status") == "in-review" && (
                                 <>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "shortlisted")}  >Shortlist</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected")} >Reject</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "shortlisted",row.original.userId,row.original.jobId)}  >Shortlist</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected",row.original.userId,row.original.jobId)} >Reject</DropdownMenuItem>
                                 </>
                             )}
                             {row.getValue("hiring_status") == "shortlisted" && (
                                 <>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "interview")}  >Schedule an interview</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected")} >Reject</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "interview",row.original.userId,row.original.jobId)}  >Schedule an interview</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected",row.original.userId,row.original.jobId)} >Reject</DropdownMenuItem>
                                 </>
                             )}
                             {row.getValue("hiring_status") == "interview" && (
                                 <>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "hired")}  >Hire</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected")} >Reject</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "hired",row.original.userId,row.original.jobId)}  >Hire</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => updateStatus(row.getValue("_id"), "rejected",row.original.userId,row.original.jobId)} >Reject</DropdownMenuItem>
                                 </>
                             )}
                             {row.getValue("hiring_status") == "rejected" && (
@@ -330,15 +333,7 @@ export const Applicants = () => {
                                     <span className="font-bold">Applicants</span>
                                     <span>Total:{Datas?.length}</span>
                                 </div>
-                                <div className="w-72 h-11 border border-gray-800 m-1 rounded">
-                                    <Datepicker
-                                        value={value}
-                                        onChange={handleValueChange}
-                                        showShortcuts={true}
-                                        minDate={value.startDate}
-                                        maxDate={value.endDate}
-                                    />
-                                </div>
+                                
 
                             </div>
                             <div className="w-full flex gap-4 p-6">

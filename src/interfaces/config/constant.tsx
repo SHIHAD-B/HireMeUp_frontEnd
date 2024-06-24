@@ -4,3 +4,4 @@ export const API_KEY_CLOUDINARY=import.meta.env.VITE_REACT_APP_API_KEY_CLOUDINAR
 export const STRIPE_PUBLISH_KEY=import.meta.env.VITE_REACT_APP_STRIPE_PUBLISH_KEY
 export const STRIPE_SECRET_KEY=import.meta.env.VITE_REACT_APP_STRIPE_SECRET_KEY
 export const ENCRYPTION_KEY=import.meta.env.VITE_REACT_APP_ENCRYPTION_KEY
+export const SOCkET_URL=import.meta.env.VITE_REACT_APP_SOCKET_URL

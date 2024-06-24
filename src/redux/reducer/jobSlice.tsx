@@ -1,6 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import { ListJob,fecthJob } from '../actions/jobAction';
+import { AdminListJob } from '../actions/adminAction';
 import { IJobData } from '@/interfaces/IUser';
 
 
@@ -44,6 +45,19 @@ const JobSlice = createSlice({
                 state.error = null
             })
             .addCase(fecthJob.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string
+            })
+            .addCase(AdminListJob.pending, (state) => {
+                state.loading = true;
+                state.error = null
+            })
+            .addCase(AdminListJob.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload as IJobData[];
+                state.error = null
+            })
+            .addCase(AdminListJob.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string
             })

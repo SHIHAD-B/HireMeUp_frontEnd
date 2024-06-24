@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store";
 import { AdminHeader } from "@/components/admin/header";
 import { FaPlus } from "react-icons/fa6";
@@ -52,6 +52,7 @@ import { EditPlans } from "@/components/admin/editPlans";
 
 export const SubscriptionManagement = () => {
     const { data, loading }: any = useSelector((state: RootState) => state.subscription)
+    const { admin } = useSelector((state: RootState) => state.admin)
     const dispatch = useDispatch<AppDispatch>()
 
 
@@ -79,7 +80,7 @@ export const SubscriptionManagement = () => {
 
     const handleditOpen = () => seteditOpen(true);
     const handleditClose = () => seteditOpen(false);
-  
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -106,7 +107,7 @@ export const SubscriptionManagement = () => {
         handleditOpen();
     }
     const handledelete = async (id: string) => {
-        await axios.patch(`${BASE_URL}subscription/admin/deleteplan`, { id: id },{withCredentials:true});
+        await axios.patch(`${BASE_URL}subscription/admin/deleteplan`, { id: id }, { withCredentials: true });
         dispatch(fetchSubscription());
         handleClose();
     }
@@ -216,24 +217,39 @@ export const SubscriptionManagement = () => {
             cell: ({ row }) => {
                 return (
                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 ">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4 " />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white text-black">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {admin?.access == "can-edit" && (
+                            <>
 
-                            <DropdownMenuSeparator />
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-8 p-0 ">
+                                        <span className="sr-only">Open menu</span>
+                                        <MoreHorizontal className="h-4 w-4 " />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white text-black">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-                            {row.getValue("name") !== "a" && (
-                                <>
-                                    <DropdownMenuItem onClick={()=>handleModalEdit(row.original)} >Edit</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.name })} >Delete</DropdownMenuItem>
-                                </>
-                            )}
-                        </DropdownMenuContent>
+                                    <DropdownMenuSeparator />
+
+                                    {row.getValue("name") !== "a" && (
+                                        <>
+                                        {row.original.deleted==false&&(
+                                            <>
+                                            <DropdownMenuItem onClick={() => handleModalEdit(row.original)} >Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.name })} >Delete</DropdownMenuItem>
+                                            </>
+                                        )}
+                                        {row.original.deleted==true&&(
+                                            <>
+                                           
+                                            <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.name })} >Recover</DropdownMenuItem>
+                                            </>
+                                        )}
+                                        </>
+                                    )}
+                                </DropdownMenuContent>
+                            </>
+                        )}
                     </DropdownMenu>
                 );
             },
@@ -307,7 +323,7 @@ export const SubscriptionManagement = () => {
                         </Modal>
                     </div>
                 )}
-               
+
 
                 {addopen && <AddPlansModal handleaddClose={handleaddClose} />}
                 {editOpen && <EditPlans handleClose={handleditClose} data={plans} />}
@@ -363,9 +379,12 @@ export const SubscriptionManagement = () => {
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
+                                    {admin?.access=="can-edit"&&(
+
                                     <div className="w-full h-auto  flex justify-end pb-2">
                                         <button onClick={handleaddOpen} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add plan</button>
                                     </div>
+                                    )}
                                     <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>

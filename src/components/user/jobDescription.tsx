@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles';
 import { GoShareAndroid } from "react-icons/go";
 import { Stack } from '@mui/material';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-import { IJobData } from '@/interfaces/IUser';
+import { IApplicants, IJobData } from '@/interfaces/IUser';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -25,7 +25,17 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { Apply } from './apply';
 import { applicantList } from '@/redux/actions/userAction';
 import { useToast } from '../ui/use-toast';
-import axios from 'axios';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 interface JobDescriptionProps {
     id: string;
     back: () => void;
@@ -81,12 +91,16 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
     const dispatch = useDispatch<AppDispatch>()
     const [jobData, setJobData] = useState<IJobData | null>(null);
     const { data, loading } = useSelector((state: RootState) => state.job);
+    const { data:schedules } = useSelector((state: RootState) => state.schedule);
     const { user } = useSelector((state: RootState) => state.user);
     const { data: catdata } = useSelector((state: RootState) => state.category)
     const { data: companyData } = useSelector((state: RootState) => state.companyList)
     const { data: applicantLists } = useSelector((state: RootState) => state.applicantList)
     const [applyModal, setApplyModal] = useState(false)
     const [applied, setApplied] = useState(false)
+    const { data: jobs } = useSelector((state: RootState) => state.job);
+    const [selectedApplication, setSelectedApplication] = useState<IApplicants | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 
     useEffect(() => {
@@ -110,7 +124,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
         setApplyModal(false)
     }
     const applyJob = () => {
-        if (!user?.profile || !user.phone) {
+        if (!user?.profile || !user.phone || !user.gender || !user.education || user.skills?.length == 0 || !user.language || !user.dob || !user.about || !user.address) {
             toast({
                 description: "Please Update your Profile to Apply!",
                 className: "bg-red-500 text-white"
@@ -120,7 +134,16 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
         }
     }
 
- 
+    const handleViewMoreClick = (application: IApplicants) => {
+        setSelectedApplication(application);
+        setIsDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+        setSelectedApplication(null);
+    };
+
     return (
         <>
             {applyModal && (
@@ -172,7 +195,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                             <div className='w-0.5 h-[40%] bg-gray-500'></div>
                             {applied ? (
                                 <>
-                                    <div><button className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
+                                    <div><button onClick={() => handleViewMoreClick(applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == data?.find((item) => item._id == id)?.companyId) as IApplicants)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
                                 </>
                             ) : (
                                 <>
@@ -183,7 +206,41 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                         </div>
                     </div>
                 </div>
+                <AlertDialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Application Details</AlertDialogTitle>
+                                    <AlertDialogDescription>
 
+                                        <div>
+                                            <p><strong>Company Name:</strong> {companyData?.find((item) => item._id == selectedApplication?.companyId)?.company_name}</p>
+                                            <p><strong>Role:</strong> {jobs?.find((item) => item._id == selectedApplication?.jobId)?.job_title}</p>
+                                            <p><strong>Date Applied:</strong> {selectedApplication?.createdAt ? new Date(selectedApplication?.createdAt).toDateString() : ""}</p>
+                                            <p className='mb-4'><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
+                                            {schedules?.length && (
+                                                <>
+                                                    <span className="font-bold underline">Interview Details</span>
+                                                    {schedules.filter((item)=>item.jobId==selectedApplication?.jobId).map((item, index) => (
+                                                        <>
+                                                            <div key={index} className="mt-2">
+                                                                <p><strong>Title:</strong> {item.title}</p>
+                                                                <p><strong>Date:</strong> {new Date(String(item?.date)).toLocaleString()}</p>
+                                                                <p><strong>Status:</strong> {item.status}</p>
+
+                                                            </div>
+                                                        </>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </div>
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={handleCloseDialog}>Close</AlertDialogCancel>
+                                    <AlertDialogAction className="bg-customviolet hover:bg-white hover:text-black">Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                 <div className='w-full   flex p-4'>
                     <div className='w-[60%] h-full flex flex-col gap-6'>
                         <div className='w-full flex flex-col gap-2'>

@@ -133,6 +133,7 @@ export const PostJob = () => {
         qualification: "",
         requirements: "",
         benefits: [],
+        location:"",
         slot: 0,
         start_date: "",
         end_date: "",

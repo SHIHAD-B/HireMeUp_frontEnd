@@ -27,39 +27,39 @@ export interface IUsers {
   email?: string;
   phone?: string;
   password?: string;
-  language?:string[];
+  language?: string[];
   confirmPassword?: string;
   gender?: string;
   dob?: Date | null;
   profile?: string;
   skills?: string[];
   education?: [{
-    _id?:string;
-    university:string;
-    course:string;
-    description?: string | null;
-    from?: Date | null;
-    grade?: string | null;
-    to?: Date | null;
+    _id?: string;
+    university: string;
+    course: string;
+    description?: string;
+    from?: Date;
+    grade?: string;
+    to?: Date;
   }];
   address: {
-    houseNumber:string,
-    locality:string,
-    city:string,
-    state:string,
+    houseNumber: string,
+    locality: string,
+    city: string,
+    state: string,
     pin: number,
-    country:string
- },
+    country: string
+  },
   cv?: string | null;
   about?: string | null;
   experiences?: [{
-    _id?:string;
+    _id?: string;
     description?: string;
     designation?: string;
     company?: string;
-    from?: Date ;
+    from?: Date;
     location?: string;
-    to?: Date ;
+    to?: Date;
   }];
   contacts?: {
     email?: string;
@@ -91,17 +91,18 @@ export interface IUsers {
   }]
 }
 
-export interface IAddress{
-  houseNumber:string,
+export interface IAddress {
+  houseNumber: string,
   locality: string,
   city: string,
   state: string,
-  pin: number ,
+  pin: number,
   country: string
 }
 
 export interface IAdminData {
   _id?: string,
+  name: string,
   password?: string,
   email?: string,
   access?: string,
@@ -118,14 +119,16 @@ export interface IRequests {
   otp?: string
 }
 
-export interface ISocialLink{
-  instagram:string,
+export interface ISocialLink {
+  instagram: string,
   linkedin: string,
-  portfolio:string,
+  portfolio: string,
   twitter: string,
 }
 
 export interface IJobData {
+  location: string;
+  company_name: string;
   _id?: string,
   companyId: string;
   job_title: string;
@@ -133,7 +136,8 @@ export interface IJobData {
   salary_from: number;
   salary_to: number;
   category: string;
-  questions:string[];
+  publish: boolean;
+  questions: string[];
   required_skills: string[];
   description: string;
   responsibilities: string;
@@ -163,28 +167,26 @@ export interface ICategory {
 
 
 export interface IApplicants {
-    _id?: string;
-    jobId?: string ;
-    companyId:string;
-    schedule?: {
-       date?: Date ;
-       feedback?: string ;
-       status?: string ;
-       time?: string ;
-       title?: string ;
-    }[];
-    userId?: string ;
-    createdAt?: Date ;
-    hiring_status?: string ;
-    resume?: string ;
-    answers?: object[],
-    hiring_info?: {
-       date?: Date ;
-       interviewer?: string ;
-       notes?: string ;
-       status?: string ;
-    }[];
-  }
+  _id?: string;
+  jobId?: string;
+  companyId: string;
+  schedule?: {
+    date?: Date;
+    feedback?: string;
+    status?: string;
+    time?: string;
+    title?: string;
+  }[];
+  userId?: string;
+  createdAt?: Date;
+  hiring_status?: string;
+  resume?: string;
+  answers?: object[],
+  hiring_info?: {
+    name?: string;
+    notes?: string;
+  }[];
+}
 
 
 
@@ -245,6 +247,7 @@ export interface IPlans {
 }
 
 export interface IState {
+  iso2: string | number | readonly string[] | undefined;
   id: string,
   name: string
 }
@@ -262,6 +265,17 @@ export interface IEmployee {
   profile: string;
 
 }
+
+export interface INotification extends Document {
+  _id?: string;
+  recipient: string | null;
+  message: String | null;
+  sender: string | null;
+  type: String | null;
+  read: Boolean | null;
+  createdAt: Date | null;
+}
+
 export interface IMessage {
   _id: string;
   sender: string;
@@ -297,6 +311,31 @@ export interface ISubscriptions {
   start_date?: Date;
   paymentId?: string;
   createdAt?: Date;
-  status?: String;
+  status?: string;
 }
+
+export interface ISchedule {
+  interviewer: string;
+  _id?: string;
+  userId?: string;
+  jobId?: string;
+  companyId?: string;
+  date?: string;
+  title?: string;
+  status?: string;
+  createdAt?: Date;
+  editedAt?: Date;
+}
+
+export interface IAdmin {
+  _id?: string;
+  name: string;
+  password: string;
+  email: string;
+  access: string;
+  role: string;
+  blocked: Boolean;
+  createdAt: Date;
+}
+
 

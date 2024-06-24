@@ -55,6 +55,7 @@ export const RequestManagement = () => {
   const { toast } = useToast()
 
   const { data, loading }: any = useSelector((state: RootState) => state.request)
+  const { admin } = useSelector((state: RootState) => state.admin)
   const dispatch = useDispatch<AppDispatch>()
 
   const [open, setOpen] = useState(false);
@@ -99,7 +100,7 @@ export const RequestManagement = () => {
 
 
   const handleApprovereq = async (email: string) => {
-    await axios.post(`${BASE_URL}company/admin/approverequest`, { email: email },{withCredentials:true}).then(() => {
+    await axios.post(`${BASE_URL}company/admin/approverequest`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(allRequests());
       handleClose()
       toast({
@@ -110,7 +111,7 @@ export const RequestManagement = () => {
     })
   }
   const handleRejectreq = async (email: string) => {
-    await axios.post(`${BASE_URL}company/admin/rejectrequest`, { email: email },{withCredentials:true}).then(() => {
+    await axios.post(`${BASE_URL}company/admin/rejectrequest`, { email: email }, { withCredentials: true }).then(() => {
       dispatch(allRequests());
       handleRClose()
       toast({
@@ -123,7 +124,7 @@ export const RequestManagement = () => {
 
   const hanndleViewDoc = async () => {
     if (reqfiledata.id) {
-      await axios.patch(`${BASE_URL}company/admin/viewdocument`, { id: reqfiledata.id },{withCredentials:true}).then(() => {
+      await axios.patch(`${BASE_URL}company/admin/viewdocument`, { id: reqfiledata.id }, { withCredentials: true }).then(() => {
         dispatch(allRequests());
         handleReqClose()
         toast({
@@ -260,13 +261,18 @@ export const RequestManagement = () => {
               >
                 View Document
               </DropdownMenuItem>
-
-              {row.getValue("approval") !== "approved" && row.original.viewdocument !== false && (
+              {admin?.access == "can-edit" && (
                 <>
-                  <DropdownMenuItem onClick={() => handleModalApprove(row.getValue("email"))}>Approve</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleModalReject(row.getValue("email"))}>Reject</DropdownMenuItem>
+                  {row.getValue("approval") !== "approved" && row.original.viewdocument !== false && (
+                    <>
+                      <DropdownMenuItem onClick={() => handleModalApprove(row.getValue("email"))}>Approve</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModalReject(row.getValue("email"))}>Reject</DropdownMenuItem>
+                    </>
+                  )}
                 </>
+
               )}
+
             </DropdownMenuContent>
           </DropdownMenu >
         );

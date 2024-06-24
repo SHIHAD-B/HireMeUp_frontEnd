@@ -46,7 +46,7 @@ export const Joblist = () => {
     const category = useSelector((state: RootState) => state.category.data)
     const { user } = useSelector((state: RootState) => state.user)
     const [list, setList] = useState(data)
-    const [searchData, setSearchData] = useState("")
+   
     const [page,setPage]=useState(1)
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [filterData, setFilterData] = useState({
@@ -107,16 +107,7 @@ export const Joblist = () => {
 
     }
 
-    const handleLocationChange = (e: any) => {
-        if(e.target.value==""){
-            setList(data)
-            return
-        }
-       
-        const companylocation=companyLists?.filter((item)=>item.location?.includes(e.target.value)).map((item:any)=>item._id)
-        const filteredData=data?.filter((item)=>companylocation?.includes(item.companyId))
-        setList(filteredData as IJobData[])
-    }
+   
 
 
 
@@ -225,22 +216,41 @@ export const Joblist = () => {
         fetchStates();
     }, []);
 
-    const search = (e: any) => {
-        setSearchData(e.target.value);
-        if (e.target.value.trim() !== "") {
-            const regex = new RegExp(e.target.value, 'i');
-            const filteredData = data?.filter((dvalue: any) => regex.test(dvalue.job_title));
-            console.log(filteredData, "filtered data")
-            setList(filteredData as IJobData[])
-        } else {
-            setList(data)
-        }
+    const [searchData, setSearchData] = useState("");
+const [locationItem, setLocationItem] = useState("");
 
+const search = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchData(e.target.value);
+    filterBySearchAndLocation(e.target.value, locationItem);
+}
+
+const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | any>) => {
+    setLocationItem(e.target.value);
+    filterBySearchAndLocation(searchData, e.target.value);
+}
+
+const filterBySearchAndLocation = (searchValue: string, locationValue: string) => {
+    let filteredData:any = data; 
+
+ 
+    if (locationValue.trim() !== "") {
+        const companyIds = companyLists?.filter((item) => item.location?.includes(locationValue)).map((item: any) => item._id);
+        filteredData = filteredData?.filter((item:any) => companyIds?.includes(item.companyId));
     }
 
-    const handleJobClick = (id: string) => {
-        setSelectedJobId(id);
-    };
+    
+    if (searchValue.trim() !== "") {
+        const regex = new RegExp(searchValue, 'i');
+        filteredData = filteredData?.filter((item:any) => regex.test(item.job_title));
+    }
+
+    setList(filteredData as IJobData[]);
+}
+
+const handleJobClick = (id: string) => {
+    setSelectedJobId(id);
+};
+
 
     const back = () => {
         setSelectedJobId(null)
@@ -360,10 +370,10 @@ export const Joblist = () => {
                             </div>
 
                         </div>
-                        <div className="w-full lg:w-[80%]  flex flex-col pt-4 gap-4 items-center ">
+                        <div className="w-full lg:w-[90%]  flex flex-col pt-4 gap-4 items-center ">
                             {list?.length ? (
-                                list.map((value, index) => (
-                                    <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[85%] h-28 border border-gray-200 rounded flex">
+                                list.filter((item)=>item.publish==true).map((value, index) => (
+                                    <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[90%] h-28 border border-gray-200 rounded flex">
                                         <div className="w-[20%] h-full flex justify-center items-center">
                                             <div className='w-20 h-20 rounded-full'>
                                                 <img src={companyLists?.find((values) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />

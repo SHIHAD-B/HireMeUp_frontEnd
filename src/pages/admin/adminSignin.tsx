@@ -86,7 +86,7 @@ export const AdminSignIn = () => {
                     }
 
                 } else {
-                    navigate('/admin/request')
+                    navigate('/admin/dashboard')
                 }
             }).catch((error: any) => {
                 console.log(error, "error from dispatch")

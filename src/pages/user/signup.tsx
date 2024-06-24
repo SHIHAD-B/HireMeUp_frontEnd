@@ -151,7 +151,7 @@ export const SignUp = () => {
             
             await signupValidation.validate(userData, { abortEarly: false });
             console.log("Validation successful");
-            await dispatch(userSignup(userData as IUsers)).then((res: any) => {
+            await dispatch(userSignup(userData as any as IUsers)).then((res: any) => {
                 if (res?.error?.message == "Rejected") {
                     const data = {
                         email: "",
@@ -226,7 +226,7 @@ export const SignUp = () => {
             }
             if(document){
                 
-                const result = await uploadFile(document);
+                const result = await uploadFile(document,"documnt");
                 console.log(result, "Uploaded document result");
                 compdatas.document=result
             }

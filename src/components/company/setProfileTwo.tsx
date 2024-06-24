@@ -16,27 +16,27 @@ export const SetProfiletwo = () => {
                     <div className='w-full m-2 lg:w-2/5 flex flex-col gap-6'>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Instagram<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" className='w-full border bg-background rounded border-gray-400 h-10' />
+                            <input type="text" className='w-full border bg-background rounded border-gray-400 h-10 p-2' />
                             <p className="text-xs text-gray-400"></p>
                         </div>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Twitter<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10' />
+                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10 p-2' />
                             <p className="text-xs text-gray-400"></p>
                         </div>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Facebook<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10' />
+                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10 p-2' />
                             <p className="text-xs text-gray-400"></p>
                         </div>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Linkedin<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10' />
+                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10 p-2' />
                             <p className="text-xs text-gray-400"></p>
                         </div>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Youtube<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10' />
+                            <input type="text" className='w-full border rounded bg-background border-gray-400 h-10 p-2' />
                             <p className="text-xs text-gray-400"></p>
                         </div>
                        

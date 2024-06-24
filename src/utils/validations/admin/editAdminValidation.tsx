@@ -1,0 +1,11 @@
+import * as Yup from 'yup';
+
+export const editAdminValidation = Yup.object({
+    name: Yup.string().min(2, "Must be greater than 2 letters").matches(/^[A-Za-z]+$/, 'Field must contain only letters').required("Username is required"),
+    email: Yup.string().email("Invalid email format").required("Email is required"),
+    access:Yup.string().required("access is required"),
+    password: Yup.string()
+        .matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must contain at least 8 characters, one uppercase letter, one digit, and one special character')
+        .optional(),
+  
+});

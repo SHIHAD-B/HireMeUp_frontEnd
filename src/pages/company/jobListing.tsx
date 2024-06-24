@@ -51,9 +51,11 @@ import { AddCategoryModal } from "@/components/admin/addCategory";
 import { EditPlans } from "@/components/admin/editPlans";
 import { useNavigate } from "react-router-dom";
 import { IJobData } from "@/interfaces/IUser";
+import { useToast } from '@/components/ui/use-toast';
 
 
 export const JobListing = () => {
+    const { toast } = useToast()
     const navigate = useNavigate()
     const [value, setValue] = useState({
         startDate: new Date('2023-01-01'),
@@ -128,19 +130,38 @@ export const JobListing = () => {
         handleditOpen();
     }
     const handledelete = async (id: string) => {
-        await axios.patch(`${BASE_URL}job/company/deletejob`, { id: id },{withCredentials:true});
+        await axios.patch(`${BASE_URL}job/company/deletejob`, { id: id }, { withCredentials: true });
         await dispatch(fecthJob(company_Id));
         handleClose();
+    }
+    const handlePublish = async (id: string) => {
+        await axios.patch(`${BASE_URL}job/company/publishUnpublish`, { id: id }, { withCredentials: true }).then((res) => {
+
+            toast({
+                description: `job ${res.data.user.publish ? "published" : "unpublished"} successfully`,
+                className: "bg-customviolet text-white rounded"
+
+            })
+             dispatch(fecthJob(company_Id));
+        }).catch(() => {
+            toast({
+                description: `Failed to edit publish`,
+                className: "bg-red-600 text-white rounded"
+
+            })
+        });
+        
     }
 
 
     type Payment = {
         _id: string;
-        job_title: String;
+        job_title: string;
         deleted: boolean
-        type: String;
-        start_date: String;
-        end_date: String;
+        type: string;
+        publish: boolean;
+        start_date: string;
+        end_date: string;
         slot: Date;
         createdAt: Date;
     };
@@ -226,7 +247,7 @@ export const JobListing = () => {
 
 
 
-                return <div className={`text-right font-medium ${row.original.deleted ? "text-red-500" : ""}`}>{formattedDate}</div>;
+                return <div className={`text-right  font-medium ${row.original.deleted ? "text-red-500" : ""}`}>{formattedDate}</div>;
             },
         },
         {
@@ -283,6 +304,17 @@ export const JobListing = () => {
 
                             {row.getValue("name") !== "a" && (
                                 <>
+                                    {row.original.publish && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => handlePublish(String(row.original._id))} >UnPublish</DropdownMenuItem>
+                                        </>
+                                    )}
+                                    {!row.original.publish && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => handlePublish(String(row.original._id))} >Publish</DropdownMenuItem>
+                                        </>
+                                    )}
+
                                     <DropdownMenuItem onClick={() => handleEditJob(String(row.original._id))} >Edit</DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleModalDelete({ id: row.original._id, name: row.original.job_title })} >Delete</DropdownMenuItem>
                                 </>
@@ -332,7 +364,7 @@ export const JobListing = () => {
             p: 4,
         };
 
-        
+
         return (
             <>
 

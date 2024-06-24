@@ -4,10 +4,10 @@ import { BsCameraVideo } from "react-icons/bs";
 import { TiPinOutline } from "react-icons/ti";
 import { TiStarOutline } from "react-icons/ti";
 import { CiMenuKebab } from "react-icons/ci";
-import { GoPaperclip } from "react-icons/go";
+import { GoDotFill, GoPaperclip } from "react-icons/go";
 import { FiSend } from "react-icons/fi";
 import { GrEmoji } from "react-icons/gr";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import newImg from '../../assets/images/newchat.png'
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -19,20 +19,34 @@ import { BASE_URL } from "@/interfaces/config/constant";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocketContext } from "@/assets/context/socketContext";
 import nochat from '../../assets/images/nochat.png'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import { useNavigate } from "react-router-dom";
+import EmojiPicker from 'emoji-picker-react';
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { LuCheckCheck } from "react-icons/lu";
+// import { toast } from "react-toastify";
+
 
 
 export const Chat = () => {
+    const { onlineUsers } = useSocketContext()
+    const navigate = useNavigate()
     const { socket } = useSocketContext()
     const dispatch = useDispatch<AppDispatch>()
     const { toast } = useToast()
     const { data: allMessages } = useSelector((state: RootState) => state.allMessage)
     const { user } = useSelector((state: RootState) => state.user)
     const { data: companyLists } = useSelector((state: RootState) => state.companyList)
+    const [notification, setNotification] = useState({ message: '', profile: '' });
     const { data } = useSelector((state: RootState) => state.chat)
     const [isnew, setIsNew] = useState(true);
     const [chatList, setChatList] = useState<IChat[]>()
     const [chatId, setChatId] = useState<string>()
     const messageBoxRef = useRef<HTMLDivElement | null>(null);
+    const [open, setOpen] = useState(false);
+    const [emoji, setEmoji] = useState(false)
     const [innerChat, setInnerChat] = useState({
         id: "",
         name: "",
@@ -48,17 +62,57 @@ export const Chat = () => {
     }, [innerChat]);
 
     useEffect(() => {
-        dispatch(ChatList(String(user?._id))).then(() => {
+        const func = async () => {
+            try {
+                const res = await dispatch(ChatList(String(user?._id)));
+                const arr = [...res.payload];
 
-            setChatList(data as IChat[])
-        })
-        dispatch(companyUserList())
-        dispatch(allMessageList(String(user?._id)))
-    }, [])
+                const validArr = arr.filter(item => item.lastMessage && !isNaN(new Date(item.lastMessage).getTime()));
+                if (validArr.length !== arr.length) {
+                    console.warn('Some items were excluded from sorting due to invalid lastMessage fields.');
+                }
+
+                const sortedArr = validArr.sort((a, b) => {
+                    const dateA = new Date(a.lastMessage).getTime();
+                    const dateB = new Date(b.lastMessage).getTime();
+
+                    console.log('Comparing:', dateA, dateB);
+
+                    return dateB - dateA;
+                });
+
+                setChatList(sortedArr as IChat[]);
+            } catch (error) {
+                console.error('Error in fetching and sorting chat list:', error);
+            }
+
+            try {
+                await dispatch(companyUserList());
+                await dispatch(allMessageList(String(user?._id)));
+            } catch (error) {
+                console.error('Error in fetching additional data:', error);
+            }
+        };
+
+        func();
+    }, [dispatch, user]);
+
+
+
 
     useEffect(() => {
 
         socket?.on("message recieved", (newMessage: IMessage) => {
+            if (newMessage.sender !== user?._id) {
+                const sender = companyLists?.find((item: any) => item._id == newMessage.sender)?.company_name
+                const message = newMessage.content
+                const profile: string = String(companyLists?.find((item: any) => item._id == newMessage.sender)?.icon)
+
+                const notificationMessage = `${sender}: ${message}`;
+
+                setNotification({ message: notificationMessage, profile });
+                setOpen(true);
+            }
 
             setInnerChat((prev) => ({
                 ...prev,
@@ -68,7 +122,7 @@ export const Chat = () => {
         })
     }, [innerChat])
     const sendMessage = async (receiver: string) => {
-
+        setEmoji(false)
         if (message.trim() == "") {
             toast({
                 description: "Please enter message",
@@ -85,20 +139,52 @@ export const Chat = () => {
 
         }
 
-        await axios.post(`${BASE_URL}chat/company/sendmessage`, data, { withCredentials: true }).then((res) => {
+        await axios.post(`${BASE_URL}chat/company/sendmessage`, data, { withCredentials: true }).then((res: any) => {
             console.log(res, "res from send message")
             const data = res.data.user
             socket?.emit("new message", ({ data, chatId }))
             setMessage("")
             dispatch(allMessageList(String(user?._id)))
 
+            const chatfind = chatList?.find((item) =>
+                item.participants.includes(data.sender) && item.participants.includes(data.receiver)
+            );
+
+            const chatfilter = chatList?.filter((item: IChat) =>
+                !(item.participants.includes(data.sender) && item.participants.includes(data.receiver))
+            );
+
+            if (chatfind) {
+                chatfilter?.unshift(chatfind);
+            }
+
+
+            if (chatfilter) {
+                setChatList(chatfilter);
+            }
+
+
         })
     }
+    useEffect(() => {
+        socket?.on('updated message', async(id: string) => {
+           await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
+                setIsNew(false)
+                setInnerChat((prev) => ({
+                    ...prev,
+                    messages: res.data.user.message
+                }))
+    
+            })
+        })
+    }, [])
 
     const handleChatDetails = async (data: any) => {
         const { id, name, profile, userid } = data
         setChatId(id);
         socket?.emit("join chat", (id))
+        const datas = {id:id, sender: userid, receiver: user?._id, status: "read" }
+        socket?.emit('read message', (datas))
         await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
             setIsNew(false)
             setInnerChat((prev) => ({
@@ -111,11 +197,49 @@ export const Chat = () => {
 
         })
 
+
     }
+    const handleEmojiClick = (e: any) => {
+        setMessage((prev) => prev + e.emoji);
+    };
+
+    const handleClose = (event: any, reason: any) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleVideoCall = () => {
+        navigate(`/company/videocall?id=${innerChat.id}&senderId=${innerChat?.id}`)
+    }
+
     return (
         <>
+            {emoji && (
+
+                <div className="absolute top-1 right-4 z-20">
+
+                    <EmojiPicker onEmojiClick={(e) => handleEmojiClick(e)} />
+                </div>
+            )}
+            <Snackbar
+                open={open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert
+
+                    severity="info"
+                    icon={notification.profile ? <Avatar src={notification.profile} alt="Profile Icon" style={{ width: '24px', height: '24px' }} /> : undefined}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                    {notification.message}
+                </Alert>
+            </Snackbar>
             <div className="w-full flex flex-col h-screen">
-            <UserHeader prop="Messages" />
+                <UserHeader prop="Messages" />
                 <div className="w-full flex h-[90%] bg-red-300">
                     <div className="w-[30%] h-full bg-white flex flex-col border">
                         <div className="w-full h-[10%] flex justify-center items-center p-2">
@@ -128,6 +252,7 @@ export const Chat = () => {
                             {chatList?.map((chat, index) => {
                                 const participantsIds = chat?.participants?.filter(id => id !== user?._id);
                                 const participant = companyLists?.find(company => company?._id === participantsIds[0]);
+                                const online = onlineUsers?.includes(String(participant?._id))
 
                                 const chatMessages = allMessages?.filter(message => {
                                     return message?.participants &&
@@ -145,17 +270,23 @@ export const Chat = () => {
                                         id: lastMessage?._id,
                                         userid: participant?._id
                                     })}>
-                                        <div className="w-12 h-12 rounded-full">
+                                        <div className="w-14 h-14 rounded-full flex flex-col">
                                             <img src={participant?.icon} alt="" className="w-full h-full rounded-full" />
                                         </div>
+                                        {online ? (
+
+                                            <GoDotFill className="text-green-600" />
+                                        ) : (
+                                            <GoDotFill className="text-red-600" />
+                                        )}
                                         <div className="w-[85%] h-full flex flex-col">
                                             <div className="w-full h-[50%] flex justify-between pl-2 pr-2 items-center">
                                                 <span className="font-bold">{participant?.company_name}</span>
-                                                <time className="text-xs opacity-50">{lastMessage?.message[lastMessage?.message?.length-1] ? new Date(Number(lastMessage?.message[lastMessage?.message?.length-1]?.createdAt)).toLocaleString() : ''}</time>
+                                                <time className="text-xs opacity-50">{lastMessage?.message[lastMessage?.message?.length - 1] ? new Date(Number(lastMessage?.message[lastMessage?.message?.length - 1]?.createdAt)).toLocaleString() : ''}</time>
                                             </div>
                                             <div className="w-full h-[50%] flex items-center pl-2 pr-2 overflow-hidden">
                                                 <span className="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
-                                                    {lastMessage?.message[lastMessage?.message?.length-1] ? lastMessage?.message[lastMessage?.message?.length-1]?.content : 'No messages yet'}
+                                                    {lastMessage?.message[lastMessage?.message?.length - 1] ? lastMessage?.message[lastMessage?.message?.length - 1]?.content : 'No messages yet'}
                                                 </span>
                                             </div>
                                         </div>
@@ -188,50 +319,69 @@ export const Chat = () => {
                                         <span>Recruiter at {innerChat?.name}</span>
                                     </div>
                                     <div className="w-[40%] h-full flex justify-end p-4 gap-2 items-center">
-                                        <BsCameraVideo className="text-xl" />
-                                        <TiPinOutline className="text-xl" />
-                                        <TiStarOutline className="text-xl" />
-                                        <CiMenuKebab className="text-xl" />
+                                        {user?.subscription.subscriptionId && (
+
+                                            <BsCameraVideo onClick={() => handleVideoCall()} className="text-xl cursor-pointer" />
+                                        )}
+                                        <TiPinOutline className="text-xl cursor-pointer" />
+                                        <TiStarOutline className="text-xl cursor-pointer" />
+                                        <CiMenuKebab className="text-xl cursor-pointer" />
                                     </div>
                                 </div>
-                                {!innerChat.messages[0]?(
+                                {!innerChat?.messages?.length ? (
                                     <>
-                                    <div className="w-full h-full flex flex-col justify-center items-center ">
-                                        <img src={nochat} alt="" className=""/>
-                                        <span>No Messages...</span>
-                                    </div>
+                                        <div className="w-full h-full flex flex-col justify-center items-center ">
+                                            <img src={nochat} alt="" className="" />
+                                            <span>No Messages...</span>
+                                        </div>
                                     </>
-                                ):(
-                                      <div ref={messageBoxRef} className="w-full h-[70%] space-y-6 p-4 overflow-y-auto">
+                                ) : (
+                                    <div ref={messageBoxRef} className="w-full h-[70%] space-y-6 p-4 overflow-y-auto">
 
-                                      {innerChat?.messages?.map((message) => (
-                                          <div key={message?._id} className={`chat ${message?.sender === user?._id ? "chat-end" : "chat-start"}`}>
-                                              <div className="chat-image avatar">
-                                                  <div className="w-10 rounded-full">
-                                                      <img
-                                                          alt="User avatar"
-                                                          src={message?.sender === user?._id ? user?.profile : innerChat?.profile}
-                                                      />
-                                                  </div>
-                                              </div>
-                                              <div className="chat-header">
-                                                  {message?.sender === user?._id ? "You" : innerChat?.name}
-                                                  <time className="text-xs opacity-50 ml-2">{new Date(Number(message?.createdAt)).toLocaleTimeString()}</time>
-                                              </div>
-                                              <div className="chat-bubble">{message?.content}</div>
-                                              {message?.sender == user?._id && (
-  
-                                                  <div className="chat-footer opacity-50">{message?.status.charAt(0).toUpperCase() + message?.status.slice(1)}</div>
-                                              )}
-                                          </div>
-                                      ))}
-                                  </div>
+                                        {innerChat?.messages?.map((message) => (
+                                            <div key={message?._id} className={`chat ${message?.sender === user?._id ? "chat-end" : "chat-start"}`}>
+                                                <div className="chat-image avatar">
+                                                    <div className="w-10 rounded-full">
+                                                        <img
+                                                            alt="User avatar"
+                                                            src={message?.sender === user?._id ? user?.profile : innerChat?.profile}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="chat-header">
+                                                    {message?.sender === user?._id ? "You" : innerChat?.name}
+                                                    <time className="text-xs opacity-50 ml-2">{new Date(Number(message?.createdAt)).toLocaleTimeString()}</time>
+                                                </div>
+                                                <div className="chat-bubble">{message?.content}</div>
+                                                {message?.sender == user?._id && (
+                                                    <>
+                                                        {message?.status == "sent" && (
+                                                            <>
+                                                                <IoCheckmarkOutline />
+                                                            </>
+                                                        )}
+                                                        {message?.status == "delivered" && (
+                                                            <>
+                                                                <LuCheckCheck />
+                                                            </>
+                                                        )}
+                                                        {message?.status == "read" && (
+                                                            <>
+                                                                <LuCheckCheck />
+                                                            </>
+                                                        )}
+                                                    </>
+
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
-                              
+
                                 <div className="w-full h-[10%] flex justify-center items-center p-2">
                                     <div className="w-[95%] h-[80%] rounded border border-gray-300 flex items-center">
                                         <div className="w-[8%] h-full flex justify-center items-center">
-                                            <GoPaperclip className="text-2xl" />
+                                            <GoPaperclip className="text-2xl cursor-pointer" />
                                         </div>
                                         <div className="w-[80%] h-full">
                                             <input
@@ -242,7 +392,7 @@ export const Chat = () => {
                                             />
                                         </div>
                                         <div className="w-[12%] h-full justify-end pr-1 flex gap-2 items-center">
-                                            <GrEmoji className="text-2xl" />
+                                            <GrEmoji onClick={() => setEmoji(!emoji)} className="text-2xl cursor-pointer" />
                                             <button onClick={() => sendMessage(String(innerChat.id))} className="p-4 flex justify-center items-center rounded bg-customviolet h-[80%]">
                                                 <FiSend className="text-xl text-white" />
                                             </button>

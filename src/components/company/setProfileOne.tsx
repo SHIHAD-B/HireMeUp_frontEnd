@@ -224,8 +224,6 @@ export const SetProfileOne = () => {
                 return; 
             } else {
 
-
-                console.log(companyData, "Validation successful");
                 if (companyData?.password) {
                     delete companyData.password
                 }
@@ -317,7 +315,7 @@ export const SetProfileOne = () => {
                     </div>
                     <div className='w-full lg:w-1/2 justify-center lg:justify-start h-full pl-4 flex items-center'>
                         <label onChange={handleOpen} htmlFor="fileInput" className='w-[60%] h-[80%] border-2 border-dashed rounded border-customviolet flex flex-col justify-center items-center cursor-pointer'>
-                            <input type="file" id="fileInput" className="hidden" accept="image/*" onChange={handleImageSelect} />
+                            <input type="file" id="fileInput" className="hidden " accept="image/*" onChange={handleImageSelect} />
                             <IoImageOutline className='text-customviolet text-2xl' />
                             <span className='font-bold text-customviolet'>Click to replace</span>
                             <span className='text-sm text-gray-400'>SVG, PNG, JPG, or JPEG (max 400 x 400px)</span>
@@ -334,7 +332,7 @@ export const SetProfileOne = () => {
                     <div className='w-full m-2 lg:w-2/5 flex flex-col gap-6'>
                         <div className='1/4 flex flex-col gap-2'>
                             <span className='flex '>Company Name<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input onChange={handleChange} type="text" name='company_name' value={String(companyData?.company_name)} className='w-full border bg-background rounded border-gray-400 h-10' />
+                            <input onChange={handleChange} type="text" name='company_name' value={String(companyData?.company_name)} className='w-full border p-2 bg-background rounded border-gray-400 h-10' />
                             <p className='text-xs text-red-500'>{error.company_name}</p>
                         </div>
                         <div className='flex w-full gap-1'>
@@ -399,12 +397,12 @@ export const SetProfileOne = () => {
                         <div className='flex w-full gap-1'>
                             <div className='w-1/2 flex flex-col gap2'>
                                 <span className='flex '>Date Founded<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                                <input onChange={handleChange} type="Date" name='founded' value={companyData?.founded ? companyData.founded.toLocaleString().split('T')[0] : ''} className='w-full bg-background border rounded border-gray-400 h-10' />
+                                <input onChange={handleChange} type="Date" name='founded' value={companyData?.founded ? companyData.founded.toLocaleString().split('T')[0] : ''} className='w-full p-2 bg-background border rounded border-gray-400 h-10' />
                                 <p className='text-xs text-red-500'>{error.founded}</p>
                             </div>
                             <div className=' w-1/2 flex flex-col gap2'>
                                 <span className='flex '>Website<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                                <input type="text" onChange={handleChange} name='website' value={String(companyData?.website)} className='w-full bg-background border rounded  border-gray-400 h-10' />
+                                <input type="text" onChange={handleChange} name='website' value={String(companyData?.website)} className='w-full p-2 bg-background border rounded  border-gray-400 h-10' />
                                 <p className='text-xs text-red-500'>{error.website}</p>
                             </div>
 

@@ -15,7 +15,7 @@ export const adminSignin = createAsyncThunk("auth/adminsignin", async (Data: ICo
 
 })
 
-export const fetchAdmin = createAsyncThunk("user/admin/fetchadmin", async (_,{rejectWithValue}) => {
+export const fetchAdmin = createAsyncThunk("user/admin/fetchadmin", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
         "user/admin/fetchadmin",
@@ -24,7 +24,7 @@ export const fetchAdmin = createAsyncThunk("user/admin/fetchadmin", async (_,{re
     )
 })
 
-export const fetchSubscription = createAsyncThunk("subscription/admin/fetchplans", async (_,{rejectWithValue}) => {
+export const fetchSubscription = createAsyncThunk("subscription/admin/fetchplans", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
         "subscription/admin/fetchplans",
@@ -33,7 +33,7 @@ export const fetchSubscription = createAsyncThunk("subscription/admin/fetchplans
     )
 })
 
-export const fetchCategory=createAsyncThunk('job/admin/categorylist',async (_,{rejectWithValue})=>{
+export const fetchCategory = createAsyncThunk('job/admin/categorylist', async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
         "job/admin/categorylist",
@@ -42,7 +42,7 @@ export const fetchCategory=createAsyncThunk('job/admin/categorylist',async (_,{r
     )
 })
 
-export const editUsers = createAsyncThunk("user/admin/editUser", async (data:IUsers, { rejectWithValue }) => {
+export const editUsers = createAsyncThunk("user/admin/editUser", async (data: IUsers, { rejectWithValue }) => {
     return reduxRequest(
         "patch",
         "user/admin/editUser",
@@ -56,6 +56,34 @@ export const listUsers = createAsyncThunk("user/admin/listusers", async (_, { re
     return reduxRequest(
         "get",
         "user/admin/listusers",
+        config,
+        rejectWithValue
+    )
+})
+
+export const AdminListJob = createAsyncThunk("job/admin/joblist", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "job/admin/joblist",
+        config,
+        rejectWithValue,
+    )
+
+})
+export const AdminListApplicants = createAsyncThunk("job/admin/applicanlist", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "job/admin/applicanlist",
+        config,
+        rejectWithValue,
+    )
+
+})
+
+export const ListAdmin = createAsyncThunk("user/admin/listadmin", async (_, { rejectWithValue }) => {
+    return reduxRequest(
+        "get",
+        "user/admin/listadmin",
         config,
         rejectWithValue
     )

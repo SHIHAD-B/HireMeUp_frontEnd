@@ -53,6 +53,7 @@ import { EditCompany } from "@/components/admin/editCompany";
 
 export const CompanyManagement = () => {
     const { data, loading }: any = useSelector((state: RootState) => state.companyList)
+    const { admin } = useSelector((state: RootState) => state.admin)
     const dispatch = useDispatch<AppDispatch>()
 
     const [blockOpen, setblockOpen] = useState(false);
@@ -261,37 +262,42 @@ export const CompanyManagement = () => {
             cell: ({ row }) => {
                 return (
                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 ">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4 " />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white text-black">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {admin?.access == "can-edit" && (
+                            <>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-8 p-0 ">
+                                        <span className="sr-only">Open menu</span>
+                                        <MoreHorizontal className="h-4 w-4 " />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white text-black">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-                            <DropdownMenuSeparator />
+                                    <DropdownMenuSeparator />
 
-                            {row.getValue("status") == "blocked" && row.getValue("deleted") == false && (
-                                <>
-                                    <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
-                                </>
-                            )}
-                            {row.getValue("status") == "active" && row.getValue("deleted") == false && (
-                                <>
-                                    <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModalblock(row.getValue("email"))}>block</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
-                                </>
-                            )}
-                            {row.getValue("deleted") == true && (
-                                <>
-                                    <DropdownMenuItem onClick={() => handleModalrecover(row.getValue("email"))}>recover</DropdownMenuItem>
-                                </>
-                            )}
-                        </DropdownMenuContent>
+
+                                    {row.getValue("status") == "blocked" && row.getValue("deleted") == false && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleModalunblock(row.getValue("email"))}>unblock</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
+                                        </>
+                                    )}
+                                    {row.getValue("status") == "active" && row.getValue("deleted") == false && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => handleEditCompany(row.original)}>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleModalblock(row.getValue("email"))}>block</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleModaldelete(row.getValue("email"))}>delete</DropdownMenuItem>
+                                        </>
+                                    )}
+                                    {row.getValue("deleted") == true && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => handleModalrecover(row.getValue("email"))}>recover</DropdownMenuItem>
+                                        </>
+                                    )}
+                                </DropdownMenuContent>
+                            </>
+                        )}
                     </DropdownMenu>
                 );
             },
@@ -492,9 +498,11 @@ export const CompanyManagement = () => {
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
-                                    <div className="w-full h-auto  flex justify-end pb-2">
-                                        <button onClick={() => setAddCompanyOpen(true)} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Company</button>
-                                    </div>
+                                    {admin?.access == "can-edit" && (
+                                        <div className="w-full h-auto  flex justify-end pb-2">
+                                            <button onClick={() => setAddCompanyOpen(true)} className="flex gap-2 p-3 rounded bg-customviolet justify-center items-center text-white hover:rounded-xl"><FaPlus />Add Company</button>
+                                        </div>
+                                    )}
                                     <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>

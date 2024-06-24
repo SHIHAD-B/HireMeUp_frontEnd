@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {  IApplicants } from '@/interfaces/IUser';
 import { userApplicantList } from '../actions/userAction';
 import { companyApplicantList } from '../actions/companyAction';
+import { AdminListApplicants } from '../actions/adminAction';
 
 
 
@@ -49,6 +50,20 @@ const applicantListSlice = createSlice({
                 state.error = null;
             })
             .addCase(companyApplicantList.rejected, (state, action) => {
+                state.data = null;
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(AdminListApplicants.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload as any ;
+                state.error = null
+            })
+            .addCase(AdminListApplicants.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(AdminListApplicants.rejected, (state, action) => {
                 state.data = null;
                 state.loading = false;
                 state.error = action.payload as string;

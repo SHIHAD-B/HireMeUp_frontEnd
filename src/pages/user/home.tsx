@@ -2,21 +2,31 @@ import PieChartComponent from "../../components/user/userChart";
 import Schedule from "../../components/user/calendar";
 import { FaRegFileAlt } from "react-icons/fa";
 import { BsFillPatchQuestionFill } from "react-icons/bs";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
 import { UserHeader } from "@/components/user/header";
+import { useEffect } from "react";
+import { userApplicantList } from "@/redux/actions/userAction";
 
 
 export const Home = () => {
+    const dispatch = useDispatch<AppDispatch>()
 
     const data = useSelector((state: RootState) => state.user)
+    const { data: applicants } = useSelector((state: RootState) => state.applicantList);
+ 
+    useEffect(()=>{
+        const execute = async () => {
 
-
+            await dispatch(userApplicantList(String(data?.user?._id)))
+        }
+        execute()
+    },[])
     return (
         <div className="w-full h-auto flex-col">
             <div className="w-full h-auto flex">
                 <div className="flex-1 h-auto bg-violete-50 flex flex-col pl-2">
-                <UserHeader prop="Dashboard" />
+                    <UserHeader prop="Dashboard" />
                     <div className="h-[100px] flex flex-col pl-2 justify-center">
                         <span className="text-lg font-semibold">Welcome {data.user?.username} . Explore, discover, and enjoy! </span>
                         <span>Here is what's happened with your job search applications</span>
@@ -32,7 +42,7 @@ export const Home = () => {
                                     <span className="w-full ml-2 font-semibold">Total Jobs Applied</span>
                                     <div className="w-full h-[80%]  flex">
                                         <div className="w-[50%] h-full  flex justify-center items-center">
-                                            <span className="text-8xl font-bold">45</span>
+                                            <span className="text-8xl font-bold">{applicants?.length}</span>
                                         </div>
                                         <div className="w-[50%] h-full  flex justify-end items-end ">
                                             <FaRegFileAlt className="text-8xl text-gray-400 " />
@@ -40,10 +50,10 @@ export const Home = () => {
                                     </div>
                                 </div>
                                 <div className="w-full h-auto  border border-gray-400 flex-col">
-                                    <span className="w-full ml-2 font-semibold">Interviewed</span>
+                                    <span className="w-full ml-2 font-semibold">Interviews</span>
                                     <div className="w-full h-[80%]  flex">
                                         <div className="w-[50%] h-full  flex justify-center items-center">
-                                            <span className="text-8xl font-bold">18</span>
+                                            <span className="text-8xl font-bold">{applicants?.filter((item)=>item.hiring_status=="interview").length}</span>
                                         </div>
                                         <div className="w-[50%] h-full  flex justify-end items-end ">
                                             <BsFillPatchQuestionFill className="text-8xl text-gray-400 mr-1" />

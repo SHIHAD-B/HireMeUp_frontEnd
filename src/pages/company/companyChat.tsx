@@ -17,15 +17,24 @@ import axios from "axios";
 import { BASE_URL } from "@/interfaces/config/constant";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocketContext } from "@/assets/context/socketContext";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import { useNavigate } from "react-router-dom";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { LuCheckCheck } from "react-icons/lu";
 
 
 export const CompanyChat = () => {
+    const navigate = useNavigate()
     const { socket } = useSocketContext()
     const dispatch = useDispatch<AppDispatch>()
     const { toast } = useToast()
     const { data: allMessages } = useSelector((state: RootState) => state.allMessage)
     const { data: companyData } = useSelector((state: RootState) => state.company)
     const { data: userList } = useSelector((state: RootState) => state.usersList)
+    const [open, setOpen] = useState(false);
+    const [notification, setNotification] = useState({ message: '', profile: '' });
     const { data } = useSelector((state: RootState) => state.chat)
     const [isnew, setIsNew] = useState(true);
     const [chatList, setChatList] = useState<IChat[]>()
@@ -45,19 +54,63 @@ export const CompanyChat = () => {
         }
     }, [innerChat]);
 
+
+
+
+
+
     useEffect(() => {
-        dispatch(ChatList(String(companyData?._id))).then(() => {
 
-            setChatList(data as IChat[])
-        })
-        dispatch(UlistUsers())
-        dispatch(allMessageList(String(companyData?._id)))
+        const func = async () => {
+            try {
+                const res = await dispatch(ChatList(String(companyData?._id)));
+                const arr = [...res.payload];
 
+                const validArr = arr.filter(item => item.lastMessage && !isNaN(new Date(item.lastMessage).getTime()));
+                if (validArr.length !== arr.length) {
+                    console.warn('Some items were excluded from sorting due to invalid lastMessage fields.');
+                }
+
+                const sortedArr = validArr.sort((a, b) => {
+                    const dateA = new Date(a.lastMessage).getTime();
+                    const dateB = new Date(b.lastMessage).getTime();
+
+                    console.log('Comparing:', dateA, dateB);
+
+                    return dateB - dateA;
+                });
+
+                setChatList(sortedArr as IChat[]);
+            } catch (error) {
+                console.error('Error in fetching and sorting chat list:', error);
+            }
+
+            try {
+                dispatch(UlistUsers())
+                dispatch(allMessageList(String(companyData?._id)))
+            } catch (error) {
+                console.error('Error in fetching additional data:', error);
+            }
+        };
+
+        func();
 
     }, [])
+
     useEffect(() => {
 
         socket?.on("message recieved", (newMessage: IMessage) => {
+            if (newMessage.sender !== companyData?._id) {
+                const sender = userList?.find((item) => item._id == newMessage.sender)?.username
+                const message = newMessage.content
+                const profile: string = String(userList?.find((item) => item._id == newMessage.sender)?.profile)
+
+                const notificationMessage = `${sender}: ${message}`;
+
+                setNotification({ message: notificationMessage, profile });
+                setOpen(true);
+            }
+
 
             setInnerChat((prev) => ({
                 ...prev,
@@ -67,7 +120,7 @@ export const CompanyChat = () => {
         })
     }, [innerChat])
     const sendMessage = async (receiver: string) => {
-        
+
         if (message.trim() == "") {
             toast({
                 description: "Please enter message",
@@ -90,29 +143,85 @@ export const CompanyChat = () => {
             socket?.emit("new message", ({ data, chatId }))
             setMessage("")
             dispatch(allMessageList(String(companyData?._id)))
+            const chatfind = chatList?.find((item) =>
+                item.participants.includes(data.sender) && item.participants.includes(data.receiver)
+            );
+
+            const chatfilter = chatList?.filter((item: IChat) =>
+                !(item.participants.includes(data.sender) && item.participants.includes(data.receiver))
+            );
+
+            if (chatfind) {
+                chatfilter?.unshift(chatfind);
+            }
+
+
+            if (chatfilter) {
+                setChatList(chatfilter);
+            }
+
 
         })
     }
 
+    const handleVideoCall = () => {
+        navigate(`/company/videocall?id=${innerChat.id}&senderId=${companyData?._id}`)
+    }
+
+    useEffect(() => {
+        socket?.on('updated message', async(id: string) => {
+           await  axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res:any) => {
+                setIsNew(false)
+                setInnerChat((prev:any) => ({
+                    ...prev,
+                    messages: res.data.user.message
+                }))
+            })
+        })
+    }, [])
+
     const handleChatDetails = async (data: any) => {
-        const { id, name, profile,userid } = data
+        const { id, name, profile, userid } = data
         setChatId(id);
-        socket?.emit("join chat",(id))
+        socket?.emit("join chat", (id))
+        const datas = {id:id, sender: userid, receiver: companyData?._id, status: "read" }
+        socket?.emit('read message', (datas))
         await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
             setIsNew(false)
             setInnerChat((prev) => ({
                 ...prev,
-                id:userid,
+                id: userid,
                 name: name,
                 profile: profile,
                 messages: res.data.user.message
             }))
-            console.log(res.data.user, "daatatatatatatat")
         })
 
     }
+
+    const handleClose = (event: any, reason: any) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
     return (
         <>
+            <Snackbar
+                open={open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert
+
+                    severity="info"
+                    icon={notification.profile ? <Avatar src={notification.profile} alt="Profile Icon" style={{ width: '24px', height: '24px' }} /> : undefined}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                    {notification.message}
+                </Alert>
+            </Snackbar>
             <div className="w-full flex flex-col h-screen">
                 <UserHeader prop="Messages" />
                 <div className="w-full flex h-[90%] bg-red-300">
@@ -156,11 +265,11 @@ export const CompanyChat = () => {
                                             <div className="w-full h-[50%] flex justify-between pl-2 pr-2 items-center">
                                                 <span className="font-bold">{participant?.username}</span>
 
-                                                <time className="text-xs opacity-50">{lastMessage?.message[lastMessage?.message?.length-1] ? new Date(Number(lastMessage.message[lastMessage?.message?.length-1].createdAt)).toLocaleString() : ''}</time>
+                                                <time className="text-xs opacity-50">{lastMessage?.message[lastMessage?.message?.length - 1] ? new Date(Number(lastMessage.message[lastMessage?.message?.length - 1].createdAt)).toLocaleString() : ''}</time>
                                             </div>
                                             <div className="w-full h-[50%] flex items-center pl-2 pr-2 overflow-hidden">
                                                 <span className="text-sm  overflow-hidden text-ellipsis whitespace-nowrap">
-                                                    {lastMessage?.message[lastMessage?.message?.length-1] ? lastMessage?.message[lastMessage?.message?.length-1]?.content : 'No messages yet'}
+                                                    {lastMessage?.message[lastMessage?.message?.length - 1] ? lastMessage?.message[lastMessage?.message?.length - 1]?.content : 'No messages yet'}
                                                 </span>
                                             </div>
                                         </div>
@@ -192,13 +301,13 @@ export const CompanyChat = () => {
                                         <span>Job seeker</span>
                                     </div>
                                     <div className="w-[40%] h-full flex justify-end p-4 gap-2 items-center">
-                                        <BsCameraVideo className="text-xl" />
+                                        <BsCameraVideo onClick={() => handleVideoCall()} className="text-xl" />
                                         <TiPinOutline className="text-xl" />
                                         <TiStarOutline className="text-xl" />
                                         <CiMenuKebab className="text-xl" />
                                     </div>
                                 </div>
-                                <div  ref={messageBoxRef}  className="w-full h-[70%] space-y-6 p-4 overflow-y-auto">
+                                <div ref={messageBoxRef} className="w-full h-[70%] space-y-6 p-4 overflow-y-auto">
 
                                     {innerChat.messages?.map((message) => (
                                         <div key={message?._id} className={`chat ${message?.sender === companyData?._id ? "chat-end" : "chat-start"}`}>
@@ -216,9 +325,25 @@ export const CompanyChat = () => {
                                                 <time className="text-xs opacity-50 ml-2">{new Date(Number(message.createdAt)).toLocaleTimeString()}</time>
                                             </div>
                                             <div className="chat-bubble">{message.content}</div>
-                                            {message.sender == companyData?._id && (
+                                            {message?.sender == companyData?._id && (
+                                                <>
+                                                    {message?.status == "sent" && (
+                                                        <>
+                                                            <IoCheckmarkOutline />
+                                                        </>
+                                                    )}
+                                                    {message?.status == "delivered" && (
+                                                        <>
+                                                            <LuCheckCheck />
+                                                        </>
+                                                    )}
+                                                    {message?.status == "read" && (
+                                                        <>
+                                                            <LuCheckCheck />
+                                                        </>
+                                                    )}
+                                                </>
 
-                                                <div className="chat-footer opacity-50">{message.status.charAt(0).toUpperCase() + message.status.slice(1)}</div>
                                             )}
                                         </div>
                                     ))}

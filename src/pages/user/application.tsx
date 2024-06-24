@@ -25,6 +25,7 @@ export const Application = () => {
 
     const { user } = useSelector((state: RootState) => state.user);
     const { data } = useSelector((state: RootState) => state.companyList);
+    const { data: schedules } = useSelector((state: RootState) => state.schedule);
     const { data: applicants } = useSelector((state: RootState) => state.applicantList);
     const { data: jobs } = useSelector((state: RootState) => state.job);
     const [appliation, setApplication] = useState<IApplicants[]>();
@@ -37,7 +38,7 @@ export const Application = () => {
     useEffect(() => {
         const execute = async () => {
 
-            await dispatch(userApplicantList(String(user?._id))).then((res:any)=>{
+            await dispatch(userApplicantList(String(user?._id))).then((res: any) => {
                 const applist = res.payload?.filter((item: any) => item.userId == user?._id);
                 setApplication(applist);
                 setApplicationData(applist);
@@ -48,7 +49,7 @@ export const Application = () => {
         execute()
 
     }, []);
-  
+
 
     const filter = (category: string) => {
         const applist = applicants?.filter((item: any) => item.userId == user?._id);
@@ -95,7 +96,22 @@ export const Application = () => {
                                             <p><strong>Company Name:</strong> {data?.find((item) => item._id == selectedApplication?.companyId)?.company_name}</p>
                                             <p><strong>Role:</strong> {jobs?.find((item) => item._id == selectedApplication?.jobId)?.job_title}</p>
                                             <p><strong>Date Applied:</strong> {selectedApplication?.createdAt ? new Date(selectedApplication?.createdAt).toDateString() : ""}</p>
-                                            <p><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
+                                            <p className="mb-2"><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
+                                            {schedules?.length && (
+                                                <>
+                                                    <span className="font-bold underline">Interview Details</span>
+                                                    {schedules.filter((item)=>item.jobId==selectedApplication?.jobId).map((item, index) => (
+                                                        <>
+                                                            <div key={index} className="mt-2">
+                                                                <p><strong>Title:</strong> {item.title}</p>
+                                                                <p><strong>Date:</strong> {new Date(String(item?.date)).toLocaleString()}</p>
+                                                                <p><strong>Status:</strong> {item.status}</p>
+
+                                                            </div>
+                                                        </>
+                                                    ))}
+                                                </>
+                                            )}
                                         </div>
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>

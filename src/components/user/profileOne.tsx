@@ -94,7 +94,7 @@ export const ProfileOne = () => {
             }))
             handleClose();
             setLoad(true)
-            alert(fileName)
+          
             const imglink = await uploadFile(croppedImg,String(fileName))
             setUserData((prev: any) => ({
                 ...prev,
@@ -255,18 +255,18 @@ export const ProfileOne = () => {
                 <div className='w-full m-2 lg:w-2/5 flex flex-col gap-6'>
                     <div className='1/4 flex flex-col gap-2'>
                         <span className='flex '>Full Name<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                        <input name='username' onChange={(e) => handleChange(e)} type="text" value={userData?.username} className='w-full border rounded border-gray-400 h-10 bg-background' />
+                        <input name='username' onChange={(e) => handleChange(e)} type="text" value={userData?.username} className='w-full border rounded border-gray-400 h-10 bg-background p-2' />
                         <p className='text-xs text-red-500'>{error.username}</p>
                     </div>
                     <div className='flex w-full gap-1'>
                         <div className='w-1/2 flex flex-col gap2'>
                             <span className='flex '>Phone Number<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="number" onChange={handleChange} name='phone' value={userData?.phone} className='w-full border rounded border-gray-400 h-10 bg-background' />
+                            <input type="number" onChange={handleChange} name='phone' value={userData?.phone} className='w-full border p-2 rounded border-gray-400 h-10 bg-background' />
                             <p className='text-xs text-red-500'>{error.phone}</p>
                         </div>
                         <div className=' w-1/2 flex flex-col gap2'>
                             <span className='flex '>Email<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
-                            <input type="text" name='email' readOnly value={userData?.email} className='w-full border rounded border-gray-400 h-10 bg-background' />
+                            <input type="text" name='email' readOnly value={userData?.email} className='w-full p-2 border rounded border-gray-400 h-10 bg-background' />
 
                         </div>
                     </div>
@@ -274,7 +274,7 @@ export const ProfileOne = () => {
                         <div className='w-1/2 flex flex-col gap2'>
                             <span className='flex '>Date of Birth<GiSevenPointedStar className='text-[6px] mt-1 text-red-500' /></span>
                             <input type="Date" name='dob' onChange={handleChange} value={userData?.dob ? userData.dob.toLocaleString().split('T')[0] : ''}
-                                className='w-full border rounded border-gray-400 h-10 bg-background' />
+                                className='w-full border rounded border-gray-400 h-10 bg-background p-2' />
                             <p className='text-xs text-red-500'>{error.dob}</p>
                         </div>
                         <div className=' w-1/2 flex flex-col gap2'>

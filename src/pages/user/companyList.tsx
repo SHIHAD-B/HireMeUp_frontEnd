@@ -3,25 +3,30 @@ import Pagination from '@mui/material/Pagination';
 import { IoLocationOutline } from "react-icons/io5";
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import { ICompanyData, IJobData, IState } from "@/interfaces/IUser";
+import { ICompanyData, IState } from "@/interfaces/IUser";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ListJob } from '@/redux/actions/jobAction';
 import { companyUserList } from '@/redux/actions/companyAction';
-import { fetchCategory } from '@/redux/actions/adminAction';
 import { UserHeader } from "@/components/user/header";
 import { CompanyDescription } from "@/components/user/companyDescription";
-import { UfetchCategory } from "@/redux/actions/userAction";
+import { ChatList, UfetchCategory } from "@/redux/actions/userAction";
+import { TiMessages } from "react-icons/ti";
+import { BASE_URL } from "@/interfaces/config/constant";
+import { useNavigate } from "react-router-dom";
 
 
 export const CompanyList = () => {
+    const navigate = useNavigate()
     const isDarkMode = document.documentElement.classList.contains('dark');
     const dispatch = useDispatch<AppDispatch>()
     const ITEMS_PER_PAGE = 9;
     const { data } = useSelector((state: RootState) => state.companyList)
     const { data: job } = useSelector((state: RootState) => state.job)
+    const { user } = useSelector((state: RootState) => state.user)
     const [states, setStates] = useState<IState[]>()
     const category = useSelector((state: RootState) => state.category.data)
+    const { data: chat } = useSelector((state: RootState) => state.chat)
     const [list, setList] = useState(data)
     const [searchData, setSearchData] = useState("")
     const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
@@ -30,6 +35,8 @@ export const CompanyList = () => {
     useEffect(() => {
         dispatch(ListJob())
         dispatch(UfetchCategory())
+        dispatch(ChatList(String(user?._id)))
+
         setList(data)
         pageLogic()
     }, [])
@@ -87,11 +94,11 @@ export const CompanyList = () => {
         if (e.target.value.trim() !== "") {
             const regex = new RegExp(e.target.value, 'i');
             const filteredData = data?.filter((dvalue: any) => regex.test(dvalue.company_name));
-            setList(filteredData as IJobData[])
+            setList(filteredData as ICompanyData[])
         } else {
             setList(data)
         }
-       setPage(1)
+        setPage(1)
     }
 
     const handleCompanyClick = (id: string) => {
@@ -102,19 +109,41 @@ export const CompanyList = () => {
     const back = () => {
         setSelectedCompanyId(null)
     }
- 
-    const pageLogic=()=>{
+
+    const pageLogic = () => {
         let start = (page - 1) * ITEMS_PER_PAGE;
         let end = start + ITEMS_PER_PAGE;
         const slicedData = data?.slice(start, end);
         setList(slicedData as ICompanyData[]);
     }
-    
+
 
     useEffect(() => {
         pageLogic()
     }, [page]);
 
+
+    const chatwithCompany = async (companyId: string) => {
+        const data = {
+            sender: user?._id,
+            receiver: companyId
+        }
+
+        const already = chat?.find((item) =>
+            item.participants.includes(String(user?._id)) && item.participants.includes(companyId)
+        );
+        if (already) {
+            navigate('/chat')
+            return
+
+        }
+
+        await axios.post(`${BASE_URL}chat/company/createroom`, data, { withCredentials: true }).then(() => {
+            navigate('/chat')
+        }).catch((error: any) => {
+            console.log(error)
+        })
+    }
     return (
         <>
             {selectedCompanyId ? (
@@ -187,13 +216,17 @@ export const CompanyList = () => {
                             <div className="w-full lg:w-full flex  pt-4 gap-4 flex-wrap">
 
                                 {list?.length ? (
-                                    list.filter((item) => !item?.deleted).map((value, index) => (
+                                    list.filter((item) => !item?.deleted&&item.icon&&item.description?.length&&item.location?.length).map((value, index) => (
                                         <div key={index} onClick={() => handleCompanyClick(String(value._id))} className="w-80 h-80 border bg-background dark:border-gray-600 border-gray-300 rounded  flex flex-col">
                                             <div className="w-full h-[35%] flex">
                                                 <div className="h-full w-[50%] flex justify-center items-center">
                                                     {value && value.icon && <img src={value.icon} alt="" className="w-20" />}
                                                 </div>
-                                                <div className="w-[50%] h-full flex justify-end items-start">
+                                                <div className="w-[50%] h-full flex gap-2 justify-end items-start">
+                                                    {user?.subscription?.subscriptionId&&(
+
+                                                    <span onClick={() => chatwithCompany(String(value._id))} className="p-2 m-2 border border-customviolet rounded hover:text-white hover:bg-customviolet text-customviolet cursor-pointer"><TiMessages className="text-2xl  " /></span>
+                                                    )}
                                                     <div className="m-2 p-2 border border-gray-400 rounded bg-blue-50 text-customviolet">
                                                         {job?.filter((item) => item.companyId === value._id)?.length} Jobs
                                                     </div>

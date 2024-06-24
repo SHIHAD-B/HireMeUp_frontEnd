@@ -1,13 +1,10 @@
-import { useState } from 'react';
+import { userApplicantList } from '@/redux/actions/userAction';
+import { AppDispatch, RootState } from '@/redux/store';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'Applied', value: 400 },
-  { name: 'rejected', value: 300 },
-  { name: 'interviewed', value: 300 },
-];
-
-const renderActiveShape = (props:any) => {
+const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
   const sin = Math.sin(-RADIAN * midAngle);
@@ -54,9 +51,38 @@ const renderActiveShape = (props:any) => {
 };
 
 const PieChartComponent = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { data: applicants } = useSelector((state: RootState) => state.applicantList);
+  const { user } = useSelector((state: RootState) => state.user);
+
+  const [data, setData] = useState([
+    { name: 'Applied', value: 0 },
+    { name: 'Rejected', value: 0 },
+    { name: 'Interviewed', value: 0 },
+  ]);
+
+  useEffect(() => {
+    const execute = async () => {
+      await dispatch(userApplicantList(String(user?._id)));
+    };
+    execute();
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    const applied = applicants?.length ?? 0;
+    const rejected = applicants?.filter((item) => item?.hiring_status === 'rejected')?.length ?? 0;
+    const interviewed = applicants?.filter((item) => item.hiring_status === 'interview').length ?? 0;
+
+    setData([
+      { name: 'Applied', value: applied },
+      { name: 'Rejected', value: rejected },
+      { name: 'Interviewed', value: interviewed },
+    ]);
+  }, [applicants]);
+
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const onPieEnter = (_:any, index:any) => {
+  const onPieEnter = (_: any, index: any) => {
     setActiveIndex(index);
   };
 

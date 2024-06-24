@@ -1,7 +1,7 @@
 import { UserHeader } from "@/components/user/header";
 import { CiFlag1 } from "react-icons/ci";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdDelete, MdEmail } from "react-icons/md";
 import { CiLinkedin } from "react-icons/ci";
@@ -11,7 +11,7 @@ import { FaInstagram } from "react-icons/fa";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { IoFileTrayFull } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AboutModal } from "@/components/user/aboutModal";
 import { ExperienceModal } from "@/components/user/experienceModal";
 import { IUsers } from "@/interfaces/IUser";
@@ -27,6 +27,7 @@ import { AddLangModal } from "@/components/user/addLangModal";
 import { SocialLinkModal } from "@/components/user/socialLinkModal";
 import { CvModal } from "@/components/user/cvModal";
 import { AddressModal } from "@/components/user/addressModal";
+
 
 
 
@@ -48,6 +49,7 @@ export const MyProfilePage = () => {
     const [socialLinkModal, setsocialLinkModal] = useState(false)
     const [resumeModal, setresumeModal] = useState(false)
     const [addressModal, setaddressModal] = useState(false)
+  
 
     const close = () => {
 
@@ -411,24 +413,24 @@ export const MyProfilePage = () => {
                         <div className="w-full  rounded border border-gray-300 flex flex-col p-4 gap-2">
                             <div className="-w-full flex justify-between">
                                 <span className="text-md font-bold">Address</span>
-                                <button onClick={()=>setaddressModal(true)} className="p-2 border border-customviolet rounded flex justify-center items-center"><FaEdit className="text-sm text-customviolet" /></button>
+                                <button onClick={() => setaddressModal(true)} className="p-2 border border-customviolet rounded flex justify-center items-center"><FaEdit className="text-sm text-customviolet" /></button>
                             </div>
                             <div className="w-full   flex flex-col gap-4">
-                                {users.address?(
+                                {users.address ? (
 
-                                <div className="w-full  flex flex-col">
-                                
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.houseNumber}</span>
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.locality}</span>
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.city}</span>
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.state}</span>
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.country}</span>
-                                    <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.pin}</span>
+                                    <div className="w-full  flex flex-col">
 
-                                </div>
-                                ):(
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.houseNumber}</span>
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.locality}</span>
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.city}</span>
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.state}</span>
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.country}</span>
+                                        <span className="flex gap-2 justify-start items-center text-gray-500">{users.address.pin}</span>
+
+                                    </div>
+                                ) : (
                                     <>
-                                    <span>Add Address..</span>
+                                        <span>Add Address..</span>
                                     </>
                                 )}
 
