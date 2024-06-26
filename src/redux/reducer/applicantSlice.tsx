@@ -26,7 +26,6 @@ const applicantListSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(userApplicantList.fulfilled, (state, action) => {
-                console.log(action.payload,"payload of the applicants")
                 state.loading = false;
                 state.data = action.payload as any ;
                 state.error = null
