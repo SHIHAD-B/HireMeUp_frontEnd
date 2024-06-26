@@ -73,6 +73,7 @@ export const RequestManagement = () => {
   const [approval1, setapproval1] = useState("")
   const [reject1, setReject1] = useState("")
 
+  const [reqfileName,setReqfileName]=useState("")
   const [reqfile, setReqFile] = useState("")
   const [reqfiledata, setReqfiledata] = useState({
     id: "",
@@ -124,7 +125,12 @@ export const RequestManagement = () => {
 
   const hanndleViewDoc = async () => {
     if (reqfiledata.id) {
-      await axios.patch(`${BASE_URL}company/admin/viewdocument`, { id: reqfiledata.id }, { withCredentials: true }).then(() => {
+      alert(reqfiledata.id)
+      const data={
+        id:reqfiledata.id,
+        document:reqfileName
+      }
+      await axios.patch(`${BASE_URL}company/admin/viewdocument`, data, { withCredentials: true }).then(() => {
         dispatch(allRequests());
         handleReqClose()
         toast({
@@ -154,8 +160,18 @@ export const RequestManagement = () => {
   type Payment = {
     _id: string;
     createdAt: Date;
-    document: string;
-    viewdocument: boolean;
+    registration: string,
+    license: string,
+    tin: string,
+    financialStatements: string,
+    references: string
+    viewdocument: {
+      registration: boolean,
+      license: boolean,
+      tin: boolean,
+      financialStatements: boolean,
+      references: boolean
+    }
     companyname: string;
     email: string;
   };
@@ -250,20 +266,77 @@ export const RequestManagement = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  setReqFile(row.original.document);
+                  setReqfileName("registration")
+                  setReqFile(row.original.registration);
                   handleReqOpen();
                   setReqfiledata({
                     id: row.original._id,
-                    view: row.original.viewdocument
+                    view: row.original.viewdocument.registration
                   })
                 }}
                 className="bg-white text-black cursor-pointer"
               >
-                View Document
+                Registration
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setReqfileName("license")
+                  setReqFile(row.original.license);
+                  handleReqOpen();
+                  setReqfiledata({
+                    id: row.original._id,
+                    view: row.original.viewdocument.license
+                  })
+                }}
+                className="bg-white text-black cursor-pointer"
+              >
+                License
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setReqfileName("tin")
+                  setReqFile(row.original.tin);
+                  handleReqOpen();
+                  setReqfiledata({
+                    id: row.original._id,
+                    view: row.original.viewdocument.tin
+                  })
+                }}
+                className="bg-white text-black cursor-pointer"
+              >
+                TIN
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setReqfileName("financialStatements")
+                  setReqFile(row.original.financialStatements);
+                  handleReqOpen();
+                  setReqfiledata({
+                    id: row.original._id,
+                    view: row.original.viewdocument.financialStatements
+                  })
+                }}
+                className="bg-white text-black cursor-pointer"
+              >
+                Financial Statement
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setReqfileName("references")
+                  setReqFile(row.original.references);
+                  handleReqOpen();
+                  setReqfiledata({
+                    id: row.original._id,
+                    view: row.original.viewdocument.references
+                  })
+                }}
+                className="bg-white text-black cursor-pointer"
+              >
+                References
               </DropdownMenuItem>
               {admin?.access == "can-edit" && (
                 <>
-                  {row.getValue("approval") !== "approved" && row.original.viewdocument !== false && (
+                  {row.getValue("approval") !== "approved" && row.original.viewdocument.registration !== false && row.original.viewdocument.license !== false && row.original.viewdocument.financialStatements !== false && row.original.viewdocument.references !== false && row.original.viewdocument.tin !== false && (
                     <>
                       <DropdownMenuItem onClick={() => handleModalApprove(row.getValue("email"))}>Approve</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleModalReject(row.getValue("email"))}>Reject</DropdownMenuItem>

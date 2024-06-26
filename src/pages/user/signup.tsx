@@ -22,10 +22,11 @@ import { companyValidation } from '../../utils/validations/companySignupValidati
 import { Loader } from '../../components/common/loader';
 import { GoogleLogin } from '@react-oauth/google'
 import { userSignupWtihGoogle } from '../../redux/actions/userAction';
-import {useToast} from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { companySignup } from '@/redux/actions/companyAction';
 import { IRequests, IUsers } from '@/interfaces/IUser';
 import { uploadFile } from '@/utils/uploadfile/uploadDocument';
+import { FaArrowRight } from 'react-icons/fa';
 
 const isDarkMode = document.documentElement.classList.contains('dark');
 export const SignUp = () => {
@@ -36,18 +37,17 @@ export const SignUp = () => {
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setConfirmPassword] = useState(false)
-    
-    const [seeker, setSeeker] = useState(true)
-    
+    const [page, setPage] = useState("user")
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowConfirmPassword = () => setConfirmPassword((show) => !show);
-    
-    
+
+
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
-    
+
+
     const [userData, setUserData] = useState({
         _id: '',
         username: '',
@@ -87,58 +87,70 @@ export const SignUp = () => {
         deleted: false,
         subscription: [],
     });
-    
-    const [document, setDocument] = useState<File | null>(null);
-    
-    const [companyData, setCompanyData] = useState<IRequests>({
+
+    const [documents, setDocuments] = useState<{ [key: string]: File | null }>({
+        registration: null,
+        license: null,
+        tin: null,
+        financialStatements: null,
+        references: null
+    });
+
+
+
+    const [companyData, setCompanyData] = useState<Partial<IRequests>>({
         companyname: "",
         email: "",
         password: "",
-        document:"",
         confirmPassword: ""
     })
-    
-    
+
+
     const [errorRes, setErrorRes] = useState({
         username: "",
         email: "",
         phone: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+
     })
     const [errorCompRes, setErrorCompRes] = useState({
         companyname: "",
         email: "",
         password: "",
-        document: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        registration: "",
+        license: "",
+        tin: "",
+        financialStatements: "",
+        references: ""
     })
-    
+
     const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setErrorRes(prev=>({
+        setErrorRes(prev => ({
             ...prev,
-            [name]:""
+            [name]: ""
         }))
         setUserData(prevState => ({
             ...prevState,
             [name]: value
         }));
-        
+
     }
-    
+
     const handleCompanyChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setErrorCompRes(prev=>({
+        setErrorCompRes(prev => ({
             ...prev,
-            [name]:""
+            [name]: ""
         }))
         setCompanyData(prevState => ({
             ...prevState,
             [name]: value
         }));
     }
-    
+
     const handleSubmit = async () => {
         try {
             setErrorRes({
@@ -148,7 +160,7 @@ export const SignUp = () => {
                 password: "",
                 confirmPassword: ""
             })
-            
+
             await signupValidation.validate(userData, { abortEarly: false });
             console.log("Validation successful");
             await dispatch(userSignup(userData as any as IUsers)).then((res: any) => {
@@ -169,17 +181,17 @@ export const SignUp = () => {
                         ...prev,
                         ...data
                     }));
-                    
+
                 } else {
                     navigate('/otp')
                 }
             }).catch((error: any) => {
                 console.log(error, "error from dispatch")
             })
-            
-            
+
+
         } catch (error: any) {
-            
+
             const errors: { [key: string]: string } = {};
             error.inner.forEach((err: { path: string | number; message: string; }) => {
                 if (err.path) {
@@ -187,7 +199,7 @@ export const SignUp = () => {
                 }
             });
             console.error("Validation failed:", errors);
-            
+
             const errorss = {
                 username: errors.username,
                 email: errors.email,
@@ -202,95 +214,143 @@ export const SignUp = () => {
         }
         console.log(errorRes, "error res")
     }
-    
+
     const handleCompanySubmit = async () => {
         try {
             setErrorCompRes({
                 companyname: "",
                 email: "",
                 password: "",
-                document: "",
-                confirmPassword: ""
+                confirmPassword: "",
+                registration: "",
+                license: "",
+                tin: "",
+                financialStatements: "",
+                references: ""
             });
+    
+            const documentKeys = ['registration', 'license', 'tin', 'financialStatements', 'references'];
+            let documentError = false;
             
-            
-            if (!document) {
+            documentKeys.forEach(key => {
+                if (!documents[key]) {
+                    setErrorCompRes(prev => ({
+                        ...prev,
+                        [key]: `${key} is needed`
+                    }));
+                    documentError = true;
+                }
+            });
+    
+            if (documentError) {
+                toast({
+                    description: "please check all the required Feilds",
+                    className: "bg-red-600 text-white"
+                });
+                return;
+            }
+    
+            const updatedCompdatas: any = {
+                companyname: companyData.companyname || undefined,
+                email: companyData.email || undefined,
+                password: companyData.password || undefined,
+                confirmPassword: companyData.confirmPassword || undefined,
+                otp: companyData.otp || undefined,
+            };
+    
+            try {
+                await companyValidation.validate(updatedCompdatas, { abortEarly: false });
+            } catch (validationError: any) {
+                const errors: { [key: string]: string } = {};
+                validationError.inner.forEach((err: { path: string | number; message: string }) => {
+                    if (err.path) {
+                        errors[err.path] = err.message;
+                    }
+                });
                 setErrorCompRes(prev => ({
                     ...prev,
-                    document: "Document is needed"
+                    ...errors
                 }));
-                
+                toast({
+                    description: "please check all the required Feilds",
+                    className: "bg-red-600 text-white"
+                });
+                return;
             }
-            const compdatas={
-                ...companyData
+    
+            for (const key of documentKeys) {
+                const file: File | null = documents[key];
+                if (file) {
+                    const result = await uploadFile(file, key+Date.now());
+                    updatedCompdatas[key] = result;
+                }
             }
-            if(document){
-                
-                const result = await uploadFile(document,"documnt");
-                console.log(result, "Uploaded document result");
-                compdatas.document=result
-            }
-            
-            await companyValidation.validate(compdatas, { abortEarly: false });
-            console.log(compdatas, "Validation successful");
-            
-            if (!errorCompRes.document) {
-                dispatch(companySignup(compdatas)).then((res: any) => {
+    
+            console.log(updatedCompdatas, "Validation successful");
+    
+            if (!Object.values(errorCompRes).some(error => !!error)) {
+                dispatch(companySignup(updatedCompdatas)).then((res: any) => {
                     console.log(res, "Response from temp company");
                     navigate('/company/companyotp');
                 });
             }
         } catch (error: any) {
-            const errors: { [key: string]: string } = {};
-            error.inner.forEach((err: { path: string | number; message: string }) => {
-                if (err.path) {
-                    errors[err.path] = err.message;
-                }
+            toast({
+                description: "please check all the required Feilds",
+                className: "bg-red-600 text-white"
             });
-            console.error("Validation failed:", errors);
-            
-            const errorsss = {
-                companyname: errors.companyname,
-                email: errors.email,
-                password: errors.password,
-                confirmPassword: errors.confirmPassword
-            };
+            const errors: { [key: string]: string } = {};
+            if (error.inner) {
+                error.inner.forEach((err: { path: string | number; message: string }) => {
+                    if (err.path) {
+                        errors[err.path] = err.message;
+                    }
+                });
+            } else {
+                console.error("Unknown error:", error);
+            }
+    
             setErrorCompRes(prev => ({
                 ...prev,
-                ...errorsss
+                ...errors
             }));
         }
     };
     
-    
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file:any = event.target.files ? event.target.files[0] : null;
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        
+
+
+    const handleFileChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null;
+
         if (file) {
-            setDocument(file);
-            setErrorCompRes((prev) => ({
-                ...prev,
-                document: "" 
+            setDocuments((prevDocuments) => ({
+                ...prevDocuments,
+                [key]: file,
+            }));
+            setErrorCompRes((prevErrors) => ({
+                ...prevErrors,
+                [key]: '',
+            }));
+        } else {
+            setErrorCompRes((prevErrors) => ({
+                ...prevErrors,
+                [key]: 'No file selected',
             }));
         }
-        
     };
-    
+
 
     const googleSignIn = async (response: string | any, status: boolean) => {
         console.log(response, status, "res from google")
         await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
-            console.log(res,"res from goodle")
+            console.log(res, "res from goodle")
             if (res.meta.requestStatus == "fulfilled") {
                 navigate('/')
-            }else {
+            } else {
                 toast({
-                    description:res.payload,
-                    className:"bg-red-600 text-white"
-                    
+                    description: res.payload,
+                    className: "bg-red-600 text-white"
+
                 })
             }
         })
@@ -298,7 +358,7 @@ export const SignUp = () => {
 
     return (
         <>
-        
+
             {loading && <Loader />}
             {comploading && <Loader />}
             <div className="w-screen h-auto bg-background flex items-center">
@@ -313,13 +373,12 @@ export const SignUp = () => {
                     </div>
                     <img src={signup} alt="" className="h-auto lg:w-[80%] w-32" />
                 </div>
-
-                {seeker ? (
+                {page == "user" && (
                     <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
                         <div className='w-[80%] min-h-[95%] bg-background rounded flex flex-col gap-1 items-center mb-4'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
-                                <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setSeeker(true)}>Job Seeker</span>
-                                <span className='  flex items-center justify-center cursor-pointer text-customviolet   ' onClick={() => setSeeker(false)}>company</span>
+                                <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("user")}>Job Seeker</span>
+                                <span className='  flex items-center justify-center cursor-pointer text-customviolet   ' onClick={() => setPage("companyOne")}>company</span>
                             </div>
                             <span className='font-bold w-full flex justify-center text-2xl'>Get more opportunities</span>
 
@@ -505,7 +564,7 @@ export const SignUp = () => {
                                                 color: isDarkMode ? 'white' : undefined,
                                             },
                                         }}
-                                        error={!!errorRes.confirmPassword} // Pass whether there's an error for the password field
+                                        error={!!errorRes.confirmPassword} 
                                     />
                                     <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorRes.confirmPassword}</FormHelperText>
 
@@ -533,12 +592,14 @@ export const SignUp = () => {
 
                         </div>
                     </div>
-                ) : (
+                )}
+
+                {page == "companyOne" && (
                     <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
                         <div className='w-[80%] h-[95%] bg-background flex flex-col gap-6 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
-                                <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
-                                <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setSeeker(false)}>company</span>
+                                <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setPage("user")}>Job Seeker</span>
+                                <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("companyOne")}>company</span>
                             </div>
                             <span className='font-bold w-full flex justify-center text-2xl'></span>
 
@@ -645,7 +706,7 @@ export const SignUp = () => {
                                             },
                                         }}
                                     />
-                                     <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.password}</FormHelperText>
+                                    <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.password}</FormHelperText>
                                 </FormControl>
                             </div>
                             <div className='w-full h-20   flex-col flex items-center justify-center'>
@@ -694,28 +755,12 @@ export const SignUp = () => {
                                             },
                                         }}
                                     />
-                                      <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.confirmPassword}</FormHelperText>
+                                    <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errorCompRes.confirmPassword}</FormHelperText>
                                 </FormControl>
                             </div>
 
-                            <div className='relative w-[80%] h-10 overflow-hidden'>
 
-                                <label htmlFor="fileInput" className={`absolute inset-0 border ${errorCompRes.document ? "border-red-400" : document ? "border-green-400" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
-                                    submit document
-                                    <input
-                                        id="fileInput"
-                                        type="file"
-                                        name='document'
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
-
-                            </div>
-
-
-
-                            <button onClick={handleCompanySubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Continue</button>
+                            <button onClick={() => setPage("companyTwo")} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl flex justify-center items-center gap-2'>Next <FaArrowRight /></button>
                             <div className='w-[80%] h-40  flex flex-col gap-4'>
                                 <span onClick={() => navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
                                 <span className='text-gray-400 text-sm'>By Clicking 'Continue',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
@@ -724,6 +769,102 @@ export const SignUp = () => {
                         </div>
                     </div>
                 )}
+                {page == "companyTwo" && (
+                    <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='w-[80%] h-[95%] bg-background flex flex-col gap-6 items-center'>
+                            <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
+                                <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setPage("user")}>Job Seeker</span>
+                                <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("companyOne")}>company</span>
+                            </div>
+                            <span className='font-bold w-full flex justify-center text-2xl'></span>
+
+                            <div className='relative w-[80%] h-10 overflow-hidden'>
+
+                                <label htmlFor="registration" className={`absolute inset-0 border ${errorCompRes.registration ? "bg-red-400 text-white" : documents.registration ? "bg-green-400 text-white" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
+                                    Company Registration and Incorporation Documents
+                                    <input
+                                        id="registration"
+                                        type="file"
+                                        name='registration'
+                                        className="hidden"
+                                        onChange={handleFileChange("registration")}
+                                    />
+                                </label>
+
+                            </div>
+                            <div className='relative w-[80%] h-10 overflow-hidden'>
+
+                                <label htmlFor="license" className={`absolute inset-0 border ${errorCompRes.license ? "bg-red-400 text-white" : documents.license ? "bg-green-400 text-white" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
+                                    Business License or Permit
+                                    <input
+                                        id="license"
+                                        type="file"
+                                        name='license'
+                                        className="hidden"
+                                        onChange={handleFileChange('license')}
+                                    />
+                                </label>
+
+                            </div>
+                            <div className='relative w-[80%] h-10 overflow-hidden'>
+
+                                <label htmlFor="tin" className={`absolute inset-0 border ${errorCompRes.tin ? "bg-red-400 text-white" : documents.tin ? "bg-green-400 text-white" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
+                                    Tax Identification Number (TIN) or Employer Identification Number (EIN)
+                                    <input
+                                        id="tin"
+                                        type="file"
+                                        name='tin'
+                                        className="hidden"
+                                        onChange={handleFileChange("tin")}
+                                    />
+                                </label>
+
+                            </div>
+                            <div className='relative w-[80%] h-10 overflow-hidden'>
+
+                                <label htmlFor="financialStatements" className={`absolute inset-0 border ${errorCompRes.financialStatements ? "bg-red-400 text-white" : documents.financialStatements ? "bg-green-400 text-white" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
+                                    Recent Audited Financial Statements
+                                    <input
+                                        id="financialStatements"
+                                        type="file"
+                                        name='financialStatements'
+                                        className="hidden"
+                                        onChange={handleFileChange("financialStatements")}
+                                    />
+                                </label>
+
+                            </div>
+                            <div className='relative w-[80%] h-10 overflow-hidden'>
+
+                                <label htmlFor="references" className={`absolute inset-0 border ${errorCompRes.references ? "bg-red-400 text-white" : documents.references ? "bg-green-400 text-white" : "border-gray-400"} w-full h-full text-gray rounded-lg cursor-pointer flex items-center justify-center`}>
+                                    Business References or Client Testimonials
+                                    <input
+                                        id="references"
+                                        type="file"
+                                        name='references'
+                                        className="hidden"
+                                        onChange={handleFileChange("references")}
+                                    />
+                                </label>
+
+                            </div>
+
+                            <div className='w-full justify-center items-center flex gap-1'>
+
+                                <button onClick={() => setPage("companyOne")} className='border border-gray-300 w-[20%] h-10 text-customviolet rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl flex justify-center items-center gap-2 '>Back</button>
+                                <button onClick={handleCompanySubmit} className='bg-customviolet w-[60%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl flex justify-center items-center gap-2'>Continue</button>
+                            </div>
+
+                            <div className='w-[80%] h-40  flex flex-col gap-4'>
+                                <span onClick={() => navigate('/signin')} className='flex gap-1 text-sm cursor-pointer'>Already have an account?<span className='text-customviolet font-bold'>Login</span></span>
+                                <span className='text-gray-400 text-sm'>By Clicking 'Continue',you acknowledge that you read and accept the <span className='text-customviolet font-bold'>Terms of Service</span> and <span className='text-customviolet font-bold'>Privacy Policy</span> </span>
+                            </div>
+
+                        </div>
+                    </div>
+                )}
+
+
             </div>
             {!loading && !comploading && <Footer />}
 

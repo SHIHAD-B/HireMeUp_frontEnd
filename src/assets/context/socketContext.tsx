@@ -55,7 +55,7 @@ export const SocketContextProvider = ({ children }: { children: React.ReactNode 
 
             newSocket.on('video received', (data) => {
                 setVideoCall((prevVideoCalls) => [...prevVideoCalls, data]);
-                setIncomingCallData(data); // Set incoming call data
+                setIncomingCallData(data); 
             });
             newSocket?.on('getOnlineUsers', (data => {
                 setOnlineUsers(data)

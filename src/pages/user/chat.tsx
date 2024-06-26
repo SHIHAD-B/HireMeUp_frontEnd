@@ -26,9 +26,6 @@ import { useNavigate } from "react-router-dom";
 import EmojiPicker from 'emoji-picker-react';
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { LuCheckCheck } from "react-icons/lu";
-// import { toast } from "react-toastify";
-
-
 
 export const Chat = () => {
     const { onlineUsers } = useSocketContext()
@@ -40,7 +37,6 @@ export const Chat = () => {
     const { user } = useSelector((state: RootState) => state.user)
     const { data: companyLists } = useSelector((state: RootState) => state.companyList)
     const [notification, setNotification] = useState({ message: '', profile: '' });
-    const { data } = useSelector((state: RootState) => state.chat)
     const [isnew, setIsNew] = useState(true);
     const [chatList, setChatList] = useState<IChat[]>()
     const [chatId, setChatId] = useState<string>()
@@ -54,6 +50,7 @@ export const Chat = () => {
         messages: [] as IMessage[]
     })
     const [message, setMessage] = useState("")
+    const [readDatas, setReadDatas] = useState<any>()
 
     useEffect(() => {
         if (messageBoxRef.current) {
@@ -97,108 +94,115 @@ export const Chat = () => {
         func();
     }, [dispatch, user]);
 
-
-
-
     useEffect(() => {
-
         socket?.on("message recieved", (newMessage: IMessage) => {
             if (newMessage.sender !== user?._id) {
-                const sender = companyLists?.find((item: any) => item._id == newMessage.sender)?.company_name
-                const message = newMessage.content
-                const profile: string = String(companyLists?.find((item: any) => item._id == newMessage.sender)?.icon)
+                const sender = companyLists?.find((item) => item._id === newMessage.sender)?.company_name;
+                const message = newMessage.content;
+                const profile: string = String(companyLists?.find((item) => item._id === newMessage.sender)?.icon);
 
                 const notificationMessage = `${sender}: ${message}`;
-
                 setNotification({ message: notificationMessage, profile });
                 setOpen(true);
             }
 
-            setInnerChat((prev) => ({
-                ...prev,
-                messages: [...innerChat.messages, newMessage]
-            }))
+            if (newMessage.sender === innerChat.id ) {
+                setInnerChat((prev) => ({
+                    ...prev,
+                    messages: [...prev.messages, newMessage]
+                }));
+            }
+            
 
-        })
-    }, [innerChat])
+            if (newMessage.sender === innerChat.id) {
+                socket?.emit('read message', readDatas);
+            }
+        });
+
+        return () => {
+            socket?.off("message recieved");
+        };
+    }, [innerChat, user, companyLists, readDatas, socket]);
+
     const sendMessage = async (receiver: string) => {
-        setEmoji(false)
-        if (message.trim() == "") {
+        if (message.trim() === "") {
             toast({
                 description: "Please enter message",
                 className: "bg-red-600 text-white"
-
-            })
-            return
+            });
+            return;
         }
+        
+
         const data = {
             sender: user?._id,
             receiver: receiver,
             content: message,
             type: "text"
+        };
 
-        }
+        try {
+            const res = await axios.post(`${BASE_URL}chat/company/sendmessage`, data, { withCredentials: true });
+            axios.get(`${BASE_URL}chat/company/getmessage?id=${readDatas.id}`).then((res: any) => {
+                setIsNew(false)
+                setInnerChat((prev) => ({
+                    ...prev,
+                    messages: res.data.user.message
+                }))
 
-        await axios.post(`${BASE_URL}chat/company/sendmessage`, data, { withCredentials: true }).then((res: any) => {
-            console.log(res, "res from send message")
-            const data = res.data.user
-            socket?.emit("new message", ({ data, chatId }))
-            setMessage("")
-            dispatch(allMessageList(String(user?._id)))
+            })
+            const newMessage = res.data.user;
+            console.log(newMessage,"new message in company")
+            socket?.emit("new message", { data: newMessage, chatId });
+ 
+            setMessage("");
+            dispatch(allMessageList(String(user?._id)));
 
             const chatfind = chatList?.find((item) =>
-                item.participants.includes(data.sender) && item.participants.includes(data.receiver)
+                item.participants.includes(newMessage.sender) && item.participants.includes(newMessage.receiver)
             );
 
             const chatfilter = chatList?.filter((item: IChat) =>
-                !(item.participants.includes(data.sender) && item.participants.includes(data.receiver))
+                !(item.participants.includes(newMessage.sender) && item.participants.includes(newMessage.receiver))
             );
 
             if (chatfind) {
                 chatfilter?.unshift(chatfind);
             }
 
-
             if (chatfilter) {
                 setChatList(chatfilter);
             }
-
-
-        })
-    }
-    useEffect(() => {
-        socket?.on('updated message', async(id: string) => {
-           await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
-                setIsNew(false)
-                setInnerChat((prev) => ({
-                    ...prev,
-                    messages: res.data.user.message
-                }))
-    
-            })
-        })
-    }, [])
+        } catch (error) {
+            console.error('Error in sending message:', error);
+        }
+    };
 
     const handleChatDetails = async (data: any) => {
-        const { id, name, profile, userid } = data
+        const { id, name, profile, userid, chatIds } = data;
         setChatId(id);
-        socket?.emit("join chat", (id))
-        const datas = {id:id, sender: userid, receiver: user?._id, status: "read" }
-        socket?.emit('read message', (datas))
-        await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
-            setIsNew(false)
+        socket?.emit("join chat", id);
+
+        const datas = { id: id, sender: userid, chatId: chatIds, receiver: user?._id, status: "read" };
+        setReadDatas({ ...datas, chatIds });
+        socket?.emit('read message', datas);
+
+        try {
+            const res = await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`);
+            setIsNew(false);
             setInnerChat((prev) => ({
                 ...prev,
                 id: userid,
                 name: name,
                 profile: profile,
                 messages: res.data.user.message
-            }))
+            }));
+        } catch (error) {
+            console.error('Error in fetching chat details:', error);
+        }
+    };
 
-        })
 
-
-    }
     const handleEmojiClick = (e: any) => {
         setMessage((prev) => prev + e.emoji);
     };
@@ -211,8 +215,24 @@ export const Chat = () => {
     };
 
     const handleVideoCall = () => {
-        navigate(`/company/videocall?id=${innerChat.id}&senderId=${innerChat?.id}`)
-    }
+        navigate(`/company/videocall?id=${innerChat.id}&senderId=${innerChat?.id}`);
+    };
+    useEffect(() => {
+        socket?.on('updated message', async (id: string,receiver:string,sender:string) => {
+            if(receiver==user?._id&&sender==innerChat.id){
+
+                await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
+                    console.log("updation done")
+                    setIsNew(false)
+                    setInnerChat((prev) => ({
+                        ...prev,
+                        messages: res.data.user.message
+                    }))
+    
+                })
+            }
+        })
+    }, [])
 
     return (
         <>
@@ -267,7 +287,8 @@ export const Chat = () => {
                                     <div key={index} className="w-[95%] h-16 border-b border-black flex items-center p-1 cursor-pointer" onClick={() => handleChatDetails({
                                         name: participant?.company_name,
                                         profile: participant?.icon,
-                                        id: lastMessage?._id,
+                                        chatIds: chat._id,
+                                        id: chat._id,
                                         userid: participant?._id
                                     })}>
                                         <div className="w-14 h-14 rounded-full flex flex-col">

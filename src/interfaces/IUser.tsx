@@ -102,7 +102,7 @@ export interface IAddress {
 
 export interface IAdminData {
   _id?: string,
-  name: string,
+  name:string,
   password?: string,
   email?: string,
   access?: string,
@@ -113,10 +113,21 @@ export interface IAdminData {
 export interface IRequests {
   companyname?: string;
   email?: string;
-  document?: any
+  registration?: string | null;
+  license?: string | null;
+  tin?: string | null;
+  viewdocument: {
+    registration: boolean,
+    license: boolean,
+    tin: boolean,
+    financialStatements: boolean,
+    references: boolean
+}
+  financialStatements?: string | null;
+  references?: string | null;
   password?: string;
   confirmPassword?: string;
-  otp?: string
+  otp?: string;
 }
 
 export interface ISocialLink {
@@ -136,7 +147,7 @@ export interface IJobData {
   salary_from: number;
   salary_to: number;
   category: string;
-  publish: boolean;
+  publish:boolean;
   questions: string[];
   required_skills: string[];
   description: string;
@@ -206,13 +217,9 @@ export interface ICompanyData {
   approval?: string;
   noOfEmployees?: number;
   contact?: {
-    email: string;
-    facebook: string;
     instagram: string;
-    linkedin: string;
-    phone: number;
+    linkedIn: string;
     twitter: string;
-    youtube: string;
   };
   industry?: string;
   benefits?: {
