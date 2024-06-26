@@ -2,8 +2,16 @@ name: Build and publish Frontend Service to Docker Hub
 
 on:
   push:
-    branches: ['main']
-  workflow_dispatch:
+    branches:
+      - main
+    paths:
+      - '**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**'
+
   
 jobs:
   push_to_registry:
@@ -22,6 +30,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context:  ./
+          context:  .
           push: true
           tags: shihadb/hiremeup-client:latest
