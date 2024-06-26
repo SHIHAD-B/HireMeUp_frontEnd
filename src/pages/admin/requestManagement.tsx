@@ -125,7 +125,6 @@ export const RequestManagement = () => {
 
   const hanndleViewDoc = async () => {
     if (reqfiledata.id) {
-      alert(reqfiledata.id)
       const data={
         id:reqfiledata.id,
         document:reqfileName
@@ -139,7 +138,6 @@ export const RequestManagement = () => {
 
         })
       }).catch((error) => {
-        console.log(error, "errror in view doc")
         toast({
           description: "Failed to mark as read",
           className: "bg-red-600 text-white"
