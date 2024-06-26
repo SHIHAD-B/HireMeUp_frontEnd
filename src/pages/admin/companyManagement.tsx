@@ -97,7 +97,7 @@ export const CompanyManagement = () => {
             await dispatch(companyList()).then((res: any) => {
                 console.log(res, "res from fetch user list")
             });
-            console.log(data, "data stored in redux")
+           
         };
 
         fetchData();
