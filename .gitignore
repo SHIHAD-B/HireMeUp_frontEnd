@@ -13,6 +13,9 @@ dist-ssr
 *.local
 .env
 
+# Ignore the specific configMap.yml file
+/manifest/k8s/configMap.yml
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

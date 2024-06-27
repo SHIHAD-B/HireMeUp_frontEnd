@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hiremeupfrontend-deployment
+  labels:
+    app: hiremeupfrontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hiremeupfrontend
+  template:
+    metadata:
+      labels:
+        app: hiremeupfrontend
+    spec:
+      containers:
+        - name: hiremeupfrontend
+          image: shihadb/hiremeup-client:latest
+          ports:
+            - containerPort: 5173
+          envFrom:
+            - configMapRef:
+                name: hiremefrontend-config
