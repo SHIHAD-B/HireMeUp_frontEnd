@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { UserHeader } from "@/components/user/header";
 import { useEffect, useState } from "react";
-import { applicantList, userApplicantList } from "@/redux/actions/userAction";
+import {  userApplicantList } from "@/redux/actions/userAction";
 import { companyUserList } from "@/redux/actions/companyAction";
 import { ListJob } from "@/redux/actions/jobAction";
 import { IApplicants } from "@/interfaces/IUser";
@@ -29,7 +29,7 @@ export const Application = () => {
     const { data: applicants } = useSelector((state: RootState) => state.applicantList);
     const { data: jobs } = useSelector((state: RootState) => state.job);
     const [appliation, setApplication] = useState<IApplicants[]>();
-    const [appliationData, setApplicationData] = useState<IApplicants[]>();
+    const [_, setApplicationData] = useState<IApplicants[]>();
     const [active, setActive] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<IApplicants | null>(null);

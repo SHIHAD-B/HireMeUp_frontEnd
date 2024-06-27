@@ -99,7 +99,7 @@ export const ScheduleModal = (data: IAbout) => {
                 userId: id,
                 interviewer:interviewer,
                 companyId: companyData?._id
-            }, { withCredentials: true }).then((res) => {
+            }, { withCredentials: true }).then(() => {
                 toast({
                     description: "Scheduled an interview",
                     className: "bg-customviolet text-white rounded"

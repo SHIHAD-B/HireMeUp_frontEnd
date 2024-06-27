@@ -35,7 +35,7 @@ const style = {
 
 
 export const SetProfileOne = () => {
-    const dispatch=useDispatch<AppDispatch>()
+    const dispatch = useDispatch<AppDispatch>()
     const { toast } = useToast()
     const [states, setStates] = useState<IState[]>()
     const { data, loading } = useSelector((state: RootState) => state.company)
@@ -81,7 +81,7 @@ export const SetProfileOne = () => {
             reader.onload = (event) => {
                 if (event.target && event.target.result) {
                     setImage(event.target.result as string);
-                    handleOpen(); 
+                    handleOpen();
                 }
             };
             reader.readAsDataURL(file);
@@ -89,6 +89,7 @@ export const SetProfileOne = () => {
     };
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+        croppedArea;
         setCroppedAreaPixels(croppedAreaPixels);
     };
 
@@ -103,7 +104,7 @@ export const SetProfileOne = () => {
             }))
             handleClose();
             setLoad(true)
-            const imglink = await uploadFile(croppedImg,"profile")
+            const imglink = await uploadFile(croppedImg, "profile")
             setCompanyData((prev: any) => ({
                 ...prev,
                 icon: imglink
@@ -200,7 +201,7 @@ export const SetProfileOne = () => {
     }, []);
 
     const handleSubmit = async () => {
-         console.log(companyData,"company data")
+        console.log(companyData, "company data")
         try {
             setError({
                 company_name: "",
@@ -221,19 +222,19 @@ export const SetProfileOne = () => {
                     description: "Profile is already up to date!",
                     className: "bg-blue-500 text-white rounded"
                 });
-                return; 
+                return;
             } else {
 
                 if (companyData?.password) {
                     delete companyData.password
                 }
-                dispatch(editCompany(companyData as ICompanyData)).then((res: any) => {
+                dispatch(editCompany(companyData as ICompanyData)).then(() => {
                     toast({
                         description: "Profile updated successfully....",
                         className: "bg-green-600 text-white rounded"
 
                     })
-                }).catch((error:any)=>{
+                }).catch(() => {
                     toast({
                         description: "please try again...",
                         className: "bg-red-600 text-white rounded"

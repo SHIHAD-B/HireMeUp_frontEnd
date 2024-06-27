@@ -17,7 +17,7 @@ import { Loader } from '../../components/common/loader';
 
 
 export const CompanyForgot = () => {
-    const { error, loading, companydata } = useSelector((state: RootState) => state.tempCompany)
+    const { loading, companydata } = useSelector((state: RootState) => state.tempCompany)
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const [email, setEmail] = useState('')

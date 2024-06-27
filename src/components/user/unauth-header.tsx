@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png'
-// import { ThemeButton } from '../buttons/themeButton'
 import { HiMenuAlt1 } from "react-icons/hi";
 import { ModeToggle } from '../common/mode-toggle';
 

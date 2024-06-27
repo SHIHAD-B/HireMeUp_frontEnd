@@ -1,6 +1,3 @@
-
-
-
 import otpimg from '../../assets/images/otp.webp'
 import logo from '../../assets/images/logo.png'
 import { useState } from 'react';
@@ -29,7 +26,7 @@ export const Otp = () => {
     let { loading, user } = useSelector((state: RootState) => state.tempUser)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
-    const [time, setTime] = useState(60);
+    const [_, setTime] = useState(60);
     const [formattedTime, setFormattedTime] = useState('01:00');
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 

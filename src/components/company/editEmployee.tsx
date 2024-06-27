@@ -74,7 +74,7 @@ export const EditEmployeeModal = ({ handleClose, data }: EditEmployeeProp) => {
             }
 
 
-            await axios.patch(`${BASE_URL}company/company/editemployee`, empData,{withCredentials:true}).then((res: any) => {
+            await axios.patch(`${BASE_URL}company/company/editemployee`, empData,{withCredentials:true}).then(() => {
                 handleClose()
                 toast({
                     description: "Employee Edited successfull",

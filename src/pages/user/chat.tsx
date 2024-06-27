@@ -7,7 +7,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { GoDotFill, GoPaperclip } from "react-icons/go";
 import { FiSend } from "react-icons/fi";
 import { GrEmoji } from "react-icons/gr";
-import { useContext, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import newImg from '../../assets/images/newchat.png'
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -207,7 +207,7 @@ export const Chat = () => {
         setMessage((prev) => prev + e.emoji);
     };
 
-    const handleClose = (event: any, reason: any) => {
+    const handleClose = (_: any, reason: any) => {
         if (reason === 'clickaway') {
             return;
         }

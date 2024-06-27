@@ -70,7 +70,7 @@ export const JobListing = () => {
 
     const { loading, data }: any = useSelector((state: RootState) => state.job)
     const company_Id = useSelector((state: RootState) => state.company.data?._id)
-    const [Data, setData] = useState<Payment>(data)
+    const [__, setData] = useState<Payment>(data)
     const dispatch = useDispatch<AppDispatch>()
 
 
@@ -81,7 +81,7 @@ export const JobListing = () => {
         id: "",
         name: ""
     })
-    const [plans, setPlans] = useState({
+    const [plans, _] = useState({
         name: "",
         duration: 0,
         price: 0,
@@ -93,10 +93,8 @@ export const JobListing = () => {
     const handleOpen = () => setdelOpen(true);
     const handleClose = () => setdelOpen(false);
 
-    const handleaddOpen = () => setaddopen(true);
     const handleaddClose = () => setaddopen(false);
 
-    const handleditOpen = () => seteditOpen(true);
     const handleditClose = () => seteditOpen(false);
 
 
@@ -125,10 +123,7 @@ export const JobListing = () => {
         handleOpen();
     }
 
-    const handleModalEdit = (datas: any) => {
-        setPlans(datas);
-        handleditOpen();
-    }
+
     const handledelete = async (id: string) => {
         await axios.patch(`${BASE_URL}job/company/deletejob`, { id: id }, { withCredentials: true });
         await dispatch(fecthJob(company_Id));

@@ -39,7 +39,7 @@ export const Apply = (Adata: IApply) => {
 
         if (job?.questions) {
             const initialFormData: { [key: string]: string } = {};
-            job.questions.forEach((question, index) => {
+            job.questions.forEach((_, index) => {
                 initialFormData[`question_${index}`] = '';
             });
             setFormData(initialFormData);

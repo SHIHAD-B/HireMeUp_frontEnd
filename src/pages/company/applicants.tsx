@@ -3,7 +3,6 @@ import { RootState } from "@/redux/store";
 import { fecthJob } from "@/redux/actions/jobAction";
 
 import { useDispatch, useSelector } from "react-redux";
-import Datepicker from "react-tailwindcss-datepicker";
 import { CompanyHeader } from "@/components/company/header";
 import { AdminLoader } from "@/components/common/adminLoader";
 import {

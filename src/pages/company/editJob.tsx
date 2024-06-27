@@ -117,7 +117,6 @@ export const EditJob = () => {
     const [icon, setIcon] = useState(false)
     const dispatch = useDispatch<AppDispatch>()
     const { data } = useSelector((state: RootState) => state.category)
-    const company = useSelector((state: RootState) => state.company.data)
     const { loading } = useSelector((state: RootState) => state.job)
 
     useEffect(() => {
@@ -183,13 +182,13 @@ export const EditJob = () => {
     const deleteBenefits = (num: number) => {
         setJobData(prev => ({
             ...prev,
-            benefits: prev.benefits.filter((value, index) => index !== num)
+            benefits: prev.benefits.filter((_, index) => index !== num)
         }))
     }
     const deleteSkill = (num: number) => {
         setJobData(prev => ({
             ...prev,
-            required_skills: prev.required_skills.filter((value, index) => index !== num)
+            required_skills: prev.required_skills.filter((_, index) => index !== num)
         }))
     }
 
@@ -277,7 +276,7 @@ export const EditJob = () => {
 
     const [value, setValue] = useState<number[]>([1000, 300000]);
 
-    const handleChange = (event: Event, newValue: number | number[]) => {
+    const handleChange = (_: Event, newValue: number | number[]) => {
         console.log(newValue, "value from slider");
         setValue(newValue as number[]);
         setJobData(prev => ({

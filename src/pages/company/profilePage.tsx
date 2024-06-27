@@ -7,11 +7,9 @@ import { BsBuildings } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { HiUserGroup } from "react-icons/hi";
 import { FaFire, FaInstagram } from "react-icons/fa";
-
 import { CiLinkedin, CiTwitter } from "react-icons/ci";
 import { MdEmail } from "react-icons/md";
 import { SiWebmoney } from "react-icons/si";
-import { RxCross2 } from "react-icons/rx";
 import { employeeList } from "@/redux/actions/companyAction";
 
 
@@ -153,7 +151,7 @@ export const ProfilePage = () => {
                                         </div>
                                         <div className="w-full min-h-8 flex flex-col">
                                             <span className="flex gap-2 justify-start items-center  text-gray-500"><CiLinkedin />Linkedin</span>
-                                            <a href="" className="text-sm break-words text-customviolet">{data?.contact?.linkedin}</a>
+                                            <a href="" className="text-sm break-words text-customviolet">{data?.contact?.linkedIn}</a>
                                         </div>
                                         <div className="w-full min-h-8 flex flex-col">
                                             <span className="flex gap-2 justify-start items-center  text-gray-500"><CiTwitter />Twitter</span>

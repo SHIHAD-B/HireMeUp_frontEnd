@@ -1,7 +1,7 @@
 import { companyList, companyUserList, listcompanyUsers } from '@/redux/actions/companyAction';
 import { UlistUsers } from '@/redux/actions/userAction';
 import { AppDispatch, RootState } from '@/redux/store';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import audios from '../../assets/audio/facebook_tone.mp3'

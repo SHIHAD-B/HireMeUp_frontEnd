@@ -2,5 +2,8 @@
 
 
 export const SubmitApplication = () => {
- 
+ return(
+    <>
+    </>
+ )
 }

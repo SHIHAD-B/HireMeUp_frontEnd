@@ -10,8 +10,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { ListJob } from '@/redux/actions/jobAction';
-import { companyList, companyUserList } from '@/redux/actions/companyAction';
-import { fetchCategory } from '@/redux/actions/adminAction';
+import {  companyUserList } from '@/redux/actions/companyAction';
 import { IFilterData } from '@/interfaces/IUser';
 import { UserHeader } from "@/components/user/header";
 import { JobDescription } from "@/components/user/jobDescription";
@@ -97,6 +96,7 @@ export const Joblist = () => {
     
 
     const handleSubmit = (id: string) => {
+        id
         if (!user?.email) {
             navigate('/signin')
             toast({
@@ -405,7 +405,7 @@ const handleJobClick = (id: string) => {
                              <Pagination
                                 count={Math.ceil((data?.length || 0) / ITEMS_PER_PAGE)}
                                 page={page}
-                                onChange={(e, page) => setPage(page)}
+                                onChange={(_, page) => setPage(page)}
                                 size="small"
                                 sx={{
                                     '& .MuiPaginationItem-page, & .MuiSvgIcon-root': {

@@ -119,7 +119,7 @@ export const PostJob = () => {
 
 
     const [page, setPage] = useState('one')
-    const [jobData, setJobData] = useState<IJobData>({
+    const [jobData, setJobData] = useState<Partial<IJobData>>({
         companyId: String(company?._id),
         job_title: "",
         type: "",
@@ -150,10 +150,10 @@ export const PostJob = () => {
     })
 
     const addQuestions = (qeust: string) => {
-        if (!jobData.questions.includes(qeust) && qeust.trim() !== "") {
+        if (jobData&&jobData?.questions&&!jobData?.questions?.includes(qeust) && qeust.trim() !== "") {
             setJobData(prev => ({
                 ...prev,
-                questions: [...prev.questions, qeust]
+                questions: [...(prev?.questions as any), qeust]
             }));
             setQuestions("")
             return
@@ -196,7 +196,7 @@ export const PostJob = () => {
         if (!error) {
             setJobData(prev => ({
                 ...prev,
-                benefits: [...prev.benefits, benefits]
+                benefits: [...(prev?.benefits as any[]), benefits]
             }))
         }
         setBenefits({
@@ -209,19 +209,19 @@ export const PostJob = () => {
     const deleteBenefits = (num: number) => {
         setJobData(prev => ({
             ...prev,
-            benefits: prev.benefits.filter((value, index) => index !== num)
+            benefits: (prev?.benefits as any[]).filter((_, index) => index !== num)
         }))
     }
     const deleteSkill = (num: number) => {
         setJobData(prev => ({
             ...prev,
-            required_skills: prev.required_skills.filter((value, index) => index !== num)
+            required_skills: (prev?.required_skills as any[]).filter((_, index) => index !== num)
         }))
     }
     const deleteQuestions = (num: number) => {
         setJobData(prev => ({
             ...prev,
-            questions: prev.questions.filter((value, index) => index !== num)
+            questions: (prev?.questions as any[]).filter((_, index) => index !== num)
         }))
     }
 
@@ -297,10 +297,10 @@ export const PostJob = () => {
     }
 
     const skillSubmit = (skill: string) => {
-        if (!jobData.required_skills.includes(skill) && skill.trim() !== "") {
+        if (jobData&&jobData?.required_skills&&!jobData?.required_skills.includes(skill) && skill.trim() !== "") {
             setJobData(prev => ({
                 ...prev,
-                required_skills: [...prev.required_skills, skill]
+                required_skills: [...(prev.required_skills as any[]), skill]
             }));
             setSkill("")
             return
@@ -317,7 +317,7 @@ export const PostJob = () => {
 
     const [value, setValue] = useState<number[]>([1000, 300000]);
 
-    const handleChange = (event: Event, newValue: number | number[]) => {
+    const handleChange = (_: Event, newValue: number | number[]) => {
         console.log(newValue, "value from slider");
         setValue(newValue as number[]);
         setJobData(prev => ({
@@ -689,7 +689,7 @@ export const PostJob = () => {
                                             <button onClick={() => skillSubmit(skill)} className="flex w-64 h-9 lg:w-80 justify-center items-center border border-customviolet p-2 rounded text-customviolet font-bold hover:bg-customviolet hover:text-white"><FiPlus />Add skills</button>
                                         </div>
                                         <div className="flex flex-wrap gap-4">
-                                            {jobData.required_skills.map((key, index) => (
+                                            {jobData&&jobData.required_skills&&jobData.required_skills.map((key, index) => (
                                                 <div key={index} className="p-1 bg-gray-100 flex">
                                                     {key}
                                                     <RxCross2 onClick={() => deleteSkill(index)} className="text-customviolet text-xl cursor-pointer" />
@@ -715,7 +715,7 @@ export const PostJob = () => {
                                             <button onClick={() => addQuestions(questions)} className="flex w-64 h-9 lg:w-80 justify-center items-center border border-customviolet p-2 rounded text-customviolet font-bold hover:bg-customviolet hover:text-white"><FiPlus />Add Questions</button>
                                         </div>
                                         <div className="flex flex-wrap gap-4">
-                                            {jobData.questions.map((key, index) => (
+                                            {jobData&&jobData.questions&&jobData.questions.map((key, index) => (
                                                 <div key={index} className="p-1 bg-gray-100 flex">
                                                     {key}
                                                     <RxCross2 onClick={() => deleteQuestions(index)} className="text-customviolet text-xl cursor-pointer" />
@@ -870,7 +870,7 @@ export const PostJob = () => {
                                 <hr className="text-gray-500 w-[98%]" />
                                 <div className="w-full justify-center lg:justify-start   flex  gap-4 flex-wrap p-2">
 
-                                    {jobData.benefits.map((key, index) => (
+                                    {jobData&&jobData.benefits&&jobData.benefits.map((key, index) => (
 
                                         <div key={index} className="flex flex-col gap-1 p-2 border w-[300px] h-[300px] border-gray-400 ">
                                             <div className="w-full h-1/6  flex justify-between text-4xl text-customviolet">

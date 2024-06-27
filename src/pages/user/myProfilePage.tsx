@@ -1,7 +1,5 @@
 import { UserHeader } from "@/components/user/header";
 import { CiFlag1 } from "react-icons/ci";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdDelete, MdEmail } from "react-icons/md";
 import { CiLinkedin } from "react-icons/ci";
@@ -11,7 +9,7 @@ import { FaInstagram } from "react-icons/fa";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { IoFileTrayFull } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { AboutModal } from "@/components/user/aboutModal";
 import { ExperienceModal } from "@/components/user/experienceModal";
 import { IUsers } from "@/interfaces/IUser";
@@ -27,6 +25,8 @@ import { AddLangModal } from "@/components/user/addLangModal";
 import { SocialLinkModal } from "@/components/user/socialLinkModal";
 import { CvModal } from "@/components/user/cvModal";
 import { AddressModal } from "@/components/user/addressModal";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 
 

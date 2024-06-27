@@ -1,6 +1,3 @@
-
-
-
 import forgotImg from '../../assets/images/forgot.png'
 import logo from '../../assets/images/logo.png'
 import { TextField } from '@mui/material';
@@ -17,7 +14,7 @@ import { Loader } from '../../components/common/loader';
 
 
 export const Forgot = () => {
-    const { error, loading, user } = useSelector((state: RootState) => state.tempUser)
+    const {  loading, user } = useSelector((state: RootState) => state.tempUser)
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const [email, setEmail] = useState('')

@@ -20,10 +20,8 @@ import FormHelperText from '@mui/material/FormHelperText/FormHelperText';
 
 
 
-
-
-export const ForgotOtp = () => {
-    let {user} = useSelector((state: RootState) => state.tempUser)
+export const ForgotOtp: React.FC = () => {
+    let { user } = useSelector((state: RootState) => state.tempUser)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
     const [time, setTime] = useState(60);
@@ -82,7 +80,7 @@ export const ForgotOtp = () => {
 
 
     const resendHandler = async () => {
-        await Axios.post('http://localhost:3000/auth/forgot', user,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
+        await Axios.post('http://localhost:3000/auth/forgot', user, { withCredentials: true }).then((res: AxiosResponse<any, any>) => {
             if (res.status == 200) {
                 setTime(60)
                 setFormattedTime('01:00')
@@ -96,7 +94,7 @@ export const ForgotOtp = () => {
 
 
 
-    
+
     const verifyHandler = async () => {
         if (!otp) {
             setOtpError('enter otp')
@@ -105,7 +103,7 @@ export const ForgotOtp = () => {
                 email: user?.email,
                 otp: otp
             }
-            await Axios.post('http://localhost:3000/auth/forgot', data,{withCredentials:true}).then((res: any) => {
+            await Axios.post('http://localhost:3000/auth/forgot', data, { withCredentials: true }).then((res: any) => {
                 if (res.status == 200) {
                     navigate('/resetpassword')
                 }

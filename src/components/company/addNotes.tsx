@@ -1,4 +1,4 @@
-import { IApplicants, IUsers } from "@/interfaces/IUser";
+import { IApplicants } from "@/interfaces/IUser";
 import { BASE_URL } from "@/interfaces/config/constant";
 import { Modal, Typography, Box, TextField, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 import { Button as MButton } from '@mui/material';

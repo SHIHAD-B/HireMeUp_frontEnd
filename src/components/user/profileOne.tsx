@@ -80,6 +80,7 @@ export const ProfileOne = () => {
     };
 
     const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+        croppedArea
         setCroppedAreaPixels(croppedAreaPixels);
     };
 
@@ -161,7 +162,7 @@ export const ProfileOne = () => {
                         className: "bg-green-600 text-white rounded"
 
                     })
-                }).catch((error:any)=>{
+                }).catch(()=>{
                     toast({
                         description: "please try again...",
                         className: "bg-red-600 text-white rounded"

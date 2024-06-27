@@ -1,6 +1,4 @@
 import { useState } from "react"
-
-
 import { CompanyHeader } from "@/components/company/header"
 import { SetProfileOne } from "@/components/company/setProfileOne"
 import { SetProfiletwo } from "@/components/company/setProfileTwo"

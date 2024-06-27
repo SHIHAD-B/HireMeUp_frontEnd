@@ -137,7 +137,7 @@ export const RequestManagement = () => {
           className: "bg-blue-600 text-white"
 
         })
-      }).catch((error) => {
+      }).catch(() => {
         toast({
           description: "Failed to mark as read",
           className: "bg-red-600 text-white"

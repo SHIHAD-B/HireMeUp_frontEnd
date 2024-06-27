@@ -41,7 +41,7 @@ export const CompanyOtp = () => {
     const { companydata, loading } = useSelector((state: RootState) => state.tempCompany)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
-    const [time, setTime] = useState(60);
+    const [_, setTime] = useState(60);
     const [formattedTime, setFormattedTime] = useState('01:00');
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -86,7 +86,7 @@ export const CompanyOtp = () => {
     }, []);
 
     const resendHandler = async () => {
-        await dispatch(companySignup(companydata)).then((res: any) => {
+        await dispatch(companySignup(companydata)).then(() => {
             setTime(60)
             setFormattedTime('01:00')
         }).catch((error: any) => {

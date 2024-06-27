@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { IChat, IMessage, IPopulatedChat,  } from '@/interfaces/IUser';
+import {  IPopulatedChat,  } from '@/interfaces/IUser';
 import { allMessageList } from '../actions/userAction';
 
 

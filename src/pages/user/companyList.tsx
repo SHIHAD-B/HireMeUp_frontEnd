@@ -256,7 +256,7 @@ export const CompanyList = () => {
                             <Pagination
                                 count={Math.ceil((data?.length || 0) / ITEMS_PER_PAGE)}
                                 page={page}
-                                onChange={(e, page) => setPage(page)}
+                                onChange={(_, page) => setPage(page)}
                                 size="small"
                                 sx={{
                                     '& .MuiPaginationItem-page, & .MuiSvgIcon-root': {

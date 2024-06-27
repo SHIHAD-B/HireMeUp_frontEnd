@@ -25,7 +25,8 @@ export const UserSideBar = () => {
 
     const logOut = async () => {
         try {
-            const res = await dispatch(logout());
+             await dispatch(logout());
+           
             navigate('/');
         } catch (error: any) {
             console.error("Logout failed:", error.message);

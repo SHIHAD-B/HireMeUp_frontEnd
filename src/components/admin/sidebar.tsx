@@ -5,7 +5,6 @@ import { PiBuildingsBold } from "react-icons/pi";
 import { FaUsers } from "react-icons/fa";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbUserPlus } from "react-icons/tb";
-import { IoMdSettings } from "react-icons/io";
 import { NavLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +24,7 @@ export const AdminSideBar = () => {
     const logOut = async () => {
         try {
             const res = await dispatch(logout());
+            res;
             navigate('/');
         } catch (error: any) {
             console.error("Logout failed:", error.message);

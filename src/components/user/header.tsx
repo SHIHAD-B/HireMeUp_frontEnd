@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { userNotificatinoList } from "@/redux/actions/userAction";
 import axios from "axios";
 import { BASE_URL } from "@/interfaces/config/constant";
-import { userInfo } from "os";
+
 
 interface UserHeaderProps {
   prop: string;

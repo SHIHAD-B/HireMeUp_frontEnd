@@ -253,8 +253,8 @@ export const AddressModal = (data: IAddress) => {
                             helperText={error?.pin}
                             sx={{ mt: 1, mb: 2 }}
                             inputProps={{
-                                inputMode: 'numeric', // Ensures numeric keyboard on mobile devices
-                                pattern: '[0-9]*', // Ensures only numbers are accepted
+                                inputMode: 'numeric', 
+                                pattern: '[0-9]*', 
                             }}
                         />
                         <FormControl fullWidth>

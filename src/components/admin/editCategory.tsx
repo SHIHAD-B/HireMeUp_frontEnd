@@ -58,7 +58,7 @@ export const EditCategoryModal = ({handleClose, data }: EditCategoryProp) => {
             console.log("Validation successful");
 
 
-            await axios.patch(`${BASE_URL}job/admin/editcategory`, data,{withCredentials:true}).then((res: any) => {
+            await axios.patch(`${BASE_URL}job/admin/editcategory`, data,{withCredentials:true}).then(() => {
                 handleClose()
                 toast({
                     description: "category edited successfull",

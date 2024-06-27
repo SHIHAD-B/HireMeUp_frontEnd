@@ -217,7 +217,7 @@ export const CompanyChat = () => {
         }
     };
 
-    const handleClose = (event: any, reason: any) => {
+    const handleClose = (_: any, reason: any) => {
         if (reason === 'clickaway') {
             return;
         }
