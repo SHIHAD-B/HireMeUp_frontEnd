@@ -19,6 +19,13 @@ spec:
           image: shihadb/hiremeup-client:latest
           ports:
             - containerPort: 5173
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
           envFrom:
             - configMapRef:
                 name: hiremefrontend-config

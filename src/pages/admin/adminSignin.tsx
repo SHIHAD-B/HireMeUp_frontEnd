@@ -64,7 +64,7 @@ export const AdminSignIn = () => {
                 password: ""
             });
             await signinValidation.validate(data, { abortEarly: false });
-            console.log("Validation successful");
+            console.log("Validation successful.");
             dispatch(adminSignin(data)).then((res: any) => {
                 if (res?.error?.message == "Rejected") {
                     if (res.payload == "user blocked or deleted by admin") {
