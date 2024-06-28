@@ -81,7 +81,7 @@ export const CompanyList = () => {
                 });
                 setStates(response.data);
             } catch (error) {
-                console.error("Error fetching states:", error);
+                console.error("Error fetching states::", error);
             }
         };
 
