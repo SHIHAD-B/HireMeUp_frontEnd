@@ -4,7 +4,22 @@ metadata:
   name: hiremeupfrontend-service
 spec:
   selector:
-    app: hiremeupfrontend-deployment
+    app: hiremeupfrontend
   ports:
-    - port: 5173
+    - protocol: TCP
+      port: 80
       targetPort: 5173
+  type: ClusterIP
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hiremeupfrontend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hiremeupfrontend-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
