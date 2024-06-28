@@ -94,10 +94,7 @@ export const CompanyManagement = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(companyList()).then((res: any) => {
-                console.log(res, "res from fetch user list")
-            });
-           
+            await dispatch(companyList())  
         };
 
         fetchData();
