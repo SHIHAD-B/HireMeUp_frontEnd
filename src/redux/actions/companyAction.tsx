@@ -4,10 +4,10 @@ import { reduxRequest } from "../../interfaces/config/api";
 import { ICompanyData } from "@/interfaces/IUser";
 
 
-export const fetchCompany = createAsyncThunk("company/company/fetchcompany", async (_,{rejectWithValue}) => {
+export const fetchCompany = createAsyncThunk("company/fetchcompany", async (_,{rejectWithValue}) => {
     return reduxRequest(
         "get",
-        "company/company/fetchcompany",
+        "company/fetchcompany",
         config,
         rejectWithValue,
     )
@@ -52,10 +52,10 @@ export const companyFetchSchedule=createAsyncThunk('job/company/fetchschedule',a
     )
 })
 
-export const employeeList = createAsyncThunk("company/company/listemployee", async (_, { rejectWithValue }) => {
+export const employeeList = createAsyncThunk("company/listemployee", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
-        "company/company/listemployee",
+        "company/listemployee",
         config,
         rejectWithValue,
     )
