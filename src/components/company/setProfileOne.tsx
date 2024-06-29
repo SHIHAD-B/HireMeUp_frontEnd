@@ -1,5 +1,5 @@
 
-import log from '../../assets/images/log.png'
+import pro from '../../assets/images/pro.jpg';
 import { GiSevenPointedStar } from "react-icons/gi";
 import { IoImageOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
@@ -66,7 +66,7 @@ export const SetProfileOne = () => {
         if (!data?.icon) {
             setCompanyData((prev: any) => ({
                 ...prev,
-                icon: log
+                icon: pro
             }))
         }
     }, [])
@@ -118,7 +118,7 @@ export const SetProfileOne = () => {
                 })
                 setCompanyData((prev: any) => ({
                     ...prev,
-                    icon: log
+                    icon: pro
                 }))
             }
             console.log(imglink)

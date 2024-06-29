@@ -52,10 +52,10 @@ export const companyFetchSchedule=createAsyncThunk('job/company/fetchschedule',a
     )
 })
 
-export const employeeList = createAsyncThunk("company/listemployee", async (_, { rejectWithValue }) => {
+export const employeeList = createAsyncThunk("company/company/listemployee", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
-        "company/listemployee",
+        "company/company/listemployee",
         config,
         rejectWithValue,
     )
