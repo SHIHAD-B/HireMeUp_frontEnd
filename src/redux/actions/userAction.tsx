@@ -25,10 +25,10 @@ export const fetchSubscription = createAsyncThunk("subscription/user/fetchplans"
 
 
 
-export const userSignin = createAsyncThunk("auth/signin", async (userdata: IUsers, { rejectWithValue }) => {
+export const userSignin = createAsyncThunk("auth/cus/signin", async (userdata: IUsers, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/signin",
+        "auth/cus/signin",
         config,
         rejectWithValue,
         userdata
@@ -36,20 +36,20 @@ export const userSignin = createAsyncThunk("auth/signin", async (userdata: IUser
 
 })
 
-export const userSignup = createAsyncThunk("auth/signup", async (userdata: IUsers, { rejectWithValue }) => {
+export const userSignup = createAsyncThunk("auth/cus/signup", async (userdata: IUsers, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/signup",
+        "auth/cus/signup",
         config,
         rejectWithValue,
         userdata
     )
 
 })
-export const userSignupWtihGoogle = createAsyncThunk("auth/signupwithgoogle", async (credentialId: string, { rejectWithValue }) => {
+export const userSignupWtihGoogle = createAsyncThunk("auth/cus/signupwithgoogle", async (credentialId: string, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/signupwithgoogle",
+        "auth/cus/signupwithgoogle",
         config,
         rejectWithValue,
         { id: credentialId }
@@ -57,10 +57,10 @@ export const userSignupWtihGoogle = createAsyncThunk("auth/signupwithgoogle", as
 
 })
 
-export const forgot = createAsyncThunk("auth/forgot", async (email: string, { rejectWithValue }) => {
+export const forgot = createAsyncThunk("auth/cus/forgot", async (email: string, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/forgot",
+        "auth/cus/forgot",
         config,
         rejectWithValue,
         { email }
@@ -114,7 +114,7 @@ export const userNotificatinoList=createAsyncThunk('notification/user/fetchnotif
 
 
 
-export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+export const logout = createAsyncThunk("auth/cus/logout", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
         "auth/logout",

@@ -62,10 +62,10 @@ export const employeeList = createAsyncThunk("company/listemployee", async (_, {
 
 })
 
-export const companySignin = createAsyncThunk("auth/companysignin", async (Data: ICompanyData, { rejectWithValue }) => {
+export const companySignin = createAsyncThunk("auth/cus/companysignin", async (Data: ICompanyData, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/companysignin",
+        "auth/cus/companysignin",
         config,
         rejectWithValue,
         Data
@@ -84,10 +84,10 @@ export const companyApplicantList=createAsyncThunk('job/company/fetchapplicants'
 
 
 
-export const companySignup = createAsyncThunk("auth/companysignup", async (data: ICompanyData | null, { rejectWithValue }) => {
+export const companySignup = createAsyncThunk("auth/cus/companysignup", async (data: ICompanyData | null, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/companysignup",
+        "auth/cus/companysignup",
         configfile,
         rejectWithValue,
         data
@@ -95,10 +95,10 @@ export const companySignup = createAsyncThunk("auth/companysignup", async (data:
 
 })
 
-export const companyforgot = createAsyncThunk("auth/companyforgot", async (email: string, { rejectWithValue }) => {
+export const companyforgot = createAsyncThunk("auth/cus/companyforgot", async (email: string, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/companyforgot",
+        "auth/cus/companyforgot",
         config,
         rejectWithValue,
         { email }

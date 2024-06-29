@@ -4,10 +4,10 @@ import { reduxRequest } from "../../interfaces/config/api";
 import { ICompanyData, IUsers } from "@/interfaces/IUser";
 
 
-export const adminSignin = createAsyncThunk("auth/adminsignin", async (Data: ICompanyData, { rejectWithValue }) => {
+export const adminSignin = createAsyncThunk("auth/cus/adminsignin", async (Data: ICompanyData, { rejectWithValue }) => {
     return reduxRequest(
         "post",
-        "auth/adminsignin",
+        "auth/cus/adminsignin",
         config,
         rejectWithValue,
         Data
