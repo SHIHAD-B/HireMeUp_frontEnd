@@ -21,8 +21,12 @@ export const uploadFile = async (file: File,filename:string): Promise<string | n
         }
 
         const urlData = await res.json();
-        console.log('Upload successful:', urlData);
-        return urlData.url;
+        let secureUrl = urlData.url;
+        if (secureUrl.startsWith('http://')) {
+            secureUrl = secureUrl.replace('http://', 'https://');
+        }
+
+        return secureUrl;
     } catch (error) {
         console.error('Error uploading file:', error);
         return null;
