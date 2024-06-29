@@ -117,7 +117,7 @@ export const userNotificatinoList=createAsyncThunk('notification/user/fetchnotif
 export const logout = createAsyncThunk("auth/cus/logout", async (_, { rejectWithValue }) => {
     return reduxRequest(
         "get",
-        "auth/logout",
+        "auth/cus/logout",
         config,
         rejectWithValue
 
