@@ -22,10 +22,10 @@ export const reduxRequest = async (
     }
     try {
         const response = await instance(requestConfig);
-        if (route !== 'auth/cus/logout'&&route !=='auth/cus/companysignup') {
+        if (route !== 'auth/cus/logout' && route !== 'auth/cus/companysignup' && route !== "auth/cus/signup") {
 
-            await axios.post(`${BASE_URL}auth/cus/refreshToken`, {}, { withCredentials: true }).then((res)=>{
-                console.log(res,"res from refresh token")
+            await axios.post(`${BASE_URL}auth/cus/refreshToken`, {}, { withCredentials: true }).then((res) => {
+                console.log(res, "res from refresh token")
             })
         }
         return response.data.user
