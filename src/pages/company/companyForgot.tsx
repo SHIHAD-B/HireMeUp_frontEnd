@@ -30,7 +30,6 @@ export const CompanyForgot = () => {
             console.log("Validation successful");
             dispatch(companyforgot(email)).then((res: any) => {
                 if (res?.error?.message == "Rejected") {
-                    console.log("reahced res dfdfddfdf")
                     setErrorRes(res.payload);
 
                 } else {

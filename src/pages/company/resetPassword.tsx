@@ -66,8 +66,6 @@ export const CompanyResetPassword = () => {
                 ...companydata,
                 password: data.password
             }
-
-            console.log(passData, "passdata")
             Axios.patch(`${BASE_URL}company/company/resetpassword`, passData,{withCredentials:true}).then((res: AxiosResponse<any, any>) => {
                 console.log(res)
                 if (res.status == 200) {
@@ -76,7 +74,7 @@ export const CompanyResetPassword = () => {
 
                 }
             }).catch((error: any) => {
-                console.log(error, "error fasdfsdfasfd")
+                console.log(error, "error")
                 setError(prev => ({
                     ...prev,
                     password: error.response.data.message

@@ -289,8 +289,7 @@ export const SignUp = () => {
             console.log(updatedCompdatas, "Validation successful");
     
             if (!Object.values(errorCompRes).some(error => !!error)) {
-                dispatch(companySignup(updatedCompdatas)).then((res: any) => {
-                    console.log(res, "Response from temp company");
+                dispatch(companySignup(updatedCompdatas)).then(() => {
                     navigate('/company/companyotp');
                 });
             }
@@ -340,10 +339,8 @@ export const SignUp = () => {
     };
 
 
-    const googleSignIn = async (response: string | any, status: boolean) => {
-        console.log(response, status, "res from google")
+    const googleSignIn = async (response: string | any, _: boolean) => {
         await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
-            console.log(res, "res from goodle")
             if (res.meta.requestStatus == "fulfilled") {
                 navigate('/')
             } else {

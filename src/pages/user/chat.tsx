@@ -152,7 +152,6 @@ export const Chat = () => {
 
             })
             const newMessage = res.data.user;
-            console.log(newMessage,"new message in company")
             socket?.emit("new message", { data: newMessage, chatId });
  
             setMessage("");

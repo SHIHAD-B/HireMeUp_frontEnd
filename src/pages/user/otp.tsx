@@ -52,7 +52,6 @@ export const Otp = () => {
 
     useEffect(() => {
 
-        console.log(user, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {

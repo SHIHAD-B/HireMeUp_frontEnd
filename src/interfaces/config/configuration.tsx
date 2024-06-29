@@ -26,12 +26,12 @@ export const handleError = (
     error: AxiosError<ApiError>,
     rejectWithValue: (value: string | unknown) => string | unknown
 ) => {
-    if (error.response && error.response.data.message) {
-        console.log(`⛔⛔⛔${error.response.data.message}⛔⛔⛔`)
-        return rejectWithValue(error.response.data.message)
+    if (error?.response && error?.response?.data?.message) {
+        console.log(`⛔⛔⛔${error?.response?.data?.message}⛔⛔⛔`)
+        return rejectWithValue(error?.response?.data?.message)
     } else {
      
-        console.log(`⛔⛔⛔${error.response?.data.errors[0].message}⛔⛔⛔`)
-        return rejectWithValue(error.response?.data.errors[0].message)
+        console.log(`⛔⛔⛔${error.response?.data?.errors[0]?.message}⛔⛔⛔`)
+        return rejectWithValue(error.response?.data?.errors[0]?.message)
     }
 }

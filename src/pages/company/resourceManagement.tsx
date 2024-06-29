@@ -94,7 +94,6 @@ export const ResourceManagement = () => {
 
     useEffect(() => {
         const filteredData = filterData();
-        console.log('Filtered Data:', filteredData);
         setData(filteredData);
     }, [compData, company_Id]);
 

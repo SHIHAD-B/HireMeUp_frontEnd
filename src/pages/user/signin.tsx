@@ -170,10 +170,8 @@ export const SignIn = () => {
         }
     };
 
-    const googleSignIn = async (response: string | any, status: boolean) => {
-        console.log(response, status, "res from google")
+    const googleSignIn = async (response: string | any, _: boolean) => {
         await dispatch(userSignupWtihGoogle(response)).then((res: any) => {
-            console.log(res, "res from goodle")
             if (res.meta.requestStatus == "fulfilled") {
                 navigate('/joblist')
             } else {

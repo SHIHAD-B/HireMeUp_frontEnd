@@ -49,7 +49,6 @@ export const CompanyForgotOtp = () => {
     useEffect(() => {
 
         if (!companydata?.email) {
-            console.log("reached user")
             navigate('/signin');
         }
     }, []);
@@ -57,8 +56,6 @@ export const CompanyForgotOtp = () => {
 
 
     useEffect(() => {
-
-        console.log(companydata, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {
@@ -109,7 +106,6 @@ export const CompanyForgotOtp = () => {
                 if (res.status == 200) {
                     navigate('/company/companyreset')
                 }
-                console.log(res)
             }).catch((error: any) => {
                 setOtpError(error.response.data.message)
                 console.log(error)

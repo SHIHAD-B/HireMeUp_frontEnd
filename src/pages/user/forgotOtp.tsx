@@ -47,7 +47,6 @@ export const ForgotOtp: React.FC = () => {
     useEffect(() => {
 
         if (!user?.email) {
-            console.log("reached user")
             navigate('/signin');
         }
     }, []);
@@ -55,8 +54,6 @@ export const ForgotOtp: React.FC = () => {
 
 
     useEffect(() => {
-
-        console.log(user, "userdataaaaaaaa")
         const timer = setInterval(() => {
             setTime(prevTime => {
                 if (prevTime >= 0) {
