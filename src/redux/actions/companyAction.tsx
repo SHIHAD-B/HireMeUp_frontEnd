@@ -4,10 +4,10 @@ import { reduxRequest } from "../../interfaces/config/api";
 import { ICompanyData } from "@/interfaces/IUser";
 
 
-export const fetchCompany = createAsyncThunk("company/fetchcompany", async (_,{rejectWithValue}) => {
+export const fetchCompany = createAsyncThunk("company/company/fetchcompany", async (_,{rejectWithValue}) => {
     return reduxRequest(
         "get",
-        "company/fetchcompany",
+        "company/company/fetchcompany",
         config,
         rejectWithValue,
     )
