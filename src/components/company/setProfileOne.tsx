@@ -104,7 +104,7 @@ export const SetProfileOne = () => {
             }))
             handleClose();
             setLoad(true)
-            const imglink = await uploadFile(croppedImg, "profile")
+            const imglink = await uploadFile(croppedImg, Date.now()+"profile")
             setCompanyData((prev: any) => ({
                 ...prev,
                 icon: imglink
