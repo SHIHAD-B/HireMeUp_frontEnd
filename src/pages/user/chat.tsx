@@ -198,7 +198,7 @@ export const Chat = () => {
                 messages: res.data.user.message
             }));
         } catch (error) {
-            console.error('Error in fetching chat details:', error);
+            console.error('Error in fetching chat details::', error);
         }
     };
 
