@@ -49,7 +49,7 @@ export const CompanyDashboard = () => {
                                 <span className="word-break">Schedule for today</span>
                             </div>
                             <div className="w-72 h-20 text-white flex gap-2 justify-center items-center bg-customviolet">
-                                <span className="font-bold text-4xl">26</span>
+                                <span className="font-bold text-4xl">0</span>
                                 <span className="word-break">Message received</span>
                             </div>
                         </div>
