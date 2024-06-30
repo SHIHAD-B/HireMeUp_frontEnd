@@ -14,6 +14,7 @@ import { ChatList, UfetchCategory } from "@/redux/actions/userAction";
 import { TiMessages } from "react-icons/ti";
 import { BASE_URL } from "@/interfaces/config/constant";
 import { useNavigate } from "react-router-dom";
+import { Unauth_header } from "@/components/user/unauth-header";
 
 
 export const CompanyList = () => {
@@ -150,6 +151,9 @@ export const CompanyList = () => {
                 <CompanyDescription id={String(selectedCompanyId)} back={back} />
             ) : (
                 <div className="w-full felx felx-col ">
+                       {!user?.email && (
+                        <Unauth_header />
+                    )}
                     <UserHeader prop="Find Jobs" />
                     <div className="w-full h-36 flex justify-center  p-6">
                         <div className="w-full lg:w-[70%] h-[90%] border border-gray-300 rounded  flex flex-col lg:flex-row">

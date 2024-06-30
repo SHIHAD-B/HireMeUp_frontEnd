@@ -12,7 +12,7 @@ export const Unauth_header = () => {
         <>
             <div className="w-full h-14 flex items-center pl-5 pr-5  sm:pl-14 sm:pr-14 gap-20 justify-between ">
                 <div className='h-full gap-3 w-[40%] md:w-[35%] flex items-center  justify-between'>
-                    <img className=' h-[70%] sm:h-[90%] w-auto' src={logo} alt="" />
+                    <img onClick={()=>navigate('/')} className=' h-[70%] sm:h-[90%] w-auto' src={logo} alt="" />
                     <span onClick={()=>navigate('/joblist')} className='hidden sm:block hover:text-customviolet cursor-pointer'>Find Jobs</span>
                     <span onClick={()=>navigate('/companylist')} className='hidden sm:block hover:text-customviolet cursor-pointer'>Browse Companies</span>
 

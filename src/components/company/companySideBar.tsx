@@ -35,7 +35,7 @@ export const CompanySideBar = () => {
         <>
             <div className="hidden sticky top-0 left-0 bg-background lg:block h-full w-[150px]  lg:w-[250px] dark:bg-gray-800   flex-col items-center gap-8 border border-gray-400">
                 <div className="w-full flex justify-center items-center p-3">
-                    <img src={logo} alt="" className="w-[60%] mt-4" />
+                    <img  onClick={()=>navigate('/')} src={logo} alt="" className="w-[60%] mt-4" />
                 </div>
 
 

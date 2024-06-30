@@ -10,13 +10,14 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { ListJob } from '@/redux/actions/jobAction';
-import {  companyUserList } from '@/redux/actions/companyAction';
+import { companyUserList } from '@/redux/actions/companyAction';
 import { IFilterData } from '@/interfaces/IUser';
 import { UserHeader } from "@/components/user/header";
 import { JobDescription } from "@/components/user/jobDescription";
 import { UfetchCategory } from "@/redux/actions/userAction";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { Unauth_header } from "@/components/user/unauth-header";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -32,9 +33,9 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 
 export const Joblist = () => {
-    const location=useLocation()
+    const location = useLocation()
     const ITEMS_PER_PAGE = 6;
-    const queryData=location.state
+    const queryData = location.state
     const { toast } = useToast()
     const navigate = useNavigate()
     const isDarkMode = document.documentElement.classList.contains('dark');
@@ -45,8 +46,8 @@ export const Joblist = () => {
     const category = useSelector((state: RootState) => state.category.data)
     const { user } = useSelector((state: RootState) => state.user)
     const [list, setList] = useState(data)
-   
-    const [page,setPage]=useState(1)
+
+    const [page, setPage] = useState(1)
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [filterData, setFilterData] = useState({
         type: [""],
@@ -56,24 +57,24 @@ export const Joblist = () => {
         salary_to: [""]
 
     })
-    const pageLogic=()=>{
+    const pageLogic = () => {
         let start = (page - 1) * ITEMS_PER_PAGE;
         let end = start + ITEMS_PER_PAGE;
         const slicedData = data?.slice(start, end);
         setList(slicedData as IJobData[]);
     }
-    
- 
+
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (queryData) {
             const { searchData: querySearchData, states: queryLocationData, category: queryCategoryData } = queryData;
-            
+
             let filteredData = data;
-    
+
             if (queryCategoryData !== "") {
-               const valueId=category?.find((item)=>item.category==queryCategoryData)?._id
+                const valueId = category?.find((item) => item.category == queryCategoryData)?._id
                 filteredData = data?.filter(item => item.category === valueId) as IJobData[];
             } else if (querySearchData !== "") {
                 const regex = new RegExp(querySearchData, 'i');
@@ -84,7 +85,7 @@ export const Joblist = () => {
                     .map(item => item._id);
                 filteredData = data?.filter(item => companyLocationIds?.includes(item.companyId)) as IJobData[];
             }
-    
+
             setList(filteredData as IJobData[]);
         } else {
             if (!loading) {
@@ -92,8 +93,8 @@ export const Joblist = () => {
             }
         }
     }, [data, loading, queryData, companyLists]);
-    
-    
+
+
 
     const handleSubmit = (id: string) => {
         id
@@ -107,7 +108,7 @@ export const Joblist = () => {
 
     }
 
-   
+
 
 
 
@@ -123,11 +124,6 @@ export const Joblist = () => {
         pageLogic()
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     if (!loading ) {
-    //         setList(data);
-    //     }
-    // }, [data, loading]);
 
     useEffect(() => {
         const filteredSet = new Set(data?.filter(item => {
@@ -217,39 +213,39 @@ export const Joblist = () => {
     }, []);
 
     const [searchData, setSearchData] = useState("");
-const [locationItem, setLocationItem] = useState("");
+    const [locationItem, setLocationItem] = useState("");
 
-const search = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchData(e.target.value);
-    filterBySearchAndLocation(e.target.value, locationItem);
-}
-
-const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | any>) => {
-    setLocationItem(e.target.value);
-    filterBySearchAndLocation(searchData, e.target.value);
-}
-
-const filterBySearchAndLocation = (searchValue: string, locationValue: string) => {
-    let filteredData:any = data; 
-
- 
-    if (locationValue.trim() !== "") {
-        const companyIds = companyLists?.filter((item) => item.location?.includes(locationValue)).map((item: any) => item._id);
-        filteredData = filteredData?.filter((item:any) => companyIds?.includes(item.companyId));
+    const search = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchData(e.target.value);
+        filterBySearchAndLocation(e.target.value, locationItem);
     }
 
-    
-    if (searchValue.trim() !== "") {
-        const regex = new RegExp(searchValue, 'i');
-        filteredData = filteredData?.filter((item:any) => regex.test(item.job_title));
+    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement | any>) => {
+        setLocationItem(e.target.value);
+        filterBySearchAndLocation(searchData, e.target.value);
     }
 
-    setList(filteredData as IJobData[]);
-}
+    const filterBySearchAndLocation = (searchValue: string, locationValue: string) => {
+        let filteredData: any = data;
 
-const handleJobClick = (id: string) => {
-    setSelectedJobId(id);
-};
+
+        if (locationValue.trim() !== "") {
+            const companyIds = companyLists?.filter((item) => item.location?.includes(locationValue)).map((item: any) => item._id);
+            filteredData = filteredData?.filter((item: any) => companyIds?.includes(item.companyId));
+        }
+
+
+        if (searchValue.trim() !== "") {
+            const regex = new RegExp(searchValue, 'i');
+            filteredData = filteredData?.filter((item: any) => regex.test(item.job_title));
+        }
+
+        setList(filteredData as IJobData[]);
+    }
+
+    const handleJobClick = (id: string) => {
+        setSelectedJobId(id);
+    };
 
 
     const back = () => {
@@ -262,6 +258,9 @@ const handleJobClick = (id: string) => {
                 <JobDescription id={String(selectedJobId)} back={back} />
             ) : (
                 <div className="w-full felx felx-col ">
+                    {!user?.email && (
+                        <Unauth_header />
+                    )}
                     <UserHeader prop="Find Jobs" />
                     <div className="w-full h-36 flex justify-center  p-6">
                         <div className="w-full lg:w-[70%] h-[90%] border border-gray-300 rounded  flex flex-col lg:flex-row">
@@ -372,7 +371,7 @@ const handleJobClick = (id: string) => {
                         </div>
                         <div className="w-full lg:w-[90%]  flex flex-col pt-4 gap-4 items-center ">
                             {list?.length ? (
-                                list.filter((item)=>item.publish==true).map((value, index) => (
+                                list.filter((item) => item.publish == true).map((value, index) => (
                                     <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[90%] h-28 border border-gray-200 rounded flex">
                                         <div className="w-[20%] h-full flex justify-center items-center">
                                             <div className='w-20 h-20 rounded-full'>
@@ -402,7 +401,7 @@ const handleJobClick = (id: string) => {
                             ) : (
                                 <div><span className='text-4xl font-bold'>No such data</span></div>
                             )}
-                             <Pagination
+                            <Pagination
                                 count={Math.ceil((data?.length || 0) / ITEMS_PER_PAGE)}
                                 page={page}
                                 onChange={(_, page) => setPage(page)}
