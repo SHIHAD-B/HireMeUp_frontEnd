@@ -12,26 +12,19 @@ import { useEffect, useState } from "react";
 import { allRequests, companyList } from "@/redux/actions/companyAction";
 import { AdminListApplicants, AdminListJob, listUsers } from "@/redux/actions/adminAction";
 import { JobLineChart } from "@/components/admin/jobStatGraph";
-import { useNavigate } from "react-router-dom";
+
 
 
 
 export const AdminDashBoard = () => {
-    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const { data: requests }: any = useSelector((state: RootState) => state.request)
     const { data: user }: any = useSelector((state: RootState) => state.usersList)
     const { data: company }: any = useSelector((state: RootState) => state.companyList)
     const { data: jobs } = useSelector((state: RootState) => state.job)
-    const { admin } = useSelector((state: RootState) => state.admin)
     const { data: applicants } = useSelector((state: RootState) => state.applicantList)
     const [companyPage, setCompanyPage] = useState("week")
     const [jobPage, setJobPage] = useState("week")
-    useEffect(() => {
-        if (!admin?.email) {
-            navigate('/')
-        }
-    }, [])
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(allRequests());

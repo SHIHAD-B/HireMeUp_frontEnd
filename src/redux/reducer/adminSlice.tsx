@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { adminSignin, fetchAdmin } from '../actions/adminAction';
 import { IAdminData } from '@/interfaces/IUser';
+import { logout } from '../actions/userAction';
 
 
 
@@ -47,6 +48,19 @@ const CompanySlice = createSlice({
             .addCase(adminSignin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string
+            })
+            .addCase(logout.fulfilled, (state) => {
+                state.admin = null;
+                state.loading = false;
+                state.error = null;
+            })
+            .addCase(logout.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             })
 
     }
