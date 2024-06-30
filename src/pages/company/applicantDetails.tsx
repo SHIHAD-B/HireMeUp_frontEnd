@@ -200,10 +200,14 @@ export const ApplicantDetails = () => {
 
                                             </div>
                                         </div>
-                                        <div className="w-full   gap-1 flex justify-center items-center">
-                                            <button onClick={() => setScheduleModal(true)} className="p-4 hover:bg-customviolet hover:text-white border border-customviolet rounded font-bold text-customviolet "> Schedule Interview</button>
-                                            <button onClick={() => chatwithUser(String((user as unknown as IUsers[])?.find((item) => item?._id === applicantDetails?.userId)?._id))} className="p-4 hover:bg-customviolet hover:text-white border border-customviolet rounded flex justify-center items-center text-customviolet"><AiOutlineMessage className="text-2xl" /></button>
-                                        </div>
+                                        {applicantDetails?.hiring_status !== "hired" && applicantDetails?.hiring_status !== "rejected" && (
+                                            <>
+                                                <div className="w-full   gap-1 flex justify-center items-center">
+                                                    <button onClick={() => setScheduleModal(true)} className="p-4 hover:bg-customviolet hover:text-white border border-customviolet rounded font-bold text-customviolet "> Schedule Interview</button>
+                                                    <button onClick={() => chatwithUser(String((user as unknown as IUsers[])?.find((item) => item?._id === applicantDetails?.userId)?._id))} className="p-4 hover:bg-customviolet hover:text-white border border-customviolet rounded flex justify-center items-center text-customviolet"><AiOutlineMessage className="text-2xl" /></button>
+                                                </div>
+                                            </>
+                                        )}
                                         <div className="w-full  flex">
 
                                             <div className="w-full   flex flex-col gap-4 p-4 ">
@@ -365,7 +369,7 @@ export const ApplicantDetails = () => {
                                                 </>
                                             ) : (
                                                 <>
-                                                <span className="w-full flex justify-center">No Questions were asked</span>
+                                                    <span className="w-full flex justify-center">No Questions were asked</span>
                                                 </>
                                             )}
                                         </div>

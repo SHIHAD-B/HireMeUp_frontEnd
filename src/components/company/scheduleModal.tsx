@@ -58,7 +58,7 @@ export const ScheduleModal = (data: IAbout) => {
         } else {
             currentErrors.date = "";
         }
-        if (!interviewer || interviewer.trim()=="") {
+        if (!interviewer || interviewer.trim() == "") {
             currentErrors.interviewer = "interviewer is required";
             hasError = true;
         } else {
@@ -97,7 +97,7 @@ export const ScheduleModal = (data: IAbout) => {
                 jobId: jobId,
                 date: scheduledDateTime,
                 userId: id,
-                interviewer:interviewer,
+                interviewer: interviewer,
                 companyId: companyData?._id
             }, { withCredentials: true }).then(() => {
                 toast({
@@ -180,11 +180,11 @@ export const ScheduleModal = (data: IAbout) => {
                                 onChange={(e) => setInterviewer(e.target.value)}
                                 sx={{ mb: 1 }}
                             >
-                                {employee?.filter((items)=>items.companyId==companyData?._id).map((item,index)=>(
+                                {employee?.filter((items) => items?.companyId == companyData?._id && !items?.deleted).map((item, index) => (
 
-                                <MenuItem key={index} value={item.firstName}>{item.firstName}</MenuItem>
+                                    <MenuItem key={index} value={item.firstName}>{item.firstName}</MenuItem>
                                 ))}
-                               
+
                             </Select>
                             {error.interviewer && <div className="text-xs ml-5 text-red-600">{error.interviewer}</div>}
                         </FormControl>
@@ -210,7 +210,7 @@ export const ScheduleModal = (data: IAbout) => {
                             </Box>
                         </LocalizationProvider>
                         <div className="w-full p-2">
-                        <span className="text-red-500 text-xs">{error.time}</span>
+                            <span className="text-red-500 text-xs">{error.time}</span>
                         </div>
                         <MButton onClick={continues} color="success" className="bg-customviolet" variant="contained" sx={{ mr: 2, mt: 4 }}>
                             Schedule
