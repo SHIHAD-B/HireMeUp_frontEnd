@@ -43,7 +43,7 @@ export const AddCategoryModal = ({ handleaddClose }: { handleaddClose: () => voi
             console.log("Validation successful");
 
 
-            await axios.post(`${BASE_URL}job/addcategory`, category,{withCredentials:true}).then((res:any) => {
+            await axios.post(`${BASE_URL}job/admin/addcategory`, category,{withCredentials:true}).then((res:any) => {
                 console.log(res,"res from the add plan")
                 handleaddClose()
                 toast({

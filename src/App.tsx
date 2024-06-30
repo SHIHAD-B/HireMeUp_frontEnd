@@ -52,6 +52,7 @@ import { ProfilePage } from './pages/company/profilePage';
 import { CompanySchedule } from './pages/company/mySchedule';
 import { AdminDashBoard } from './pages/admin/dashboard';
 import { AdminManagement } from './pages/admin/adminManagement';
+import { NotFound } from './pages/user/404';
 
 
 
@@ -173,7 +174,7 @@ function App() {
 
         <Routes>
           {/* User Routes */}
-          <Route path='/' element={user?.email ? <Navigate to="/home" /> : company?.email ? <Navigate to="/company" /> : <LandingPage />} />
+          <Route path='/' element={user?.email ? <Navigate to="/home" /> : company?.email ? <Navigate to="/company" /> : admin?.email ? <Navigate to="/admin" /> : <LandingPage />} />
           <Route path='/home' element={user?.email ? <Home /> : company?.email ? <CompanyDashboard /> : <Navigate to="/" />} />
           <Route path='/signin' element={user?.email ? <Navigate to="/home" /> : company?.email ? <CompanyDashboard /> : <SignIn />} />
           <Route path='/signup' element={user?.email ? <Navigate to="/home" /> : company?.email ? <CompanyDashboard /> : <SignUp />} />
@@ -223,7 +224,7 @@ function App() {
           <Route path='/underconstrution' element={<UnderConstruction />} />
 
 
-          <Route path='*' element={<Navigate to='/' />} />
+          <Route path='*' element={<NotFound/>} />
         </Routes>
       </div>
 
