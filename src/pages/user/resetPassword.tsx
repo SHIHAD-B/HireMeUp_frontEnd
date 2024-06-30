@@ -107,7 +107,7 @@ export const ResetPassword = () => {
         <>
             <div className="w-screen h-screen bg-slate-100 flex items-center ">
                 <div className="w-full lg:w-[40%] h-full flex flex-col pl-14  lg:pl-24 pt-4 gap-14 ">
-                    <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-20" />
+                    <img onClick={()=>navigate('/')} src={logo} alt="" className="h-auto lg:w-44 w-32 mb-20 cursor-pointer" />
                     <div className='w-full h-[80%] flex flex-col gap-4'>
                         <span className='flex gap-2 items-center text-gray-400'><IoIosArrowBack />Back to Login</span>
                         <span className='text-2xl font-bold'>Forgot Your Password?</span>

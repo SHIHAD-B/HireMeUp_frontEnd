@@ -41,7 +41,7 @@ export const UserSideBar = () => {
 
      
             <div className="hidden lg:flex h-screen w-[200px] lg:w-[230px] top-0 left-0 dark:bg-gray-800 sticky  flex-col items-center gap-8 border border-gray-200 dark:border-gray-700">
-                <img  onClick={()=>navigate('/')} src={logo} alt="" className="w-[60%] mt-4" />
+                <img  onClick={()=>navigate('/')} src={logo} alt="" className="w-[60%] mt-4 cursor-pointer" />
 
                 <div className="w-full h-[40%]  flex flex-col gap-4">
 

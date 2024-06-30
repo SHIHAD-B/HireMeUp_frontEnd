@@ -93,6 +93,7 @@ function App() {
     '/company/settings',
     '/company/chat',
     '/underconstrution',
+    '*',
     '/company/schedule'
   ];
 

@@ -36,7 +36,7 @@ export const AdminSideBar = () => {
     return (
         <>
             <div className=" h-screen sticky left-0 top-0 w-[200px] lg:w-[250px] bg-customsilver flex flex-col items-center gap-8 border border-gray-400">
-                <img  onClick={()=>navigate('/')} src={logo} alt="" className="w-[60%] mt-4" />
+                <img  onClick={()=>navigate('/')} src={logo} alt="" className="w-[60%] mt-4 cursor-pointer" />
 
                 <div className="w-full h-[50%]  flex flex-col gap-4">
 

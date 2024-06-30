@@ -360,7 +360,7 @@ export const SignUp = () => {
             {comploading && <Loader />}
             <div className="w-screen h-auto bg-background flex items-center">
                 <div className="w-[50%] h-full flex-col  pl-24 pt-4 hidden lg:block">
-                    <img src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8" />
+                    <img onClick={()=>navigate('/')} src={logo} alt="" className="cursor-pointer h-auto lg:w-44 w-32 mb-8" />
                     <div className="w-full h-28 mb-8">
                         <div className="h-full w-36 border border-black dark:border-gray-400 flex flex-col pl-2 pt-2">
                             <ImStatsBars className="text-customviolet text-5xl" />
