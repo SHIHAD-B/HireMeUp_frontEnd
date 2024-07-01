@@ -43,24 +43,24 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
       {notification && (
         <>
           <div className="absolute right-1 top-1 w-80 h-80 bg-white border border-gray-400 z-10 flex flex-col">
-            
+
             <span className="w-full flex justify-end p-2">
               <RxCross1 onClick={() => setNotification(false)} className="cursor-pointer text-md font-bold" />
             </span>
             <div className="w-full h-[95%]  break-words overflow-auto flex flex-col gap-2">
-              {notificationList.length?(
+              {notificationList.length ? (
                 <>
-              {notificationList?.map((item, index) => (
-                <span key={index} className="p-1 border border-gray-400 text-sm text-gray-500 rounded">
-                  from {companyList?.find((items) => items._id == item.sender)?.company_name ?? useList?.find((items) => items._id == item.sender)?.username}:
-                  <br />
-                  {item.message}
-                </span>
-              ))}
+                  {notificationList?.map((item, index) => (
+                    <span key={index} className="p-1 border border-gray-400 text-sm text-gray-500 rounded">
+                      from {companyList?.find((items) => items._id == item.sender)?.company_name ?? useList?.find((items) => items._id == item.sender)?.username}:
+                      <br />
+                      {item.message}
+                    </span>
+                  ))}
                 </>
-              ):(
+              ) : (
                 <>
-                <span className="w-full h-full flex justify-center items-center text-xl font-bold">No Notifications.</span>
+                  <span className="w-full h-full flex justify-center items-center text-xl font-bold">No Notifications.</span>
                 </>
               )}
 
@@ -80,7 +80,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
               <VscBell onClick={() => setNotification(true)} className="text-2xl cursor-pointer" />
             </>
           )}
-          <ModeToggle />
+          {user?.email && (
+
+            <ModeToggle />
+          )}
         </div>
 
       </div>

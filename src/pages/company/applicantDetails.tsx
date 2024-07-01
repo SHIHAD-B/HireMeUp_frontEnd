@@ -151,7 +151,7 @@ export const ApplicantDetails = () => {
                         <CompanyHeader />
                         <div className="w-full flex justify-between">
                             <div className="flex lg:flex-col p-1">
-                                <span className="font-bold flex gap-4 justify-center items-center"><FaArrowLeft className="cursor-pointer" />Applicant Details</span>
+                                <span className="font-bold flex gap-4 justify-center items-center"><FaArrowLeft onClick={()=>navigate('/company/applicantsg')} className="cursor-pointer" />Applicant Details</span>
 
                             </div>
 
