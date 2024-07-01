@@ -109,7 +109,7 @@ export const Chat = () => {
             }
 
         })
-    }, [])
+    }, [socket])
 
     useEffect(() => {
         socket?.on("message recieved", (newMessage: IMessage) => {
