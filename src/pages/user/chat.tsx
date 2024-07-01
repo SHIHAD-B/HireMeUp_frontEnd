@@ -7,7 +7,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { GoDotFill, GoPaperclip } from "react-icons/go";
 import { FiSend } from "react-icons/fi";
 import { GrEmoji } from "react-icons/gr";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import newImg from '../../assets/images/newchat.png'
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -95,6 +95,23 @@ export const Chat = () => {
     }, [dispatch, user]);
 
     useEffect(() => {
+        socket?.on("click read", async (data) => {
+            if (innerChat.id == data.view) {
+                await axios.get(`${BASE_URL}chat/company/getmessage?id=${data.chatIds}`).then((res) => {
+                    console.log("updation done")
+                    setIsNew(false)
+                    setInnerChat((prev) => ({
+                        ...prev,
+                        messages: res.data.user.message
+                    }))
+
+                })
+            }
+
+        })
+    }, [])
+
+    useEffect(() => {
         socket?.on("message recieved", (newMessage: IMessage) => {
             if (newMessage.sender !== user?._id) {
                 const sender = companyLists?.find((item) => item._id === newMessage.sender)?.company_name;
@@ -106,13 +123,13 @@ export const Chat = () => {
                 setOpen(true);
             }
 
-            if (newMessage.sender === innerChat.id ) {
+            if (newMessage.sender === innerChat.id) {
                 setInnerChat((prev) => ({
                     ...prev,
                     messages: [...prev.messages, newMessage]
                 }));
             }
-            
+
 
             if (newMessage.sender === innerChat.id) {
                 socket?.emit('read message', readDatas);
@@ -132,7 +149,7 @@ export const Chat = () => {
             });
             return;
         }
-        
+
 
         const data = {
             sender: user?._id,
@@ -153,7 +170,7 @@ export const Chat = () => {
             })
             const newMessage = res.data.user;
             socket?.emit("new message", { data: newMessage, chatId });
- 
+
             setMessage("");
             dispatch(allMessageList(String(user?._id)));
 
@@ -181,6 +198,7 @@ export const Chat = () => {
         const { id, name, profile, userid, chatIds } = data;
         setChatId(id);
         socket?.emit("join chat", id);
+        socket?.emit('clickView', { chatIds, click: user?._id, view: userid })
 
         const datas = { id: id, sender: userid, chatId: chatIds, receiver: user?._id, status: "read" };
         setReadDatas({ ...datas, chatIds });
@@ -217,8 +235,8 @@ export const Chat = () => {
         navigate(`/company/videocall?id=${innerChat.id}&senderId=${innerChat?.id}`);
     };
     useEffect(() => {
-        socket?.on('updated message', async (id: string,receiver:string,sender:string) => {
-            if(receiver==user?._id&&sender==innerChat.id){
+        socket?.on('updated message', async (id: string, receiver: string, sender: string) => {
+            if (receiver == user?._id && sender == innerChat.id) {
 
                 await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
                     console.log("updation done")
@@ -227,7 +245,7 @@ export const Chat = () => {
                         ...prev,
                         messages: res.data.user.message
                     }))
-    
+
                 })
             }
         })

@@ -52,6 +52,22 @@ export const CompanyChat = () => {
             messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
         }
     }, [innerChats]);
+    useEffect(() => {
+        socket?.on("click read", async (data) => {
+            if (innerChats.id == data.view) {
+                await axios.get(`${BASE_URL}chat/company/getmessage?id=${data.chatIds}`).then((res) => {
+                    console.log("updation done")
+                    setIsNew(false)
+                    setInnerChats((prev) => ({
+                        ...prev,
+                        messages: res.data.user.message
+                    }))
+
+                })
+            }
+
+        })
+    }, [])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,10 +104,10 @@ export const CompanyChat = () => {
 
     useEffect(() => {
         socket?.on("message recieved", (newMessage: IMessage) => {
-            console.log(newMessage,"new message")
+            console.log(newMessage, "new message")
             if (newMessage.sender !== companyData?._id) {
                 const sender = userList?.find((item) => item._id === newMessage.sender)?.username;
-                console.log(sender,"sender name")
+                console.log(sender, "sender name")
                 const message = newMessage.content;
                 const profile: string = String(userList?.find((item) => item._id === newMessage.sender)?.profile);
 
@@ -119,9 +135,9 @@ export const CompanyChat = () => {
 
 
     useEffect(() => {
-        socket?.on('updated message', async (id: string,receiver:string,sender:string) => {
-         
-            if(receiver==companyData?._id&&sender==innerChats.id){
+        socket?.on('updated message', async (id: string, receiver: string, sender: string) => {
+
+            if (receiver == companyData?._id && sender == innerChats.id) {
 
                 await axios.get(`${BASE_URL}chat/company/getmessage?id=${id}`).then((res) => {
                     console.log("updation done")
@@ -130,7 +146,7 @@ export const CompanyChat = () => {
                         ...prev,
                         messages: res.data.user.message
                     }))
-    
+
                 })
             }
         })
@@ -143,7 +159,7 @@ export const CompanyChat = () => {
             });
             return;
         }
-        
+
 
         const data = {
             sender: companyData?._id,
@@ -164,7 +180,7 @@ export const CompanyChat = () => {
             })
             const newMessage = res.data.user;
             socket?.emit("new message", { data: newMessage, chatId });
- 
+
             setMessage("");
             dispatch(allMessageList(String(companyData?._id)));
 
@@ -196,6 +212,7 @@ export const CompanyChat = () => {
         const { id, name, profile, userid, chatIds } = data;
         setChatId(id);
         socket?.emit("join chat", id);
+        socket?.emit('clickView', { chatIds, click: companyData?._id, view: userid })
 
         const datas = { id: id, sender: userid, chatId: chatIds, receiver: companyData?._id, status: "read" };
         setReadData({ ...datas, chatIds });
@@ -254,7 +271,7 @@ export const CompanyChat = () => {
                                 const participantsIds = chat.participants.filter(id => id !== companyData?._id);
                                 const participant = userList?.find(company => company._id === participantsIds[0]);
 
-                                const chatMessages = allMessages?.filter(message => 
+                                const chatMessages = allMessages?.filter(message =>
                                     message?.participants &&
                                     message?.participants.includes(String(companyData?._id)) &&
                                     message?.participants.includes(participantsIds[0]) &&
