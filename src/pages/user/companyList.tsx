@@ -66,7 +66,7 @@ export const CompanyList = () => {
         if (e.target.value == '') {
             setList(data)
         }
-        const filteredData = data?.filter((item) => item.location?.includes(e.target.value))
+        const filteredData = data?.filter((item:any) => item.location?.includes(e.target.value))
         setList(filteredData as ICompanyData[])
     }
 
@@ -130,7 +130,7 @@ export const CompanyList = () => {
             receiver: companyId
         }
 
-        const already = chat?.find((item) =>
+        const already = chat?.find((item:any) =>
             item.participants.includes(String(user?._id)) && item.participants.includes(companyId)
         );
         if (already) {
@@ -179,7 +179,7 @@ export const CompanyList = () => {
 
                             <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
                                 <span className="font-bold text-lg">Industry</span>
-                                {category?.map((value, index) => (
+                                {category?.map((value:any, index:any) => (
 
                                     <label className="flex items-center gap-2" key={index}>
                                         <input type="checkbox" name="employment" value={String(value.category)} className="form-checkbox h-5 w-5 text-blue-600" />
@@ -217,10 +217,10 @@ export const CompanyList = () => {
 
                         </div>
                         <div className="w-full lg:w-[80%]  flex flex-col gap-4 items-center">
-                            <div className="w-full lg:w-full flex  pt-4 gap-4 flex-wrap">
+                            <div className="w-full lg:w-full flex justify-center  pt-4 gap-4 flex-wrap">
 
                                 {list?.length ? (
-                                    list.filter((item) => !item?.deleted&&item.icon&&item.description?.length&&item.location?.length).map((value, index) => (
+                                    list.filter((item:any) => !item?.deleted&&item.icon&&item.description?.length&&item.location?.length).map((value:any, index:any) => (
                                         <div key={index} onClick={() => handleCompanyClick(String(value._id))} className="w-80 h-80 border bg-background dark:border-gray-600 border-gray-300 rounded  flex flex-col">
                                             <div className="w-full h-[35%] flex">
                                                 <div className="h-full w-[50%] flex justify-center items-center">
@@ -232,7 +232,7 @@ export const CompanyList = () => {
                                                     <span onClick={() => chatwithCompany(String(value._id))} className="p-2 m-2 border border-customviolet rounded hover:text-white hover:bg-customviolet text-customviolet cursor-pointer"><TiMessages className="text-2xl  " /></span>
                                                     )}
                                                     <div className="m-2 p-2 border border-gray-400 rounded bg-blue-50 text-customviolet">
-                                                        {job?.filter((item) => item.companyId === value._id)?.length} Jobs
+                                                        {job?.filter((item:any) => item.companyId === value._id)?.length} Jobs
                                                     </div>
                                                 </div>
                                             </div>
@@ -244,7 +244,7 @@ export const CompanyList = () => {
                                                 <span className="flex gap-2 ">
                                                     <span className="font-bold ">Location: </span>
 
-                                                    {value?.location?.map((location, index) => (
+                                                    {value?.location?.map((location:any, index:any) => (
                                                         <Fragment key={index}>
                                                             {index > 0 && ", "}
                                                             {location}

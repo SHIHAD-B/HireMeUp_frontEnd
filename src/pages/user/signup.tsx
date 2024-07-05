@@ -371,8 +371,8 @@ export const SignUp = () => {
                     <img src={signup} alt="" className="h-auto lg:w-[80%] w-32" />
                 </div>
                 {page == "user" && (
-                    <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] min-h-[95%] bg-background rounded flex flex-col gap-1 items-center mb-4'>
+                    <div className=' w-full lg:w-[50%] h-full  flex flex-col lg:pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='lg:w-[80%] w-full min-h-[95%] bg-background rounded flex flex-col gap-1 items-center mb-4'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
                                 <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("user")}>Job Seeker</span>
                                 <span className='  flex items-center justify-center cursor-pointer text-customviolet   ' onClick={() => setPage("companyOne")}>company</span>
@@ -592,8 +592,8 @@ export const SignUp = () => {
                 )}
 
                 {page == "companyOne" && (
-                    <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-background flex flex-col gap-6 items-center'>
+                    <div className=' w-full lg:w-[50%] h-full  flex flex-col lg:pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='lg:w-[80%] w-full h-[95%] bg-background flex flex-col gap-6 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
                                 <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setPage("user")}>Job Seeker</span>
                                 <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("companyOne")}>company</span>
@@ -767,8 +767,8 @@ export const SignUp = () => {
                     </div>
                 )}
                 {page == "companyTwo" && (
-                    <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-background flex flex-col gap-6 items-center'>
+                    <div className=' w-full lg:w-[50%] h-full  flex flex-col lg:pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='lg:w-[80%] w-full h-[95%] bg-background flex flex-col gap-6 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center mt-2'>
                                 <span className='h-[70%] w-24  flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setPage("user")}>Job Seeker</span>
                                 <span className=' p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl  ' onClick={() => setPage("companyOne")}>company</span>

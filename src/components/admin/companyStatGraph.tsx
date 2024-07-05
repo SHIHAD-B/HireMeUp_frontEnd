@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 
 const valueFormatter = (value: number | null) => `${value}(nos)`;
 
-const chartSetting = {
+const chartSetting = { 
   yAxis: [
     {
       label: 'progress (nos)',

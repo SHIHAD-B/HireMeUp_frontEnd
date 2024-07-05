@@ -66,7 +66,7 @@ export const CompanyDescription: React.FC<CompanyDescriptionProps> = ({ id, back
                                     <div className='flex gap-2'>
 
                                         <span className='text-4xl font-bold'>{companyDatas?.company_name}</span>
-                                        <div className='p-2 border border-customviolet text-customviolet'> {jobData?.filter((item) => item.companyId == companyDatas?._id).length} Jobs</div>
+                                        <div className='p-2 border border-customviolet text-customviolet'> {jobData?.filter((item:any) => item.companyId == companyDatas?._id).length} Jobs</div>
                                     </div>
                                     <span className='flex gap-1 text-lg flex-col'>
                                         <span className='text-sm text-customviolet font-bold'>{companyDatas?.website}</span>
@@ -178,7 +178,7 @@ export const CompanyDescription: React.FC<CompanyDescriptionProps> = ({ id, back
                     </div>
                     <span className='text-xl font-bold pl-4 w-full pt-16'>Open Jobs</span>
                     <div className="w-full justify-center lg:justify-between flex gap-4 flex-wrap  bg-gray-100 mt-4 p-8">
-                        {jobData?.filter((item) => item.companyId == companyDatas?._id).map((item, index) => (
+                        {jobData?.filter((item:any) => item.companyId == companyDatas?._id).map((item:any, index:any) => (
 
                             <div key={index} className="h-full flex pt-2 flex-col border border-customviolet p-4 rounded">
                                 <div className='flex justify-between'>
@@ -187,7 +187,7 @@ export const CompanyDescription: React.FC<CompanyDescriptionProps> = ({ id, back
                                 </div>
                                 <div className="w-full flex h-auto gap-4 ">
                                     <span className="p-1 rounded border border-customviolet text-customviolet">{item?.type}</span>
-                                    <span className="p-1 rounded border border-blue-900 text-blue-900">{catdata?.find((values) => values?._id === item?.category)?.category}</span>
+                                    <span className="p-1 rounded border border-blue-900 text-blue-900">{catdata?.find((values:any) => values?._id === item?.category)?.category}</span>
                                     <span className="p-1 rounded border border-yellow-500 text-yellow-500">{item?.level}</span>
                                     <span className="p-1 rounded border border-green-500 text-green-500">salary up to: {item?.salary_to}</span>
                                 </div>

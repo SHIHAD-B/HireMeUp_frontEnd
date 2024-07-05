@@ -20,7 +20,7 @@ export const Subscribed: React.FC = () => {
     useEffect(() => {
         dispatch(fetchSubscription())
         console.log(data)
-        const filteredSubscription = data?.find((item) => item._id == user?.subscription.planId)
+        const filteredSubscription = data?.find((item:any) => item._id == user?.subscription.planId)
         console.log(filteredSubscription, "fill")
         setSubscriptionData(filteredSubscription)
     }, [])
@@ -97,7 +97,7 @@ export const Subscribed: React.FC = () => {
                 </div>
             </div>
             <div className='w-full flex justify-center items-center'>
-                <div className='flex flex-col p-4 w-[50%] rounded border dark:border-forground border-gray-300'>
+                <div className='flex flex-col p-4 w-[90%] lg:w-[50%] rounded border dark:border-forground border-gray-300'>
                     <span>Subscription Details:</span>
                     <span className='flex gap-2 text-xl'><span className='font-bold text-foreground'>Plan Name:</span>{subscriptionData?.name}</span>
                     <span className='flex gap-2 text-xl'><span className='font-bold text-foreground'>Description:</span>

@@ -35,6 +35,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { UserHeader } from './header';
+import { Unauth_header } from './unauth-header';
 
 interface JobDescriptionProps {
     id: string;
@@ -105,7 +107,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
 
     useEffect(() => {
         dispatch(applicantList())
-        const companyId = data?.find((item) => item._id == id)?.companyId
+        const companyId = data?.find((item:any) => item._id == id)?.companyId
         const alreadyApplied = applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == companyId)
         if (alreadyApplied) {
             setApplied(true)
@@ -154,52 +156,52 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
             <div className="w-full felx felx-col ">
                 {loading && <Loader />}
 
-                <div className="h-[70px]  border-b border-gray-200 flex items-center pl-2 pr-4 justify-between">
-                    <span className="text-xl font-bold flex gap-4 justify-center items-center"><FaArrowLeft onClick={back} className='cursor-pointer' />Job Description</span>
-                    <ModeToggle />
-                </div>
-                <div className="w-full  flex justify-center p-6">
-                    <div className='w-[90%] h-40  flex border border-gray-300'>
+                {!user?.email && (
+                        <Unauth_header />
+                    )}
+                    <UserHeader prop="Job Description" />
+                <div className="w-full  flex justify-center p-2">
+                    <div className='lg:w-[90%] w-[99%] h-40  flex border border-gray-300'>
                         <div className='w-[70%] h-full  flex'>
                             <div className='w-[30%] h-full flex justify-center items-center '>
-                                <img src={companyData?.find((item) => item._id == jobData?.companyId)?.icon} alt="" className='w-32 ' />
+                                <img src={companyData?.find((item:any) => item._id == jobData?.companyId)?.icon} alt="" className='w-32 ' />
                             </div>
-                            <div className=' w-[70%] h-full  flex flex-col justify-center'>
-                                <span className='text-4xl font-bold'>{jobData?.job_title}</span>
-                                <span className='flex gap-1 text-lg'>
-                                    <span>{companyData?.find((item) => item._id === jobData?.companyId)?.company_name}</span>
-                                    .<span>
+                            <div className=' w-[70%] h-full  flex flex-col justify-center pl-2'>
+                                <span className='lg:text-4xl tex-md font-bold'>{jobData?.job_title}</span>
+                                <span className='flex gap-1 text-lg flex-wrap'>
+                                    <span className=''>{companyData?.find((item:any) => item._id === jobData?.companyId)?.company_name}</span>
+                                    .<span className='lg:text-lg text-sm'>
                                         {companyData
-                                            ?.filter(item => item._id === jobData?.companyId)
-                                            .flatMap(item => item.location)
-                                            .map((location, index) => (
+                                            ?.filter((item:any) => item._id === jobData?.companyId)
+                                            .flatMap((item:any) => item.location)
+                                            .map((location:any, index:any) => (
                                                 <Fragment key={index}>
                                                     {index > 0 && ", "}
                                                     {location}
                                                 </Fragment>
                                             ))}
                                     </span>
-                                    .<span>{jobData?.type}</span>
+                                    .<span className='lg:text-lg text-sm'>{jobData?.type}</span>
                                 </span>
 
 
                             </div>
                         </div>
-                        <div className='w-[30%] h-full  flex justify-center items-center gap-4'>
+                        <div className='w-[30%] h-full  flex flex-col lg:flex-row justify-center items-center gap-4'>
                             {applied && (
                                 <>
-                                    <span className='p-1 rounded border border-green-400 text-green-400'>Applied</span>
+                                    <span className='p-1 rounded border lg:text-base text-xs border-green-400 text-green-400'>Applied</span>
                                 </>
                             )}
-                            <div><GoShareAndroid className='text-4xl' /></div>
-                            <div className='w-0.5 h-[40%] bg-gray-500'></div>
+                            <div><GoShareAndroid className='lg:text-4xl text:xl' /></div>
+                            <div className=' hidden lg:block w-0.5 h-[40%] bg-gray-500'></div>
                             {applied ? (
                                 <>
-                                    <div><button onClick={() => handleViewMoreClick(applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == data?.find((item) => item._id == id)?.companyId) as IApplicants)} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>See Application</button></div>
+                                    <div><button onClick={() => handleViewMoreClick(applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == data?.find((item:any) => item._id == id)?.companyId) as IApplicants)} className='lg:pl-6 lg:pr-6 lg:pt-2 lg:pb-2 p-1 bg-customviolet rounded text-white border border-gray-400 lg:text-lg text-xs'>See Application</button></div>
                                 </>
                             ) : (
                                 <>
-                                    <div><button onClick={applyJob} className='pl-6 pr-6 pt-2 pb-2 bg-customviolet rounded text-white border border-gray-400'>Easy Apply</button></div>
+                                    <div><button onClick={applyJob} className='lg:pl-6 lg:pr-6 lg:pt-2 lg:pb-2 p-1 bg-customviolet rounded text-white border border-gray-400 text-sm'>Easy Apply</button></div>
                                 </>
                             )}
 
@@ -213,14 +215,14 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                                     <AlertDialogDescription>
 
                                         <div>
-                                            <p><strong>Company Name:</strong> {companyData?.find((item) => item._id == selectedApplication?.companyId)?.company_name}</p>
-                                            <p><strong>Role:</strong> {jobs?.find((item) => item._id == selectedApplication?.jobId)?.job_title}</p>
+                                            <p><strong>Company Name:</strong> {companyData?.find((item:any) => item._id == selectedApplication?.companyId)?.company_name}</p>
+                                            <p><strong>Role:</strong> {jobs?.find((item:any) => item._id == selectedApplication?.jobId)?.job_title}</p>
                                             <p><strong>Date Applied:</strong> {selectedApplication?.createdAt ? new Date(selectedApplication?.createdAt).toDateString() : ""}</p>
                                             <p className='mb-4'><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
                                             {schedules?.length && (
                                                 <>
                                                     <span className="font-bold underline">Interview Details</span>
-                                                    {schedules.filter((item)=>item.jobId==selectedApplication?.jobId).map((item, index) => (
+                                                    {schedules.filter((item:any)=>item.jobId==selectedApplication?.jobId).map((item:any, index:any) => (
                                                         <>
                                                             <div key={index} className="mt-2">
                                                                 <p><strong>Title:</strong> {item.title}</p>
@@ -241,8 +243,8 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
-                <div className='w-full   flex p-4'>
-                    <div className='w-[60%] h-full flex flex-col gap-6'>
+                <div className='w-full lg:flex  p-4'>
+                    <div className='lg:w-[60%] w-full h-full flex flex-col gap-6'>
                         <div className='w-full flex flex-col gap-2'>
                             <span className='text-xl font-bold'>Description</span>
                             <span>{jobData?.description}</span>
@@ -260,8 +262,8 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                             <span>{jobData?.qualification}</span>
                         </div>
                     </div>
-                    <div className='w-[40%] h-full  flex items-start justify-center'>
-                        <div className='w-[70%] flex flex-col item-center gap-6'>
+                    <div className='lg:w-[40%] w-full h-full  flex items-start justify-center'>
+                        <div className='lg:w-[70%] w-full items-center flex flex-col item-center gap-6'>
                             <span className='text-xl font-bold'>About this role</span>
                             <div className='w-[80%]  bg-gray-200 p-2'>
                                 <span className='flex gap-1 text-gray-500'><span className='font-bold text-black'>5 applied</span>of {jobData?.slot} capacity</span>
@@ -269,7 +271,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                                     <BorderLinearProgress variant="determinate" value={50} />
                                 </Stack>
                             </div>
-                            <div className='w-[80%] flex '>
+                            <div className='lg:w-[80%] w-full flex justify-center'>
                                 <div className='w-[50%]  flex flex-col gap-2'>
                                     <span>Apply Before</span>
                                     <span>Job Posted On</span>
@@ -285,11 +287,11 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
 
                             </div>
                             <hr />
-                            <div className='flex flex-col w-full gap-1'>
+                            <div className='flex flex-col w-full items-center gap-1'>
                                 <span className='font-bold'>Category</span>
-                                <div className='w-full justify-center items-center  '><span className='p-2 border border-gray-400 rounded bg-green-200 text-green-800'>{catdata?.find((item) => item._id == jobData?.category)?.category}</span></div>
+                                <div className='w-full flex items-center justify-center   '><span className='p-2 border border-gray-400 rounded bg-green-200 text-green-800'>{catdata?.find((item:any) => item._id == jobData?.category)?.category}</span></div>
                             </div>
-                            <div className='flex flex-col w-full gap-1'>
+                            <div className='flex flex-col w-full items-center gap-1'>
                                 <span className='font-bold'>Required Skills</span>
                                 <div className='w-fulljustify-center items-center flex flex-wrap gap-1'>
                                     {jobData && jobData.required_skills.map((key, index) => (

@@ -139,7 +139,7 @@ export const SubscriptionPlan = () => {
                 </div>
                 <div className=" w-[90%]  border justify-start mt-2 mb-2 flex gap-2 flex-wrap">
 
-                    {data && data.filter(key => !key.deleted).map((data, index) => (
+                    {data && data.filter((key:any) => !key.deleted).map((data:any, index:any) => (
 
                         <div key={index} className="w-[300px] h-80 flex flex-col bg-violet-300">
                             <div className="w-full h-24 border-4 bg-gray-300 flex flex-col justify-center items-center">

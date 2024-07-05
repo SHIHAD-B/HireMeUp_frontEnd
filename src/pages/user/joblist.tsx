@@ -1,7 +1,7 @@
 import { RiSearchLine } from "react-icons/ri";
 import Pagination from '@mui/material/Pagination';
 import { IoLocationOutline } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import axios from "axios";
 import { IJobData, IState } from "@/interfaces/IUser";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,16 +74,16 @@ export const Joblist = () => {
             let filteredData = data;
 
             if (queryCategoryData !== "") {
-                const valueId = category?.find((item) => item.category == queryCategoryData)?._id
-                filteredData = data?.filter(item => item.category === valueId) as IJobData[];
+                const valueId = category?.find((item: { category: any; }) => item.category == queryCategoryData)?._id
+                filteredData = data?.filter((item: { category: any; }) => item.category === valueId) as IJobData[];
             } else if (querySearchData !== "") {
                 const regex = new RegExp(querySearchData, 'i');
-                filteredData = data?.filter(item => regex.test(item.job_title)) as IJobData[];
+                filteredData = data?.filter((item: { job_title: string; }) => regex.test(item.job_title)) as IJobData[];
             } else if (queryLocationData !== "") {
                 const companyLocationIds = companyLists
-                    ?.filter(item => item.location?.includes(queryLocationData))
-                    .map(item => item._id);
-                filteredData = data?.filter(item => companyLocationIds?.includes(item.companyId)) as IJobData[];
+                    ?.filter((item: { location: string | any[]; }) => item.location?.includes(queryLocationData))
+                    .map((item: { _id: any; }) => item._id);
+                filteredData = data?.filter((item: { companyId: any; }) => companyLocationIds?.includes(item.companyId)) as IJobData[];
             }
 
             setList(filteredData as IJobData[]);
@@ -126,7 +126,7 @@ export const Joblist = () => {
 
 
     useEffect(() => {
-        const filteredSet = new Set(data?.filter(item => {
+        const filteredSet = new Set(data?.filter((item: { category: string; level: string; salary_from: any; salary_to: any; type: string; }) => {
             const conditions = [];
 
             if (filterData.category.length !== 1) {
@@ -171,7 +171,7 @@ export const Joblist = () => {
 
     const categoryFilterChange = (e: any) => {
         const { value, checked } = e.target;
-        const valueId = category?.find((values) => values.category === value)?._id || '';
+        const valueId = category?.find((values: { category: any; }) => values.category === value)?._id || '';
         setFilterData((prev) => ({
             ...prev,
             category: checked ? [...prev.category, valueId] : prev.category.filter((item: string) => item !== valueId),
@@ -230,7 +230,7 @@ export const Joblist = () => {
 
 
         if (locationValue.trim() !== "") {
-            const companyIds = companyLists?.filter((item) => item.location?.includes(locationValue)).map((item: any) => item._id);
+            const companyIds = companyLists?.filter((item: { location: string | string[]; }) => item.location?.includes(locationValue)).map((item: any) => item._id);
             filteredData = filteredData?.filter((item: any) => companyIds?.includes(item.companyId));
         }
 
@@ -282,6 +282,7 @@ export const Joblist = () => {
                             </div>
                         </div>
                     </div>
+                    <span className="flex lg:hidden pl-4"><button className="border p-1 border-customviolet rounded">Filter</button></span>
                     <div className="w-full h-auto  flex border-t border-gray-100">
                         <div className="hidden lg:block w-[20%] h-full  gap-4 flex-col">
                             <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
@@ -309,7 +310,7 @@ export const Joblist = () => {
                             </div>
                             <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
                                 <span className="font-bold text-lg">Category</span>
-                                {category?.map((value, index) => (
+                                {category?.map((value: { category: string | number | boolean | any }, index: Key | null | undefined) => (
 
                                     <label className="flex items-center gap-2" key={index}>
                                         <input type="checkbox" name="employment" value={String(value.category)} className="form-checkbox h-5 w-5 text-blue-600" onChange={categoryFilterChange} />
@@ -371,25 +372,25 @@ export const Joblist = () => {
                         </div>
                         <div className="w-full lg:w-[90%]  flex flex-col pt-4 gap-4 items-center ">
                             {list?.length ? (
-                                list.filter((item) => item.publish == true).map((value, index) => (
-                                    <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[90%] h-28 border border-gray-200 rounded flex">
+                                list.filter((item: { publish: boolean; }) => item.publish == true).map((value: any, index: any) => (
+                                    <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[90%] h-28 border border-gray-200 rounded flex flex-w">
                                         <div className="w-[20%] h-full flex justify-center items-center">
-                                            <div className='w-20 h-20 rounded-full'>
-                                                <img src={companyLists?.find((values) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
+                                            <div className='lg:w-20 lg:h-20 w-10 h-10 rounded-full'>
+                                                <img src={companyLists?.find((values: { _id: any; }) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
                                             </div>
                                         </div>
-                                        <div className="w-[60%] h-full flex pt-2 flex-col">
-                                            <span className="text-xl font-bold">{value.job_title}</span>
-                                            <span>{companyLists?.find((values) => values?._id === value?.companyId)?.company_name}</span>
-                                            <div className="w-full flex h-auto gap-4">
-                                                <span className="p-1 rounded border border-customviolet text-customviolet">{value?.type}</span>
-                                                <span className="p-1 rounded border border-blue-900 text-blue-900">{category?.find((values) => values?._id === value?.category)?.category}</span>
-                                                <span className="p-1 rounded border border-yellow-500 text-yellow-500">{value?.level}</span>
-                                                <span className="p-1 rounded border border-green-500 text-green-500">salary up to: {value?.salary_to}</span>
+                                        <div className="lg:w-[60%] w=[79%] h-full flex pt-2 flex-col">
+                                            <span className="lg:text-xl text-sm font-bold">{value.job_title}</span>
+                                            <span className="text-sm lg:text-md">{companyLists?.find((values: { _id: any; }) => values?._id === value?.companyId)?.company_name}</span>
+                                            <div className="w-full lg:flex h-auto flex gap-1 lg:gap-4 flex-wrap ">
+                                                <span className="p-1 rounded border border-customviolet text-customviolet lg:text-sm text-xs">{value?.type}</span>
+                                                <span className="p-1 rounded border border-blue-900 text-blue-900 lg:text-sm text-xs">{category?.find((values: { _id: any; }) => values?._id === value?.category)?.category}</span>
+                                                <span className="p-1 rounded border border-yellow-500 text-yellow-500 lg:text-sm text-xs">{value?.level}</span>
+                                                <span className="p-1 rounded border border-green-500 text-green-500 lg:text-sm text-xs">salary up to: {value?.salary_to}</span>
                                             </div>
                                         </div>
-                                        <div className="w-[20%] h-full flex flex-col gap-1 p-2 justify-center">
-                                            <button onClick={() => handleSubmit(String(value?._id))} className="p-1 bg-customviolet border border-gray-200 text-white font-bold">Apply</button>
+                                        <div className="hidden w-[20%] h-full lg:flex flex-col gap-1 p-2 justify-center">
+                                            <button onClick={() => handleSubmit(String(value?._id))} className="p-1 bg-customviolet border border-gray-200 text-white font-bold lg:text-base text-xs">Apply</button>
                                             <Stack spacing={2} sx={{ flexGrow: 1 }}>
                                                 <BorderLinearProgress variant="determinate" value={50} />
                                             </Stack>

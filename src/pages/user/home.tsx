@@ -31,9 +31,9 @@ export const Home = () => {
                         <span className="text-lg font-semibold">Welcome {data.user?.username} . Explore, discover, and enjoy! </span>
                         <span>Here is what's happened with your job search applications</span>
                     </div>
-                    <div className="flex gap-4 flex-1 pr-2 ">
-                        <div className="w-2/5 h-full  flex flex-col items-center gap-4 ">
-                            <div className="w-full h-[60%] border border-gray-400">
+                    <div className="lg:flex-row flex-col flex  gap-4 flex-1 pr-2 mt-4 lg:mt-0">
+                        <div className="lg:w-2/5 w-full h-full  flex flex-col items-center gap-4 ">
+                            <div className="w-full lg:h-[60%] h-[60%] border border-gray-400">
                                 <span className="w-full ml-2 font-semibold">Job applied status</span>
                                 <PieChartComponent />
                             </div>
@@ -53,7 +53,7 @@ export const Home = () => {
                                     <span className="w-full ml-2 font-semibold">Interviews</span>
                                     <div className="w-full h-[80%]  flex">
                                         <div className="w-[50%] h-full  flex justify-center items-center">
-                                            <span className="text-8xl font-bold">{applicants?.filter((item)=>item.hiring_status=="interview").length}</span>
+                                            <span className="text-8xl font-bold">{applicants?.filter((item:any)=>item.hiring_status=="interview").length}</span>
                                         </div>
                                         <div className="w-[50%] h-full  flex justify-end items-end ">
                                             <BsFillPatchQuestionFill className="text-8xl text-gray-400 mr-1" />
@@ -62,7 +62,7 @@ export const Home = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-3/5 h-full border border-gray-400 mr-4 mb-4">
+                        <div className="hidden lg:block lg:w-3/5 w-full h-full border border-gray-400 mr-4 mb-4">
                             <Schedule />
                         </div>
                     </div>

@@ -228,12 +228,12 @@ export const MyProfilePage = () => {
 
             <div className="w-full  flex flex-col bg-backgournd">
                 <UserHeader prop="My Profile" />
-                <div className="w-full    flex">
-                    <div className="w-[60%] h-full   p-2 flex">
+                <div className="w-full  lg:flex">
+                    <div className="lg:w-[60%] w-full lg:h-full   p-2 flex">
                         <div className="w-full h-full  flex flex-col gap-2">
                             <div className="w-full h-80  border border-gray-300 rounded flex">
-                                <div className="w-[30%] h-full  flex justify-center items-center">
-                                    <div className="w-44 h-44 rounded-full bg-slate-800">
+                                <div className="lg:w-[30%] w-[50%] h-full  flex justify-center items-center">
+                                    <div className="w-28 h-28 lg:w-44 lg:h-44 rounded-full bg-slate-800">
                                         <img src={users?.profile} alt="" className="w-full h-full rounded-full object-cover" />
                                     </div>
                                 </div>
@@ -243,8 +243,8 @@ export const MyProfilePage = () => {
                                     <span>{users?.phone}</span>
                                     <span className="border border-green-500 p-2 w-[60%] flex justify-center items-center gap-1 rounded text-sm text-green-500"><CiFlag1 />OPEN FOR OPPORTUNITIES</span>
                                 </div>
-                                <div className="w-[20%] h-full flex justify-center pt-4">
-                                    <button onClick={() => navigate('/setting')} className="h-9 rounded hover:bg-customviolet hover:text-white text-customviolet p-2 border border-customviolet">Edit Profile</button>
+                                <div className="lg:w-[20%] w-[40%] h-full flex justify-center pt-4">
+                                    <button onClick={() => navigate('/setting')} className="h-9 rounded hover:bg-customviolet hover:text-white text-customviolet p-2 border border-customviolet lg:text-base text-xs">Edit Profile</button>
                                 </div>
                             </div>
                             <div className="w-full border border-gray-300 rounded flex flex-col p-2 ">
@@ -341,7 +341,7 @@ export const MyProfilePage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-[40%] h-full flex flex-col pt-2 pl-4 pr-6 gap-2">
+                    <div className="lg:w-[40%] h-full flex flex-col pt-2 pl-4 pr-6 gap-2">
                         <div className="w-full min-h-80 rounded border border-gray-300 flex flex-col p-4 gap-2">
                             <div className="-w-full flex justify-between">
                                 <span className="text-md font-bold">Social Links</span>

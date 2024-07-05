@@ -201,8 +201,8 @@ export const SignIn = () => {
                 </div>
 
                 {seeker ? (
-                    <div className='  w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%]  rounded flex flex-col gap-10 items-center'>
+                    <div className='  w-full lg:w-[50%] h-full  flex flex-col lg:pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='lg:w-[80%] w-full h-[95%]  rounded flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
                                 <span className='p-2   border border-gray-400 flex items-center justify-center cursor-pointer text-customviolet  font-bold rounded-xl ' onClick={() => setSeeker(true)}>Job Seeker</span>
                                 <span className='flex items-center justify-center cursor-pointer  font-bold text-customviolet' onClick={() => setSeeker(false)}>company</span>
@@ -313,8 +313,8 @@ export const SignIn = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className=' w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-background flex flex-col gap-10 items-center'>
+                    <div className=' w-full lg:w-[50%] h-full  flex flex-col lg:pl-14 pt-4 gap-8 justify-center items-start'>
+                        <div className='lg:w-[80%] w-full h-[95%] bg-background flex flex-col gap-10 items-center'>
                             <div className='w-full h-12  flex justify-center gap-2 items-center'>
                                 <span className=' flex items-center justify-center cursor-pointer text-customviolet  font-bold ' onClick={() => setSeeker(true)}>Job Seeker</span>
                                 <span className='p-2   border border-gray-400  flex items-center justify-center cursor-pointer  font-bold text-customviolet rounded-xl' onClick={() => setSeeker(false)}>company</span>

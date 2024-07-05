@@ -1,13 +1,15 @@
 
 import { ModeToggle } from "../common/mode-toggle"
 import { VscBell, VscBellDot } from "react-icons/vsc";
-import { useEffect, useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { userNotificatinoList } from "@/redux/actions/userAction";
+import { logout, userNotificatinoList } from "@/redux/actions/userAction";
 import axios from "axios";
 import { BASE_URL } from "@/interfaces/config/constant";
+import { HiMenuAlt1 } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 
 interface UserHeaderProps {
@@ -17,6 +19,7 @@ interface UserHeaderProps {
 
 
 export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
+  const navigate = useNavigate()
   const { data: notificationList } = useSelector((state: RootState) => state.notification)
   const { data: companyList } = useSelector((state: RootState) => state.companyList)
   const { data: useList } = useSelector((state: RootState) => state.usersList)
@@ -26,7 +29,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
   const [unread, setUnread] = useState(false)
   useEffect(() => {
     dispatch(userNotificatinoList(String(user?._id)))
-    const unreaded = notificationList.some((item) => item.read == false)
+    const unreaded = notificationList.some((item: { read: boolean; }) => item.read == false)
     setUnread(unreaded)
 
   }, [])
@@ -37,8 +40,39 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
       dispatch(userNotificatinoList(String(user?._id)))
     })
   }
+  const [ham, setHam] = useState(false)
+  const hamburger = () => {
+    setHam(!ham)
+  }
+  const logOut = async () => {
+    try {
+         await dispatch(logout());
+       
+        navigate('/');
+    } catch (error: any) {
+        console.error("Logout failed:", error.message);
+    }
+}
   return (
     <>
+      {ham && (
+        <>
+          <div className='w-48  bg-white flex-col absolute top-1 right-2 rounded z-10 flex gap-2'>
+            <span className='w-full flex justify-end pr-2'><RxCross1 onClick={hamburger} className='text-xl font-bold cursor-pointer' /></span>
+            <span onClick={() => navigate('/home')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Dashboard</span>
+            <span onClick={() => navigate('/chat')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Messages</span>
+            <span onClick={() => navigate('/myapplication')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>My Applications</span>
+            <span onClick={() => navigate('/joblist')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Find jobs</span>
+            <span onClick={() => navigate('/companylist')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Browse Companies</span>
+            <span onClick={() => navigate('/profile')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>My Public Profile</span>
+            <span onClick={() => navigate('/subscription')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Subscription</span>
+            <span onClick={() => navigate('/setting')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Settings</span>
+            <span onClick={() => navigate('/underconstrution')} className='w-full h-10 border border-gray-200 text-customviolet flex justify-start items-center pl-4 hover:bg-customviolet hover:text-white'>Help Center</span>
+            <span onClick={logOut} className='w-full h-10 border border-gray-200 text-red-500 flex justify-start items-center pl-4 hover:bg-red-500 hover:text-white'>Logout</span>
+          </div>
+
+        </>
+      )}
 
       {notification && (
         <>
@@ -50,9 +84,9 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
             <div className="w-full h-[95%]  break-words overflow-auto flex flex-col gap-2">
               {notificationList.length ? (
                 <>
-                  {notificationList?.map((item, index) => (
+                  {notificationList?.map((item: { sender: any; message: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
                     <span key={index} className="p-1 border border-gray-400 text-sm text-gray-500 rounded">
-                      from {companyList?.find((items) => items._id == item.sender)?.company_name ?? useList?.find((items) => items._id == item.sender)?.username}:
+                      from {companyList?.find((items: { _id: any; }) => items._id == item.sender)?.company_name ?? useList?.find((items: { _id: any; }) => items._id == item.sender)?.username}:
                       <br />
                       {item.message}
                     </span>
@@ -81,8 +115,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
             </>
           )}
           {user?.email && (
-
-            <ModeToggle />
+            <>
+              <ModeToggle />
+              <HiMenuAlt1 onClick={hamburger} className='text-2xl md:hidden' />
+            </>
           )}
         </div>
 

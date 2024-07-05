@@ -114,9 +114,9 @@ export const Chat = () => {
     useEffect(() => {
         socket?.on("message recieved", (newMessage: IMessage) => {
             if (newMessage.sender !== user?._id) {
-                const sender = companyLists?.find((item) => item._id === newMessage.sender)?.company_name;
+                const sender = companyLists?.find((item:any) => item._id === newMessage.sender)?.company_name;
                 const message = newMessage.content;
-                const profile: string = String(companyLists?.find((item) => item._id === newMessage.sender)?.icon);
+                const profile: string = String(companyLists?.find((item:any) => item._id === newMessage.sender)?.icon);
 
                 const notificationMessage = `${sender}: ${message}`;
                 setNotification({ message: notificationMessage, profile });
@@ -277,10 +277,10 @@ export const Chat = () => {
             </Snackbar>
             <div className="w-full flex flex-col h-screen">
                 <UserHeader prop="Messages" />
-                <div className="w-full flex h-[90%] bg-red-300">
-                    <div className="w-[30%] h-full bg-white flex flex-col border">
-                        <div className="w-full h-[10%] flex justify-center items-center p-2">
-                            <div className="w-[90%] rounded border border-gray-300 h-[70%] flex justify-between items-center pl-2">
+                <div className="w-full flex h-[90%] ">
+                    <div className="lg:w-[30%] w-full h-full bg-white flex flex-col border">
+                        <div className=" w-full h-[10%]flex justify-center items-center p-2">
+                            <div className="lg:w-[90%] w-full rounded border border-gray-300 h-[70%] flex justify-between items-center pl-2">
                                 <BiSearch className="text-2xl" />
                                 <input type="text" className="w-[95%] h-[90%] outline-none" placeholder="Search..." />
                             </div>
@@ -288,10 +288,10 @@ export const Chat = () => {
                         <div className="max-h-[90%] w-full flex flex-col items-center overflow-y-auto">
                             {chatList?.map((chat, index) => {
                                 const participantsIds = chat?.participants?.filter(id => id !== user?._id);
-                                const participant = companyLists?.find(company => company?._id === participantsIds[0]);
+                                const participant = companyLists?.find((company:any) => company?._id === participantsIds[0]);
                                 const online = onlineUsers?.includes(String(participant?._id))
 
-                                const chatMessages = allMessages?.filter(message => {
+                                const chatMessages = allMessages?.filter((message:any) => {
                                     return message?.participants &&
                                         message?.participants?.includes(String(user?._id)) &&
                                         message?.participants?.includes(participantsIds[0]) &&
@@ -341,7 +341,7 @@ export const Chat = () => {
                     </div>
                     <div className="w-[70%] h-full bg-white flex flex-col">
                         {isnew ? (
-                            <div className="w-full h-full flex justify-center items-center bg-gray-300">
+                            <div className="hidden w-full h-full lg:flex justify-center items-center bg-gray-300">
                                 <img src={newImg} alt="New Content" className="max-w-full max-h-full " />
                             </div>
                         ) : (
