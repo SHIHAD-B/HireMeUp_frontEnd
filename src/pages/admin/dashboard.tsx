@@ -60,7 +60,7 @@ export const AdminDashBoard = () => {
 
                             </div>
                             <div className="min-w-44 h-20 border border-gray-300 rounded flex justify-center items-center bg-customviolet">
-                                <span className="text-4xl font-bold text-white">{applicants?.filter((item) => item.hiring_status == "hired")?.length} <span className="text-sm font-normal">Placed</span> </span>
+                                <span className="text-4xl font-bold text-white">{applicants?.filter((item:any) => item.hiring_status == "hired")?.length} <span className="text-sm font-normal">Placed</span> </span>
 
                             </div>
 
@@ -148,7 +148,7 @@ export const AdminDashBoard = () => {
                                         <span className="text-xl font-semibold">Pending</span>
                                         <IoIosTimer className="text-xl text-customviolet" />
                                     </div>
-                                    <span className="text-4xl font-bold">{applicants?.filter((item) => item.hiring_status == "in-review").length}</span>
+                                    <span className="text-4xl font-bold">{applicants?.filter((item:any) => item.hiring_status == "in-review").length}</span>
 
                                 </div>
                                 <div className="w-56 h-28 border rounded border-gray-300 flex flex-col p-2 gap-2 justify-center">
@@ -156,7 +156,7 @@ export const AdminDashBoard = () => {
                                         <span className="text-xl font-semibold">Interviews</span>
                                         <RiVerifiedBadgeLine className="text-xl text-customviolet" />
                                     </div>
-                                    <span className="text-4xl font-bold">{applicants?.filter((item) => item.hiring_status == "interview").length}</span>
+                                    <span className="text-4xl font-bold">{applicants?.filter((item:any) => item.hiring_status == "interview").length}</span>
 
                                 </div>
                                 <div className="w-56 h-28 border rounded border-gray-300 flex flex-col p-2 gap-2 justify-center">
@@ -164,7 +164,7 @@ export const AdminDashBoard = () => {
                                         <span className="text-xl font-semibold">Placed</span>
                                         <IoBagHandleOutline className="text-xl text-customviolet" />
                                     </div>
-                                    <span className="text-4xl font-bold">{applicants?.filter((item) => item.hiring_status == "hired").length}</span>
+                                    <span className="text-4xl font-bold">{applicants?.filter((item:any) => item.hiring_status == "hired").length}</span>
 
                                 </div>
                                 <div className="w-56 h-28 border rounded border-gray-300 flex flex-col p-2 gap-2 justify-center">
@@ -172,7 +172,7 @@ export const AdminDashBoard = () => {
                                         <span className="text-xl font-semibold">Rejects</span>
                                         <MdErrorOutline className="text-xl text-customviolet" />
                                     </div>
-                                    <span className="text-4xl font-bold">{applicants?.filter((item) => item.hiring_status == "rejected").length}</span>
+                                    <span className="text-4xl font-bold">{applicants?.filter((item:any) => item.hiring_status == "rejected").length}</span>
 
                                 </div>
                             </div>

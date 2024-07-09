@@ -127,7 +127,7 @@ export const CompanyDashboard = () => {
                                 <div className="w-[50%] h-32 border border-gray-400 rounded flex flex-col justify-center p-4">
                                     <span className="text-xl text-gray-400 font-bold">Employees</span>
                                     <div className="w-full flex gap-1  items-center ">
-                                        <span className="text-6xl font-bold">{employees?.filter((item) => item.companyId == data?._id&&item.deleted!==true).length}</span>
+                                        <span className="text-6xl font-bold">{employees?.filter((item:any) => item.companyId == data?._id&&item.deleted!==true).length}</span>
                                         <span className="text-sm text-gray-400"> employees available</span>
                                     </div>
                                 </div>

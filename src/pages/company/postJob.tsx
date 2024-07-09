@@ -590,8 +590,8 @@ export const PostJob = () => {
                                         <span className="lg:text-sm text-xs font-bold">Select Job Category</span>
                                         <select name="category" onChange={(e) => handleFieldChange(e)} className="w-64 h-9 lg:w-80 outline-none border border-gray-400">
                                             {data && data
-                                                .filter(key => !key.deleted)
-                                                .map(key => (
+                                                .filter((key:any) => !key.deleted)
+                                                .map((key:any) => (
                                                     <option key={String(key?._id)} value={String(key?._id)}>
                                                         {key.category}
                                                     </option>

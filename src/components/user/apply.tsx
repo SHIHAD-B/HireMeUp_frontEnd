@@ -33,13 +33,13 @@ export const Apply = (Adata: IApply) => {
     const [loading,setLoading]=useState(false)
 
     useEffect(() => {
-        const job = data?.find((item) => item._id === jobId);
+        const job = data?.find((item:any) => item._id === jobId);
         setJobData(job as IJobData);
 
 
         if (job?.questions) {
             const initialFormData: { [key: string]: string } = {};
-            job.questions.forEach((_, index) => {
+            job.questions.forEach((_:any, index:any) => {
                 initialFormData[`question_${index}`] = '';
             });
             setFormData(initialFormData);

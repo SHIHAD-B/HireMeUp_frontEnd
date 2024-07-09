@@ -93,7 +93,7 @@ export const ProfilePage = () => {
                                         <div className="w-full flex flex-wrap gap-1">
                                             {employee?.length ? (
                                                 <>
-                                                    {employee?.filter((item) => item.companyId == data?._id && item.deleted !== true).map((items, index) => (
+                                                    {employee?.filter((item:any) => item.companyId == data?._id && item.deleted !== true).map((items:any, index:any) => (
 
                                                         <span key={index} className="p-2 flex flex-col border border-customviolet rounded max-w-xs">
                                                             <span className="font-bold">{items.firstName} {items.lastName}</span>
@@ -116,7 +116,7 @@ export const ProfilePage = () => {
                                     {data?.tech_stack?.length ? (
                                         <>
                                             <div className="w-full flex flex-wrap gap-1 p-2 ">
-                                                {data.tech_stack.map((items, index) => (
+                                                {data.tech_stack.map((items:any, index:any) => (
 
                                                     <span key={index} className="p-2 border border-customviolet rounded text-customviolet flex justify-center items-center gap-4">
                                                         {items}
@@ -172,7 +172,7 @@ export const ProfilePage = () => {
                                         {data?.location?.length ? (
 
                                             <div className="w-full  flex flex-wrap gap-2">
-                                                {data.location.map((item, index) => (
+                                                {data.location.map((item:any, index:any) => (
 
                                                     <span key={index} className="flex gap-2 justify-between items-center border border-customviolet p-1 rounded text-customviolet">
                                                         {item}

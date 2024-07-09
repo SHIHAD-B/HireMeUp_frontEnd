@@ -180,7 +180,7 @@ export const ScheduleModal = (data: IAbout) => {
                                 onChange={(e) => setInterviewer(e.target.value)}
                                 sx={{ mb: 1 }}
                             >
-                                {employee?.filter((items) => items?.companyId == companyData?._id && !items?.deleted).map((item, index) => (
+                                {employee?.filter((items:any) => items?.companyId == companyData?._id && !items?.deleted).map((item:any, index:any) => (
 
                                     <MenuItem key={index} value={item.firstName}>{item.firstName}</MenuItem>
                                 ))}

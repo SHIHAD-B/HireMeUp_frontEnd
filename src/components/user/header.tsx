@@ -29,7 +29,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
   const [unread, setUnread] = useState(false)
   useEffect(() => {
     dispatch(userNotificatinoList(String(user?._id)))
-    const unreaded = notificationList.some((item: { read: boolean; }) => item.read == false)
+    const unreaded = notificationList.some((item: any) => item.read == false)
     setUnread(unreaded)
 
   }, [])
@@ -86,7 +86,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ prop }) => {
                 <>
                   {notificationList?.map((item: { sender: any; message: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
                     <span key={index} className="p-1 border border-gray-400 text-sm text-gray-500 rounded">
-                      from {companyList?.find((items: { _id: any; }) => items._id == item.sender)?.company_name ?? useList?.find((items: { _id: any; }) => items._id == item.sender)?.username}:
+                      from {companyList?.find((items:any) => items._id == item.sender)?.company_name ?? useList?.find((items: any) => items._id == item.sender)?.username}:
                       <br />
                       {item.message}
                     </span>

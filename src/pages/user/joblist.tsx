@@ -81,8 +81,8 @@ export const Joblist = () => {
                 filteredData = data?.filter((item: { job_title: string; }) => regex.test(item.job_title)) as IJobData[];
             } else if (queryLocationData !== "") {
                 const companyLocationIds = companyLists
-                    ?.filter((item: { location: string | any[]; }) => item.location?.includes(queryLocationData))
-                    .map((item: { _id: any; }) => item._id);
+                    ?.filter((item: any) => item.location?.includes(queryLocationData))
+                    .map((item: any) => item._id);
                 filteredData = data?.filter((item: { companyId: any; }) => companyLocationIds?.includes(item.companyId)) as IJobData[];
             }
 
@@ -126,7 +126,7 @@ export const Joblist = () => {
 
 
     useEffect(() => {
-        const filteredSet = new Set(data?.filter((item: { category: string; level: string; salary_from: any; salary_to: any; type: string; }) => {
+        const filteredSet = new Set(data?.filter((item: any) => {
             const conditions = [];
 
             if (filterData.category.length !== 1) {
@@ -171,7 +171,7 @@ export const Joblist = () => {
 
     const categoryFilterChange = (e: any) => {
         const { value, checked } = e.target;
-        const valueId = category?.find((values: { category: any; }) => values.category === value)?._id || '';
+        const valueId = category?.find((values: any) => values.category === value)?._id || '';
         setFilterData((prev) => ({
             ...prev,
             category: checked ? [...prev.category, valueId] : prev.category.filter((item: string) => item !== valueId),
@@ -230,7 +230,7 @@ export const Joblist = () => {
 
 
         if (locationValue.trim() !== "") {
-            const companyIds = companyLists?.filter((item: { location: string | string[]; }) => item.location?.includes(locationValue)).map((item: any) => item._id);
+            const companyIds = companyLists?.filter((item: any) => item.location?.includes(locationValue)).map((item: any) => item._id);
             filteredData = filteredData?.filter((item: any) => companyIds?.includes(item.companyId));
         }
 
@@ -310,7 +310,7 @@ export const Joblist = () => {
                             </div>
                             <div className="w-full h-auto  flex flex-col pl-4 pt-2 pb-2 space-y-2">
                                 <span className="font-bold text-lg">Category</span>
-                                {category?.map((value: { category: string | number | boolean | any }, index: Key | null | undefined) => (
+                                {category?.map((value: any, index: Key | null | undefined) => (
 
                                     <label className="flex items-center gap-2" key={index}>
                                         <input type="checkbox" name="employment" value={String(value.category)} className="form-checkbox h-5 w-5 text-blue-600" onChange={categoryFilterChange} />
@@ -372,16 +372,16 @@ export const Joblist = () => {
                         </div>
                         <div className="w-full lg:w-[90%]  flex flex-col pt-4 gap-4 items-center ">
                             {list?.length ? (
-                                list.filter((item: { publish: boolean; }) => item.publish == true).map((value: any, index: any) => (
+                                list.filter((item: any) => item.publish == true).map((value: any, index: any) => (
                                     <div onClick={() => handleJobClick(String(value?._id))} key={index} className="w-[90%] h-28 border border-gray-200 rounded flex flex-w">
                                         <div className="w-[20%] h-full flex justify-center items-center">
                                             <div className='lg:w-20 lg:h-20 w-10 h-10 rounded-full'>
-                                                <img src={companyLists?.find((values: { _id: any; }) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
+                                                <img src={companyLists?.find((values: any) => values?._id === value?.companyId)?.icon} alt="" className='w-full h-full object-cover overflow-clip rounded-full' />
                                             </div>
                                         </div>
                                         <div className="lg:w-[60%] w=[79%] h-full flex pt-2 flex-col">
                                             <span className="lg:text-xl text-sm font-bold">{value.job_title}</span>
-                                            <span className="text-sm lg:text-md">{companyLists?.find((values: { _id: any; }) => values?._id === value?.companyId)?.company_name}</span>
+                                            <span className="text-sm lg:text-md">{companyLists?.find((values: any) => values?._id === value?.companyId)?.company_name}</span>
                                             <div className="w-full lg:flex h-auto flex gap-1 lg:gap-4 flex-wrap ">
                                                 <span className="p-1 rounded border border-customviolet text-customviolet lg:text-sm text-xs">{value?.type}</span>
                                                 <span className="p-1 rounded border border-blue-900 text-blue-900 lg:text-sm text-xs">{category?.find((values: { _id: any; }) => values?._id === value?.category)?.category}</span>

@@ -106,10 +106,10 @@ export const CompanyChat = () => {
         socket?.on("message recieved", (newMessage: IMessage) => {
             console.log(newMessage, "new message")
             if (newMessage.sender !== companyData?._id) {
-                const sender = userList?.find((item) => item._id === newMessage.sender)?.username;
+                const sender = userList?.find((item:any) => item._id === newMessage.sender)?.username;
                 console.log(sender, "sender name")
                 const message = newMessage.content;
-                const profile: string = String(userList?.find((item) => item._id === newMessage.sender)?.profile);
+                const profile: string = String(userList?.find((item:any) => item._id === newMessage.sender)?.profile);
 
                 const notificationMessage = `${sender}: ${message}`;
                 setNotification({ message: notificationMessage, profile });
@@ -269,9 +269,9 @@ export const CompanyChat = () => {
                         <div className="max-h-[90%] w-full flex flex-col items-center overflow-y-auto">
                             {chatList?.map((chat, index) => {
                                 const participantsIds = chat.participants.filter(id => id !== companyData?._id);
-                                const participant = userList?.find(company => company._id === participantsIds[0]);
+                                const participant = userList?.find((company:any) => company._id === participantsIds[0]);
 
-                                const chatMessages = allMessages?.filter(message =>
+                                const chatMessages = allMessages?.filter((message:any) =>
                                     message?.participants &&
                                     message?.participants.includes(String(companyData?._id)) &&
                                     message?.participants.includes(participantsIds[0]) &&

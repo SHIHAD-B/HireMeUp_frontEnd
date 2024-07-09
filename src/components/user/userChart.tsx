@@ -70,8 +70,8 @@ const PieChartComponent = () => {
 
   useEffect(() => {
     const applied = applicants?.length ?? 0;
-    const rejected = applicants?.filter((item) => item?.hiring_status === 'rejected')?.length ?? 0;
-    const interviewed = applicants?.filter((item) => item.hiring_status === 'interview').length ?? 0;
+    const rejected = applicants?.filter((item:any) => item?.hiring_status === 'rejected')?.length ?? 0;
+    const interviewed = applicants?.filter((item:any) => item.hiring_status === 'interview').length ?? 0;
 
     setData([
       { name: 'Applied', value: applied },

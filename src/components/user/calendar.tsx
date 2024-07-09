@@ -21,7 +21,7 @@ const Schedule = () => {
   }, []);
 
   useEffect(() => {
-    const event = schedule?.map(event => ({
+    const event = schedule?.map((event:any) => ({
       ...event,
       start: dayjs(String(event?.date)).toISOString()
     }));

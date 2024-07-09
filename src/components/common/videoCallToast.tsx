@@ -19,7 +19,7 @@ const VideoCallToast = ({ data, onAccept, onDecline }: { data: any, onAccept: ()
 
    
     const value = user?.find((item: any) => item._id == data.senderId)
-    const compValue = companyData?.find((item) => item._id == data.senderId)
+    const compValue = companyData?.find((item:any) => item._id == data.senderId)
  
    
         return (

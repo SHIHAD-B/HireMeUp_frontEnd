@@ -20,8 +20,6 @@ import { MdOutlineHealthAndSafety, MdAssistantNavigation } from 'react-icons/md'
 import { PiBagFill } from 'react-icons/pi';
 import { SiGoogleassistant } from 'react-icons/si';
 import { TbBrandMiniprogram } from 'react-icons/tb';
-import { ModeToggle } from '../common/mode-toggle';
-import { FaArrowLeft } from "react-icons/fa6";
 import { Apply } from './apply';
 import { applicantList } from '@/redux/actions/userAction';
 import { useToast } from '../ui/use-toast';
@@ -89,11 +87,12 @@ const icons = [
 ]
 
 export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
+    back
     const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>()
     const [jobData, setJobData] = useState<IJobData | null>(null);
     const { data, loading } = useSelector((state: RootState) => state.job);
-    const { data:schedules } = useSelector((state: RootState) => state.schedule);
+    const { data: schedules } = useSelector((state: RootState) => state.schedule);
     const { user } = useSelector((state: RootState) => state.user);
     const { data: catdata } = useSelector((state: RootState) => state.category)
     const { data: companyData } = useSelector((state: RootState) => state.companyList)
@@ -107,7 +106,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
 
     useEffect(() => {
         dispatch(applicantList())
-        const companyId = data?.find((item:any) => item._id == id)?.companyId
+        const companyId = data?.find((item: any) => item._id == id)?.companyId
         const alreadyApplied = applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == companyId)
         if (alreadyApplied) {
             setApplied(true)
@@ -157,24 +156,24 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                 {loading && <Loader />}
 
                 {!user?.email && (
-                        <Unauth_header />
-                    )}
-                    <UserHeader prop="Job Description" />
+                    <Unauth_header />
+                )}
+                <UserHeader prop="Job Description" />
                 <div className="w-full  flex justify-center p-2">
                     <div className='lg:w-[90%] w-[99%] h-40  flex border border-gray-300'>
                         <div className='w-[70%] h-full  flex'>
                             <div className='w-[30%] h-full flex justify-center items-center '>
-                                <img src={companyData?.find((item:any) => item._id == jobData?.companyId)?.icon} alt="" className='w-32 ' />
+                                <img src={companyData?.find((item: any) => item._id == jobData?.companyId)?.icon} alt="" className='w-32 ' />
                             </div>
                             <div className=' w-[70%] h-full  flex flex-col justify-center pl-2'>
                                 <span className='lg:text-4xl tex-md font-bold'>{jobData?.job_title}</span>
                                 <span className='flex gap-1 text-lg flex-wrap'>
-                                    <span className=''>{companyData?.find((item:any) => item._id === jobData?.companyId)?.company_name}</span>
+                                    <span className=''>{companyData?.find((item: any) => item._id === jobData?.companyId)?.company_name}</span>
                                     .<span className='lg:text-lg text-sm'>
                                         {companyData
-                                            ?.filter((item:any) => item._id === jobData?.companyId)
-                                            .flatMap((item:any) => item.location)
-                                            .map((location:any, index:any) => (
+                                            ?.filter((item: any) => item._id === jobData?.companyId)
+                                            .flatMap((item: any) => item.location)
+                                            .map((location: any, index: any) => (
                                                 <Fragment key={index}>
                                                     {index > 0 && ", "}
                                                     {location}
@@ -197,7 +196,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                             <div className=' hidden lg:block w-0.5 h-[40%] bg-gray-500'></div>
                             {applied ? (
                                 <>
-                                    <div><button onClick={() => handleViewMoreClick(applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == data?.find((item:any) => item._id == id)?.companyId) as IApplicants)} className='lg:pl-6 lg:pr-6 lg:pt-2 lg:pb-2 p-1 bg-customviolet rounded text-white border border-gray-400 lg:text-lg text-xs'>See Application</button></div>
+                                    <div><button onClick={() => handleViewMoreClick(applicantLists?.find((item: any) => item.userId == user?._id && item.jobId == id && item.companyId == data?.find((item: any) => item._id == id)?.companyId) as IApplicants)} className='lg:pl-6 lg:pr-6 lg:pt-2 lg:pb-2 p-1 bg-customviolet rounded text-white border border-gray-400 lg:text-lg text-xs'>See Application</button></div>
                                 </>
                             ) : (
                                 <>
@@ -209,40 +208,40 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                     </div>
                 </div>
                 <AlertDialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Application Details</AlertDialogTitle>
-                                    <AlertDialogDescription>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Application Details</AlertDialogTitle>
+                            <AlertDialogDescription>
 
-                                        <div>
-                                            <p><strong>Company Name:</strong> {companyData?.find((item:any) => item._id == selectedApplication?.companyId)?.company_name}</p>
-                                            <p><strong>Role:</strong> {jobs?.find((item:any) => item._id == selectedApplication?.jobId)?.job_title}</p>
-                                            <p><strong>Date Applied:</strong> {selectedApplication?.createdAt ? new Date(selectedApplication?.createdAt).toDateString() : ""}</p>
-                                            <p className='mb-4'><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
-                                            {schedules?.length && (
+                                <div>
+                                    <p><strong>Company Name:</strong> {companyData?.find((item: any) => item._id == selectedApplication?.companyId)?.company_name}</p>
+                                    <p><strong>Role:</strong> {jobs?.find((item: any) => item._id == selectedApplication?.jobId)?.job_title}</p>
+                                    <p><strong>Date Applied:</strong> {selectedApplication?.createdAt ? new Date(selectedApplication?.createdAt).toDateString() : ""}</p>
+                                    <p className='mb-4'><strong>Status:</strong> {selectedApplication?.hiring_status}</p>
+                                    {schedules?.length && (
+                                        <>
+                                            <span className="font-bold underline">Interview Details</span>
+                                            {schedules.filter((item: any) => item.jobId == selectedApplication?.jobId).map((item: any, index: any) => (
                                                 <>
-                                                    <span className="font-bold underline">Interview Details</span>
-                                                    {schedules.filter((item:any)=>item.jobId==selectedApplication?.jobId).map((item:any, index:any) => (
-                                                        <>
-                                                            <div key={index} className="mt-2">
-                                                                <p><strong>Title:</strong> {item.title}</p>
-                                                                <p><strong>Date:</strong> {new Date(String(item?.date)).toLocaleString()}</p>
-                                                                <p><strong>Status:</strong> {item.status}</p>
+                                                    <div key={index} className="mt-2">
+                                                        <p><strong>Title:</strong> {item.title}</p>
+                                                        <p><strong>Date:</strong> {new Date(String(item?.date)).toLocaleString()}</p>
+                                                        <p><strong>Status:</strong> {item.status}</p>
 
-                                                            </div>
-                                                        </>
-                                                    ))}
+                                                    </div>
                                                 </>
-                                            )}
-                                        </div>
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel onClick={handleCloseDialog}>Close</AlertDialogCancel>
-                                    <AlertDialogAction className="bg-customviolet hover:bg-white hover:text-black">Continue</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                                            ))}
+                                        </>
+                                    )}
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={handleCloseDialog}>Close</AlertDialogCancel>
+                            <AlertDialogAction className="bg-customviolet hover:bg-white hover:text-black">Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
                 <div className='w-full lg:flex  p-4'>
                     <div className='lg:w-[60%] w-full h-full flex flex-col gap-6'>
                         <div className='w-full flex flex-col gap-2'>
@@ -289,7 +288,7 @@ export const JobDescription: React.FC<JobDescriptionProps> = ({ id, back }) => {
                             <hr />
                             <div className='flex flex-col w-full items-center gap-1'>
                                 <span className='font-bold'>Category</span>
-                                <div className='w-full flex items-center justify-center   '><span className='p-2 border border-gray-400 rounded bg-green-200 text-green-800'>{catdata?.find((item:any) => item._id == jobData?.category)?.category}</span></div>
+                                <div className='w-full flex items-center justify-center   '><span className='p-2 border border-gray-400 rounded bg-green-200 text-green-800'>{catdata?.find((item: any) => item._id == jobData?.category)?.category}</span></div>
                             </div>
                             <div className='flex flex-col w-full items-center gap-1'>
                                 <span className='font-bold'>Required Skills</span>

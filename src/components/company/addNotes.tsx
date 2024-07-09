@@ -129,7 +129,7 @@ export const AddNotesModal = (data: INotes) => {
                                 onChange={(e) => setEmployee(e.target.value)}
                                 sx={{ mb: 1 }}
                             >
-                                {employeeLists?.filter((items) => items.companyId == company?._id).map((item, index) => (
+                                {employeeLists?.filter((items:any) => items.companyId == company?._id).map((item:any, index:any) => (
 
                                     <MenuItem key={index} value={item.firstName}>{item.firstName}</MenuItem>
                                 ))}

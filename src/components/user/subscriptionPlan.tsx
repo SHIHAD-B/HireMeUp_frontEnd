@@ -110,7 +110,6 @@ export const SubscriptionPlan = () => {
             const response = await axios.post(`${BASE_URL}subscription/user/checkoutsubscription`, body, { headers });
 
 
-            console.log(response, "response from stripe")
             const result: any = stripe?.redirectToCheckout({
                 sessionId: response.data.id
             })

@@ -87,7 +87,7 @@ export const ApplicantDetails = () => {
             receiver: userId
         }
 
-        const already = chat?.find((item) =>
+        const already = chat?.find((item:any) =>
             item.participants.includes(String(company?._id)) && item.participants.includes(userId)
         );
         if (already) {
@@ -104,7 +104,7 @@ export const ApplicantDetails = () => {
     }
 
     useEffect(() => {
-        const application = applicants?.find((item) => item._id == id)
+        const application = applicants?.find((item:any) => item._id == id)
         if (application) {
             setApplicantDetails(application as IApplicants)
         }
@@ -135,7 +135,7 @@ export const ApplicantDetails = () => {
         return nextShow || sortedSchedule && sortedSchedule[0];
     };
 
-    const scheduelfitleredData = schedule?.filter((item) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId)
+    const scheduelfitleredData = schedule?.filter((item:any) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId)
 
     const nextSchedule = getNextSchedule(scheduelfitleredData as unknown as ScheduleItem[]);
 
@@ -180,9 +180,9 @@ export const ApplicantDetails = () => {
                                                 <span className="text-sm text-gray-400">{applicantDetails?.createdAt ? new Date(applicantDetails.createdAt).toDateString() : ""}</span>
                                             </div>
                                             <div className="w-full flex flex-col p-2">
-                                                <span className="text-md font-bold">{applicantDetails?.jobId ? jobs?.find((item) => item._id == applicantDetails.jobId)?.job_title : ""}</span>
+                                                <span className="text-md font-bold">{applicantDetails?.jobId ? jobs?.find((item:any) => item._id == applicantDetails.jobId)?.job_title : ""}</span>
 
-                                                <span className="text-sm text-gray-400">{applicantDetails ? category?.find((item) => item._id == applicantDetails?.jobId ? jobs?.find((item) => item._id == applicantDetails.jobId)?.category : "null")?.category : ""} . {applicantDetails?.jobId ? jobs?.find((item) => item._id == applicantDetails.jobId)?.type : ""}</span>
+                                                <span className="text-sm text-gray-400">{applicantDetails ? category?.find((item:any) => item._id == applicantDetails?.jobId ? jobs?.find((item:any) => item._id == applicantDetails.jobId)?.category : "null")?.category : ""} . {applicantDetails?.jobId ? jobs?.find((item:any) => item._id == applicantDetails.jobId)?.type : ""}</span>
                                             </div>
                                         </div>
                                         <div className="w-full   flex flex-col gap-1">
@@ -276,30 +276,30 @@ export const ApplicantDetails = () => {
                                                 <div className="w-1/3 h-full  flex flex-col p-2 gap-1">
                                                     <span className="text-md font-bold mb-4">Personal Info</span>
                                                     <span className="text-sm ">Full Name</span>
-                                                    <span className="text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.username : ""}</span>
+                                                    <span className="text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.username : ""}</span>
                                                     <span className="text-sm mt-2">Date of Birth</span>
                                                     <span className="text-sm font-bold">{applicantDetails?.userId ?
                                                         (() => {
-                                                            const userItem = user?.find((item) => item._id === applicantDetails.userId);
+                                                            const userItem = user?.find((item:any) => item._id === applicantDetails.userId);
                                                             const dob = userItem?.dob;
                                                             return dob ? new Date(dob).toDateString() : "";
                                                         })()
                                                         : ""}</span>
                                                     <span className="text-sm mt-2">Address</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.houseNumber : ""}</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.locality : ""}</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.city : ""}</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.state : ""}</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.country : ""}</span>
-                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.address?.pin : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.houseNumber : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.locality : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.city : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.state : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.country : ""}</span>
+                                                    <span className="w-[95%] text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.address?.pin : ""}</span>
 
                                                 </div>
                                                 <div className="w-1/3 h-full flex flex-col p-2 gap-1">
                                                     <span className="text-sm mt-12">Gender</span>
-                                                    <span className="text-sm font-bold">{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.gender : ""}</span>
+                                                    <span className="text-sm font-bold">{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.gender : ""}</span>
 
                                                     <span className="text-sm mt-2">Language</span>
-                                                    {applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.language?.map((item) => (
+                                                    {applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.language?.map((item:any) => (
 
                                                         <span className="text-sm font-bold">{item}</span>
                                                     )) : ""}
@@ -309,7 +309,7 @@ export const ApplicantDetails = () => {
                                             <div className="w-full h-64  flex flex-col p-2 gap-1">
                                                 <span className="text-md font-bold mb-4">Professional Info</span>
                                                 <span className="text-sm text-gray-400">About Me</span>
-                                                <p>{applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.about : ""}</p>
+                                                <p>{applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.about : ""}</p>
                                             </div>
                                             <div className="w-full   flex p-2 ">
                                                 <div className="w-1/2   flex flex-col p-2 gap-1">
@@ -329,7 +329,7 @@ export const ApplicantDetails = () => {
                                                     <span className="text-sm font-bold">4 years</span>
                                                     <span className="text-sm mt-4">Skill Set</span>
                                                     <div className="text-sm font-bold flex flex-wrap gap-1">
-                                                        {applicantDetails?.userId ? user?.find((item) => item._id == applicantDetails.userId)?.skills?.map((item) => (
+                                                        {applicantDetails?.userId ? user?.find((item:any) => item._id == applicantDetails.userId)?.skills?.map((item:any) => (
 
                                                             <span className="p-1 rounded border border-customviolet text-customviolet">{item}</span>
                                                         )) : ""}
@@ -343,15 +343,15 @@ export const ApplicantDetails = () => {
                                     )}
                                     {page == "resume" && (
                                         <div className="w-full h-full  p-4">
-                                            <iframe src={applicantDetails?.userId ? String(user?.find((item) => item._id == applicantDetails?.userId)?.cv) : ""} className="w-full h-full"></iframe>
+                                            <iframe src={applicantDetails?.userId ? String(user?.find((item:any) => item._id == applicantDetails?.userId)?.cv) : ""} className="w-full h-full"></iframe>
                                         </div>
                                     )}
 
                                     {page == "questions" && (
                                         <div className="w-full flex flex-col p-2 gap-2">
-                                            {jobs?.find((item) => item._id == applicantDetails?.jobId)?.questions.length ? (
+                                            {jobs?.find((item:any) => item._id == applicantDetails?.jobId)?.questions.length ? (
                                                 <>
-                                                    {jobs?.find((item) => item._id == applicantDetails?.jobId)?.questions?.map((question, index) => {
+                                                    {jobs?.find((item:any) => item._id == applicantDetails?.jobId)?.questions?.map((question:any, index:any) => {
                                                         const answerKey = `question_${index}`;
                                                         const answerObject: any = applicantDetails?.answers?.find((answer) => answer.hasOwnProperty(answerKey));
                                                         const answerText = answerObject ? answerObject[answerKey] : 'Answer not found';
@@ -422,9 +422,9 @@ export const ApplicantDetails = () => {
                                                 <span className="text-md font-bold">InterviewList</span>
 
                                             </div>
-                                            {schedule?.filter((item) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId).length ? (
+                                            {schedule?.filter((item:any) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId).length ? (
                                                 <>
-                                                    {schedule?.filter((item) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId)?.map((item, index) => (
+                                                    {schedule?.filter((item:any) => item.companyId == applicantDetails?.companyId && item.userId == applicantDetails?.userId && item.jobId == applicantDetails?.jobId)?.map((item:any, index:any) => (
 
                                                         <div key={index} className="w-full flex flex-col gap-2">
                                                             <div className="w-full flex border border-gray-400 rounded p-4">
