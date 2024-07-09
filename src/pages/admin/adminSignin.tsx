@@ -26,10 +26,10 @@ export const AdminSignIn = () => {
     const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>();
     const { loading } = useSelector((state: RootState) => state.user)
-    const coloading=useSelector((state:RootState)=>state.company.loading)
+    const coloading = useSelector((state: RootState) => state.company.loading)
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-  
+
 
     const [data, setData] = useState({
         email: "",
@@ -40,7 +40,7 @@ export const AdminSignIn = () => {
         email: "",
         password: ""
     });
- 
+
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -55,7 +55,7 @@ export const AdminSignIn = () => {
             [name]: value
         }));
     };
- 
+
 
     const handleSubmit = async () => {
         try {
@@ -105,16 +105,16 @@ export const AdminSignIn = () => {
         }
     };
 
-  
 
-  
+
+
 
     return (
         <>
-            {loading||coloading && <Loader />}
+            {loading || coloading && <Loader />}
             <div className="w-screen h-screen bg-slate-100 flex items-center">
                 <div className="w-[50%] h-full flex-col pl-24 pt-4 hidden lg:block">
-                    <img onClick={()=>navigate('/')} src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8 cursor-pointer" />
+                    <img onClick={() => navigate('/')} src={logo} alt="" className="h-auto lg:w-44 w-32 mb-8 cursor-pointer" />
                     <div className="w-full h-28 mb-8">
                         <div className="h-full w-36 border border-black flex flex-col pl-2 pt-2">
                             <ImStatsBars className="text-customviolet text-5xl" />
@@ -125,65 +125,65 @@ export const AdminSignIn = () => {
                     <img src={signin} alt="" className="h-auto lg:w-[65%] w-32" />
                 </div>
 
-                
-                    <div className='  w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
-                        <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
-                           
-                            <span className='font-bold w-full flex justify-center text-2xl mt-4'>Admin Login</span>
+
+                <div className='  w-full lg:w-[50%] h-full  flex flex-col pl-14 pt-4 gap-8 justify-center items-start'>
+                    <div className='w-[80%] h-[95%] bg-gray-200 flex flex-col gap-10 items-center'>
+
+                        <span className='font-bold w-full flex justify-center text-2xl mt-4'>Admin Login</span>
 
 
-                            <div className='w-full h-20   flex-col flex items-center justify-center'>
-                                <TextField
-                                    name='email'
-                                    value={data.email}
-                                    onChange={handleChanges}
-                                    className='w-[80%]'
-                                    id="outlined-multiline-flexible"
-                                    error={Boolean(errors.email)}
-                                    helperText={errors.email}
-                                    label="Email"
-                                    multiline
-                                    maxRows={4}
-                                />
-                            </div>
-                            <div className='w-full h-20   flex-col flex items-center justify-center'>
-                                <FormControl sx={{ m: 1, width: '80%' }} variant="outlined">
-                                    <InputLabel htmlFor="outlined-adornment-password" sx={{ color: errors.password ? '#e53e3e' : undefined }}>Password</InputLabel>
-                                    <OutlinedInput
-                                        id="outlined-adornment-password"
-                                        name='password'
-                                        value={data.password}
-                                        error={Boolean(errors.password)}
-                                        onChange={handleChanges}
-                                        type={showPassword ? 'text' : 'password'}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                        label="Password"
-
-                                    />
-                                    <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errors.password}</FormHelperText>
-
-                                </FormControl>
-                            </div>
-
-                            <button onClick={handleSubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Signin</button>
-                           
+                        <div className='w-full h-20   flex-col flex items-center justify-center'>
+                            <TextField
+                                name='email'
+                                value={data.email}
+                                onChange={handleChanges}
+                                className='w-[80%]'
+                                id="outlined-multiline-flexible"
+                                error={Boolean(errors.email)}
+                                helperText={errors.email}
+                                label="Email"
+                                multiline
+                                maxRows={4}
+                            />
                         </div>
+                        <div className='w-full h-20   flex-col flex items-center justify-center'>
+                            <FormControl sx={{ m: 1, width: '80%' }} variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password" sx={{ color: errors.password ? '#e53e3e' : undefined }}>Password</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    name='password'
+                                    value={data.password}
+                                    error={Boolean(errors.password)}
+                                    onChange={handleChanges}
+                                    type={showPassword ? 'text' : 'password'}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label="Password"
+
+                                />
+                                <FormHelperText style={{ color: '#e53e3e' }} id="filled-weight-helper-text">{errors.password}</FormHelperText>
+
+                            </FormControl>
+                        </div>
+
+                        <button onClick={handleSubmit} className='bg-customviolet w-[80%] h-10 text-white rounded-lg ease-linear transition-all duration-200 hover:rounded-3xl'>Signin</button>
+
                     </div>
-                 
+                </div>
+
 
             </div>
-            {!loading&&!coloading && <Footer />}
+            {!loading && !coloading && <Footer />}
 
         </>
     )
