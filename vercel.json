@@ -1,0 +1,3 @@
+{
+    "rewrites": [{ "source": "/(.*)", "destination": "https://hire-me-up-front-end-shihad-bs-projects.vercel.app" }]
+  }
